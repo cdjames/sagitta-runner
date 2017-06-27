@@ -11,6 +11,7 @@
 
 const int winX = 80;
 const int winY = 30;
+const int DEF_TIMEOUT = 250;
 
 class Drawer
 {
@@ -25,6 +26,8 @@ protected:
 	int xMove;
 	int yMove;
 	int currentState;
+	int gTimeout;
+	char input;
 	WINDOW * win;
 
 	void clearArray(int** array);
@@ -35,6 +38,8 @@ public:
 	Drawer(int x, int y, int size);
 	~Drawer();
 	void initWindow(int y, int x);
+	void startMovement();
+	virtual bool moveScreenLeft() = 0;
 };
 
 #endif

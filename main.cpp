@@ -43,20 +43,8 @@ int main()
 	// }
 	
 	/* draw the cells; quit only when 'q' is pressed */
-	do
-	{
-		myOscillator->moveScreenLeft();
-		// switch (prefs){
-		// 	case 'g':
-		// 		myGlider->drawCells();
-		// 		break;
-		// 	case 'c':
-		// 		myGun->drawCells();	
-		// 		break;
-		// 	default: // 'o' or anything else
-		// 		myOsc->drawCells();
-		// }
-	} while ((ch = getch()) != 'q'); // loop until the user enters 'q'
+	myOscillator->startMovement();
+
 
 	/* clean up pointers before exit. Only do this if the pointer was
 	 * actually used */

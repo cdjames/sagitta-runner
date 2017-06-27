@@ -4,7 +4,7 @@
 
 Drawer::Drawer()
 {
-
+	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = 3;
 	currentCell = new int* [winY];
 	newCell = new int *[winY];
@@ -18,7 +18,7 @@ Drawer::Drawer()
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 {
-
+	gTimeout = 50;
 	rowSize = colSize = SIZE = size;
 	currentCell = new int* [winY];
 	newCell = new int *[winY];
@@ -127,7 +127,7 @@ void Drawer::initWindow(int yIn, int xIn)
 {
 	initscr();					// Start curses mode
 	win = newwin(winY, winX, yIn, xIn); // make a new window
-	timeout(250); 				// wait x Ms for user input before going to next getch() call
+	timeout(gTimeout); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
 	printw("Press 'q' to quit.");	// instructions at top of screen
@@ -142,4 +142,21 @@ void Drawer::initWindow(int yIn, int xIn)
 	// 	// }
 	// }
 	wrefresh(win);	// draw the window
+}
+
+void Drawer::startMovement() {
+	do
+	{
+		moveScreenLeft(); // pure virtual; needs to be implemented in child class
+		// switch (prefs){
+		// 	case 'g':
+		// 		myGlider->drawCells();
+		// 		break;
+		// 	case 'c':
+		// 		myGun->drawCells();	
+		// 		break;
+		// 	default: // 'o' or anything else
+		// 		myOsc->drawCells();
+		// }
+	} while ((input = getch()) != 'q');
 }
