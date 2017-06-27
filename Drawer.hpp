@@ -8,6 +8,10 @@
 #define DRAWER_HPP
 
 #include <curses.h>
+
+const int winX = 80;
+const int winY = 30;
+
 class Drawer
 {
 protected:

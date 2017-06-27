@@ -4,12 +4,13 @@
 
 Drawer::Drawer()
 {
+
 	rowSize = colSize = SIZE = 3;
-	currentCell = new int* [SIZE];
-	newCell = new int *[SIZE];
-	for( int i = 0 ; i < SIZE ; i++ ){
-		currentCell[i] = new int[SIZE];
-		newCell[i] = new int[SIZE];
+	currentCell = new int* [winY];
+	newCell = new int *[winY];
+	for( int i = 0 ; i < winX ; i++ ){
+		currentCell[i] = new int[winX];
+		newCell[i] = new int[winX];
 	}
 	startX = startY = xMove = yMove = 0;
 	currentState = 1;
@@ -17,12 +18,13 @@ Drawer::Drawer()
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 {
+
 	rowSize = colSize = SIZE = size;
-	currentCell = new int* [SIZE];
-	newCell = new int *[SIZE];
-	for( int i = 0 ; i < SIZE ; i++ ){
-		currentCell[i] = new int[SIZE];
-		newCell[i] = new int[SIZE];
+	currentCell = new int* [winY];
+	newCell = new int *[winY];
+	for( int i = 0 ; i < winY ; i++ ){
+		currentCell[i] = new int[winX];
+		newCell[i] = new int[winX];
 	}
 	startX = x;
 	startY = y;
@@ -32,7 +34,7 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 
 Drawer::~Drawer()
 {
-	for( int i = 0 ; i < SIZE ; i++ ){
+	for( int i = 0 ; i < winY ; i++ ){
 		delete [] currentCell[i];
 		delete [] newCell[i];
 		currentCell[i] = 0;
@@ -124,20 +126,20 @@ void Drawer::countNeighbors()
 void Drawer::initWindow(int yIn, int xIn)
 {
 	initscr();					// Start curses mode
-	win = newwin(20, 40, yIn, xIn); // make a new window
+	win = newwin(winY, winX, yIn, xIn); // make a new window
 	timeout(250); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
 	printw("Press 'q' to quit.");	// instructions at top of screen
 	refresh();					// put the printw on the screen
 
-	/* create a 40 x 20 "window" */
-	for (int y = 0; y < 20; y++)
-	{
-		for (int x = 0; x < 40; x++)
-		{
-			mvwaddch(win, y, x, '-');	// move and add a character to these coords on win
-		}
-	}
+	/* create a ## x ## "window" */
+	// for (int y = 0; y < winY; y++)
+	// {
+	// 	// for (int x = 0; x < winX; x++)
+	// 	// {
+	// 		mvwaddch(win, y, winX-1, '-');	// move and add a character to these coords on win
+	// 	// }
+	// }
 	wrefresh(win);	// draw the window
 }

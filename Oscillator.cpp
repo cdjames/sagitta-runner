@@ -18,11 +18,11 @@ Oscillator::~Oscillator() {}
 *********************************************************************/
 void Oscillator::initArrays() 
 {
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < winY; i++)
 	{
-		for (int x = 0; x < SIZE; x++)
+		for (int x = 0; x < winX; x++)
 		{
-			if (i == SIZE/2)
+			if (x == winX-1)
 				currentCell[i][x] = 1;
 			else
 				currentCell[i][x] = 0;
@@ -56,6 +56,36 @@ bool Oscillator::drawCells()
 	Drawer::countNeighbors(); // figure out next generation
 
 	updateCycle(); // copy new cells into 1st generation; clear new array
+}
+
+/*********************************************************************
+** Description: 
+** Move whatever is on the right to the left
+*********************************************************************/
+bool Oscillator::moveScreenLeft() 
+{
+	char ch;
+	for (int y = 0; y < winY; y++)
+	{
+		for (int x = 0; x < winX; x++)
+		{
+			if(x != winX-1) {
+				if (currentCell[y][x+1] == 0){
+					ch = '-';
+					currentCell[y][x] = currentCell[y][x+1];
+					currentCell[y][x+1] = 1;
+				} else {
+					ch = '+';
+				}
+			}
+			else
+				ch = '+';
+			mvwaddch(win, y, x, ch); // put character on window		
+		}
+	}
+
+	wrefresh(win); // update the window
+
 }
 
 /*********************************************************************

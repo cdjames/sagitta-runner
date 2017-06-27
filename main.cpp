@@ -21,10 +21,7 @@ int main()
 		y = 0;
 	/* set pointers to null and use if statements when deleting to avoid
 	 * segmentation fault on flip */
-	Oscillator* myOscillator = new Oscillator();
-	// Oscillator* myOsc = NULL;
-	// Glider* myGlider = NULL;
-	// Gun* myGun = NULL;
+	Oscillator* myOscillator = new Oscillator(1, 2, 3);
 
 	// getUserPrefs(prefs, x, y);
 
@@ -48,7 +45,7 @@ int main()
 	/* draw the cells; quit only when 'q' is pressed */
 	do
 	{
-		myOscillator->drawCells();
+		myOscillator->moveScreenLeft();
 		// switch (prefs){
 		// 	case 'g':
 		// 		myGlider->drawCells();

@@ -21,6 +21,7 @@ public:
 	Oscillator(int x, int y, int size);
 	~Oscillator();
 	bool drawCells();
+	bool moveScreenLeft();
 };
 
 #endif
