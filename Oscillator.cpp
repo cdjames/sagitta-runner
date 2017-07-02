@@ -77,13 +77,14 @@ void Oscillator::moveScreenLeft()
 	{
 		for (int x = 0; x < WINX; x++)
 		{
-			// if at window edge, make some obstacles
+			// if not at window edge, copy from right to left
 			if(x != WINX-1) {
 				currentCell[y][x] = currentCell[y][x+1];
 			}
-			// otherwise just draw a column of - signs in the last column
-			else
+			// otherwise make some obstacles
+			else {
 				currentCell[y][x] = 0;
+			}
 
 			switch(currentCell[y][x]) {
 				case 0:
