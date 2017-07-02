@@ -11,9 +11,11 @@
 
 const int winX = 80;
 const int winY = 30;
-const int DEF_TIMEOUT = 250;
+const int DEF_TIMEOUT = 50;
+const int DEF_MULTIPLIER = 8;
 const char ship = '>';
-const char blank = '-';
+const char blank = ' ';
+const char obstacle = '+';
 
 struct Coords
 {
@@ -40,6 +42,8 @@ protected:
 	WINDOW * win;
 	Coords user_coords;
 	Coords prev_user_coords;
+	int fr_multiplier;
+	int fr_counter;
 
 
 	void clearArray(int** array);

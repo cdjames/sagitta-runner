@@ -46,13 +46,13 @@ void Oscillator::drawCells()
 		for (int x = 0; x < winX; x++)
 		{
 			if(currentCell[i][x] == 0) {
-				ch = '-';
+				ch = blank;
 			}
 			else if(currentCell[i][x] == 2) {
-				ch = '>';
+				ch = ship;
 			}
 			else {
-				ch = '+';
+				ch = obstacle;
 			}
 
 			mvwaddch(win, i+startY, x+startX, ch); // put character on window		
@@ -88,17 +88,17 @@ void Oscillator::moveScreenLeft()
 
 				switch(currentCell[y][x]) {
 					case 0:
-					ch = '-';
+					ch = blank;
 					break;
 					case 1:
-					ch = '+';
+					ch = obstacle;
 					break;
 				}
 			} 
 			else if (x+1 == user_coords.x && y == user_coords.y)
 				currentCell[y][x] = 0;
 			else
-					ch = '>';
+					ch = ship;
 			mvwaddch(win, y, x, ch); // put character on window		
 		}
 	}

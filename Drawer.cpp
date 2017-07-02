@@ -17,11 +17,13 @@ Drawer::Drawer()
 	user_coords.x = winX/10;
 	user_coords.y = winY/2;
 	input = ' ';
+	fr_multiplier = DEF_MULTIPLIER;
+	fr_counter = 0;
 }
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 {
-	gTimeout = 50;
+	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = size;
 	currentCell = new int* [winY];
 	newCell = new int *[winY];
@@ -36,6 +38,8 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 	user_coords.x = winX/10;
 	user_coords.y = winY/2;
 	input = ' ';
+	fr_multiplier = DEF_MULTIPLIER;
+	fr_counter = 0;
 }
 
 Drawer::~Drawer()
@@ -155,10 +159,19 @@ void Drawer::initWindow(int yIn, int xIn)
 
 void Drawer::startMovement() {
 	drawCells(); // pure virtual; needs to be implemented in child class
-	prev_user_coords = user_coords;
+	moveScreenLeft();
 	do
 	{
-		moveScreenLeft(); // pure virtual; needs to be implemented in child class
+		prev_user_coords = user_coords;
+		/* determine background framerate (gTimeout * fr_multiplier) and update background
+			as necessary 
+		*/
+		if(fr_counter == fr_multiplier) {
+			moveScreenLeft(); // pure virtual; needs to be implemented in child class
+			fr_counter = 0;
+		} else {
+			fr_counter++;
+		}
 		// drawCells(); // pure virtual; needs to be implemented in child class
 
 		/* the idea here is to update the user_coords variable, "move" the ship there,
@@ -192,9 +205,12 @@ void Drawer::startMovement() {
 				break;
 		}
 		// move the ship
-		mvwaddch(win, user_coords.y, user_coords.x, ship);
+		
+		// wrefresh(win);
 		// erase the old ship
 		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, blank);
+		mvwaddch(win, user_coords.y, user_coords.x, ship);
+		wrefresh(win);
 
 	} while ((input = getch()) != 'q');
 }
