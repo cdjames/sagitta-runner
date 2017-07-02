@@ -155,27 +155,46 @@ void Drawer::initWindow(int yIn, int xIn)
 
 void Drawer::startMovement() {
 	drawCells(); // pure virtual; needs to be implemented in child class
-	int ch = ' ';
+	prev_user_coords = user_coords;
 	do
 	{
 		moveScreenLeft(); // pure virtual; needs to be implemented in child class
 		// drawCells(); // pure virtual; needs to be implemented in child class
 
-		switch (ch){
+		/* the idea here is to update the user_coords variable, "move" the ship there,
+			then draw a blank where it used to be, finally refreshing the window */
+		switch (input){
 			case KEY_UP:
-				mvprintw(0, 24, "pressed up  ");
+				mvprintw(0, 24, "pressed up   ");
 				refresh();
+				if(user_coords.y > 0)
+					user_coords.y--;
 				break;
 			case KEY_DOWN:
-				mvprintw(0, 24, "pressed down");
+				mvprintw(0, 24, "pressed down ");
 				refresh();
+				if(user_coords.y < winY)
+					user_coords.y++;
 				break;
-			case 'g':
-				mvprintw(0, 24, "pressed g   ");
+			case KEY_LEFT:
+				mvprintw(0, 24, "pressed left ");
 				refresh();
+				if(user_coords.x > 0)
+					user_coords.x--;
+				break;
+			case KEY_RIGHT:
+				mvprintw(0, 24, "pressed right");
+				refresh();
+				if(user_coords.x < winX)
+					user_coords.x++;
 				break;
 			default: // 'o' or anything else
 				break;
 		}
-	} while ((ch = getch()) != 'q');
+		// move the ship
+		mvwaddch(win, user_coords.y, user_coords.x, ship);
+		// erase the old ship
+		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, blank);
+
+	} while ((input = getch()) != 'q');
 }

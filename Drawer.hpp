@@ -12,6 +12,8 @@
 const int winX = 80;
 const int winY = 30;
 const int DEF_TIMEOUT = 250;
+const char ship = '>';
+const char blank = '-';
 
 struct Coords
 {
@@ -34,9 +36,10 @@ protected:
 	int yMove;
 	int currentState;
 	int gTimeout;
-	char input;
+	int input;
 	WINDOW * win;
 	Coords user_coords;
+	Coords prev_user_coords;
 
 
 	void clearArray(int** array);
