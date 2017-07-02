@@ -22,10 +22,13 @@ void Oscillator::initArrays()
 	{
 		for (int x = 0; x < WINX; x++)
 		{
-			if (x == WINX-1)
-				currentCell[i][x] = 1;
-			// else if (x == user_coords.x && i == user_coords.y)
-			// 	currentCell[i][x] = 2;
+			// at window edge, make some obstacles
+			if (x == WINX-1) {
+				if( ((1 + rand()) % RAND_MULTIPLIER) == 0)
+					currentCell[i][x] = 1;
+				else
+					currentCell[i][x] = 0;
+			}
 			else
 				currentCell[i][x] = 0;
 
@@ -83,7 +86,10 @@ void Oscillator::moveScreenLeft()
 			}
 			// otherwise make some obstacles
 			else {
-				currentCell[y][x] = 0;
+				if( ((1 + rand()) % RAND_MULTIPLIER) == 0)
+					currentCell[y][x] = 1;
+				else
+					currentCell[y][x] = 0;
 			}
 
 			switch(currentCell[y][x]) {

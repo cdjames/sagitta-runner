@@ -1,9 +1,11 @@
 #include "Drawer.hpp"
 #include <iostream>
 #include <curses.h>
+#include <cstdlib>
 
 Drawer::Drawer()
 {
+	srand(std::time(0)); // seed random generator
 	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = 3;
 	currentCell = new int* [WINY];
@@ -24,6 +26,7 @@ Drawer::Drawer()
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 {
+	srand(std::time(0)); // seed random generator
 	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = size;
 	currentCell = new int* [WINY];
@@ -181,26 +184,26 @@ void Drawer::startMovement() {
 		switch (input){
 			case KEY_UP:
 				// mvprintw(0, 24, "pressed up   ");
-				refresh();
+				// refresh();
 				if(user_coords.y > 0)
 					user_coords.y--;
 				break;
 			case KEY_DOWN:
 				// mvprintw(0, 24, "pressed down ");
-				refresh();
-				if(user_coords.y < WINY)
+				// refresh();
+				if(user_coords.y < WINY-1)
 					user_coords.y++;
 				break;
 			case KEY_LEFT:
 				// mvprintw(0, 24, "pressed left ");
-				refresh();
+				// refresh();
 				if(user_coords.x > 0)
 					user_coords.x--;
 				break;
 			case KEY_RIGHT:
 				// mvprintw(0, 24, "pressed right");
-				refresh();
-				if(user_coords.x < WINX)
+				// refresh();
+				if(user_coords.x < WINX-1)
 					user_coords.x++;
 				break;
 			default: 
@@ -215,6 +218,7 @@ void Drawer::startMovement() {
 			mvwaddch(win, user_coords.y, user_coords.x, EXPLOSION);
 			mvprintw(0, 24, "explosion ");
 			refresh();
+			wrefresh(win);
 			doGameOver = TRUE;
 			break; // get out of loop, game is over
 		}

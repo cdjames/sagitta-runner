@@ -13,6 +13,7 @@ const int WINX = 80; 			// size of window, X
 const int WINY = 30;			// size of window, Y
 const int DEF_TIMEOUT = 50;		// default getch timeout; controls ship framerate
 const int DEF_MULTIPLIER = 3;	// background framerate is this * timeout
+const int RAND_MULTIPLIER = 20;	// background framerate is this * timeout
 const char SHIP = '>';
 const char EXPLOSION = 'x';
 const char BLANK = ' ';
