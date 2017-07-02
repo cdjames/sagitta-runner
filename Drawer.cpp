@@ -6,16 +6,16 @@ Drawer::Drawer()
 {
 	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = 3;
-	currentCell = new int* [winY];
-	newCell = new int *[winY];
-	for( int i = 0 ; i < winX ; i++ ){
-		currentCell[i] = new int[winX];
-		newCell[i] = new int[winX];
+	currentCell = new int* [WINY];
+	newCell = new int *[WINY];
+	for( int i = 0 ; i < WINX ; i++ ){
+		currentCell[i] = new int[WINX];
+		newCell[i] = new int[WINX];
 	}
 	startX = startY = xMove = yMove = 0;
 	currentState = 1;
-	user_coords.x = winX/10;
-	user_coords.y = winY/2;
+	user_coords.x = WINX/10;
+	user_coords.y = WINY/2;
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
 	fr_counter = 0;
@@ -25,18 +25,18 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 {
 	gTimeout = DEF_TIMEOUT;
 	rowSize = colSize = SIZE = size;
-	currentCell = new int* [winY];
-	newCell = new int *[winY];
-	for( int i = 0 ; i < winY ; i++ ){
-		currentCell[i] = new int[winX];
-		newCell[i] = new int[winX];
+	currentCell = new int* [WINY];
+	newCell = new int *[WINY];
+	for( int i = 0 ; i < WINY ; i++ ){
+		currentCell[i] = new int[WINX];
+		newCell[i] = new int[WINX];
 	}
 	startX = x;
 	startY = y;
 	xMove = yMove = 0;
 	currentState = 1;
-	user_coords.x = winX/10;
-	user_coords.y = winY/2;
+	user_coords.x = WINX/10;
+	user_coords.y = WINY/2;
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
 	fr_counter = 0;
@@ -44,7 +44,7 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 
 Drawer::~Drawer()
 {
-	for( int i = 0 ; i < winY ; i++ ){
+	for( int i = 0 ; i < WINY ; i++ ){
 		delete [] currentCell[i];
 		delete [] newCell[i];
 		currentCell[i] = 0;
@@ -138,7 +138,7 @@ void Drawer::initWindow(int yIn, int xIn)
 	initscr();				// Start curses mode
 	cbreak();				/* Line buffering disabled, Pass on everything to me */
 	keypad(stdscr, TRUE);	/* I need that nifty F1 */
-	win = newwin(winY, winX, yIn, xIn); // make a new window
+	win = newwin(WINY, WINX, yIn, xIn); // make a new window
 	keypad(win, TRUE);
 	timeout(gTimeout); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
@@ -147,11 +147,11 @@ void Drawer::initWindow(int yIn, int xIn)
 	refresh();					// put the printw on the screen
 
 	/* create a ## x ## "window" */
-	// for (int y = 0; y < winY; y++)
+	// for (int y = 0; y < WINY; y++)
 	// {
-	// 	// for (int x = 0; x < winX; x++)
+	// 	// for (int x = 0; x < WINX; x++)
 	// 	// {
-	// 		mvwaddch(win, y, winX-1, '-');	// move and add a character to these coords on win
+	// 		mvwaddch(win, y, WINX-1, '-');	// move and add a character to these coords on win
 	// 	// }
 	// }
 	wrefresh(win);	// draw the window
@@ -186,7 +186,7 @@ void Drawer::startMovement() {
 			case KEY_DOWN:
 				mvprintw(0, 24, "pressed down ");
 				refresh();
-				if(user_coords.y < winY)
+				if(user_coords.y < WINY)
 					user_coords.y++;
 				break;
 			case KEY_LEFT:
@@ -198,18 +198,18 @@ void Drawer::startMovement() {
 			case KEY_RIGHT:
 				mvprintw(0, 24, "pressed right");
 				refresh();
-				if(user_coords.x < winX)
+				if(user_coords.x < WINX)
 					user_coords.x++;
 				break;
 			default: // 'o' or anything else
 				break;
 		}
-		// move the ship
 		
-		// wrefresh(win);
+		
 		// erase the old ship
-		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, blank);
-		mvwaddch(win, user_coords.y, user_coords.x, ship);
+		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, BLANK);
+		// move the ship
+		mvwaddch(win, user_coords.y, user_coords.x, SHIP);
 		wrefresh(win);
 
 	} while ((input = getch()) != 'q');

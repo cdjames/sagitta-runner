@@ -18,11 +18,11 @@ Oscillator::~Oscillator() {}
 *********************************************************************/
 void Oscillator::initArrays() 
 {
-	for (int i = 0; i < winY; i++)
+	for (int i = 0; i < WINY; i++)
 	{
-		for (int x = 0; x < winX; x++)
+		for (int x = 0; x < WINX; x++)
 		{
-			if (x == winX-2)
+			if (x == WINX-2)
 				currentCell[i][x] = 1;
 			else if (x == user_coords.x && i == user_coords.y)
 				currentCell[i][x] = 2;
@@ -41,18 +41,18 @@ void Oscillator::initArrays()
 void Oscillator::drawCells() 
 {
 	char ch;
-	for (int i = 0; i < winY; i++)
+	for (int i = 0; i < WINY; i++)
 	{
-		for (int x = 0; x < winX; x++)
+		for (int x = 0; x < WINX; x++)
 		{
 			if(currentCell[i][x] == 0) {
-				ch = blank;
+				ch = BLANK;
 			}
 			else if(currentCell[i][x] == 2) {
-				ch = ship;
+				ch = SHIP;
 			}
 			else {
-				ch = obstacle;
+				ch = OBSTACLE;
 			}
 
 			mvwaddch(win, i+startY, x+startX, ch); // put character on window		
@@ -73,14 +73,14 @@ void Oscillator::drawCells()
 void Oscillator::moveScreenLeft() 
 {
 	char ch;
-	for (int y = 0; y < winY; y++)
+	for (int y = 0; y < WINY; y++)
 	{
-		for (int x = 0; x < winX; x++)
+		for (int x = 0; x < WINX; x++)
 		{
 			if (!(x == user_coords.x && y == user_coords.y)
 				&& !(x+1 == user_coords.x && y == user_coords.y)) {
 				// copy the cell to the right of the current one if it's not the last column
-				if(x != winX-1)
+				if(x != WINX-1)
 					currentCell[y][x] = currentCell[y][x+1];
 				// otherwise just draw a column of - signs in the last column
 				else
@@ -88,17 +88,17 @@ void Oscillator::moveScreenLeft()
 
 				switch(currentCell[y][x]) {
 					case 0:
-					ch = blank;
+					ch = BLANK;
 					break;
 					case 1:
-					ch = obstacle;
+					ch = OBSTACLE;
 					break;
 				}
 			} 
 			else if (x+1 == user_coords.x && y == user_coords.y)
 				currentCell[y][x] = 0;
 			else
-					ch = ship;
+					ch = SHIP;
 			mvwaddch(win, y, x, ch); // put character on window		
 		}
 	}
