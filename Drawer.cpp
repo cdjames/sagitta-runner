@@ -14,6 +14,9 @@ Drawer::Drawer()
 	}
 	startX = startY = xMove = yMove = 0;
 	currentState = 1;
+	user_coords.x = winX/10;
+	user_coords.y = winY/2;
+	input = ' ';
 }
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
@@ -30,6 +33,9 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 	startY = y;
 	xMove = yMove = 0;
 	currentState = 1;
+	user_coords.x = winX/10;
+	user_coords.y = winY/2;
+	input = ' ';
 }
 
 Drawer::~Drawer()
@@ -125,8 +131,11 @@ void Drawer::countNeighbors()
 
 void Drawer::initWindow(int yIn, int xIn)
 {
-	initscr();					// Start curses mode
+	initscr();				// Start curses mode
+	cbreak();				/* Line buffering disabled, Pass on everything to me */
+	keypad(stdscr, TRUE);	/* I need that nifty F1 */
 	win = newwin(winY, winX, yIn, xIn); // make a new window
+	keypad(win, TRUE);
 	timeout(gTimeout); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
@@ -145,18 +154,28 @@ void Drawer::initWindow(int yIn, int xIn)
 }
 
 void Drawer::startMovement() {
+	drawCells(); // pure virtual; needs to be implemented in child class
+	int ch = ' ';
 	do
 	{
 		moveScreenLeft(); // pure virtual; needs to be implemented in child class
-		// switch (prefs){
-		// 	case 'g':
-		// 		myGlider->drawCells();
-		// 		break;
-		// 	case 'c':
-		// 		myGun->drawCells();	
-		// 		break;
-		// 	default: // 'o' or anything else
-		// 		myOsc->drawCells();
-		// }
-	} while ((input = getch()) != 'q');
+		// drawCells(); // pure virtual; needs to be implemented in child class
+
+		switch (ch){
+			case KEY_UP:
+				mvprintw(0, 24, "pressed up  ");
+				refresh();
+				break;
+			case KEY_DOWN:
+				mvprintw(0, 24, "pressed down");
+				refresh();
+				break;
+			case 'g':
+				mvprintw(0, 24, "pressed g   ");
+				refresh();
+				break;
+			default: // 'o' or anything else
+				break;
+		}
+	} while ((ch = getch()) != 'q');
 }

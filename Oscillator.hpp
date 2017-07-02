@@ -20,8 +20,8 @@ public:
 	Oscillator();
 	Oscillator(int x, int y, int size);
 	~Oscillator();
-	bool drawCells();
-	bool moveScreenLeft();
+	void drawCells();
+	void moveScreenLeft();
 };
 
 #endif

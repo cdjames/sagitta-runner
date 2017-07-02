@@ -22,8 +22,10 @@ void Oscillator::initArrays()
 	{
 		for (int x = 0; x < winX; x++)
 		{
-			if (x == winX-1)
+			if (x == winX-2)
 				currentCell[i][x] = 1;
+			else if (x == user_coords.x && i == user_coords.y)
+				currentCell[i][x] = 2;
 			else
 				currentCell[i][x] = 0;
 
@@ -36,50 +38,67 @@ void Oscillator::initArrays()
 ** Description: 
 ** Iterate through array and put characters on screen
 *********************************************************************/
-bool Oscillator::drawCells() 
+void Oscillator::drawCells() 
 {
 	char ch;
-	for (int i = 0; i < SIZE; i++)
+	for (int i = 0; i < winY; i++)
 	{
-		for (int x = 0; x < SIZE; x++)
+		for (int x = 0; x < winX; x++)
 		{
-			if(currentCell[i][x] == 0)
+			if(currentCell[i][x] == 0) {
 				ch = '-';
-			else
+			}
+			else if(currentCell[i][x] == 2) {
+				ch = '>';
+			}
+			else {
 				ch = '+';
+			}
+
 			mvwaddch(win, i+startY, x+startX, ch); // put character on window		
 		}
 	}
 
 	wrefresh(win); // update the window
 
-	Drawer::countNeighbors(); // figure out next generation
+	// Drawer::countNeighbors(); // figure out next generation
 
-	updateCycle(); // copy new cells into 1st generation; clear new array
+	// updateCycle(); // copy new cells into 1st generation; clear new array
 }
 
 /*********************************************************************
 ** Description: 
 ** Move whatever is on the right to the left
 *********************************************************************/
-bool Oscillator::moveScreenLeft() 
+void Oscillator::moveScreenLeft() 
 {
 	char ch;
 	for (int y = 0; y < winY; y++)
 	{
 		for (int x = 0; x < winX; x++)
 		{
-			if(x != winX-1) {
-				if (currentCell[y][x+1] == 0){
-					ch = '-';
+			if (!(x == user_coords.x && y == user_coords.y)
+				&& !(x+1 == user_coords.x && y == user_coords.y)) {
+				// copy the cell to the right of the current one if it's not the last column
+				if(x != winX-1)
 					currentCell[y][x] = currentCell[y][x+1];
-					currentCell[y][x+1] = 1;
-				} else {
+				// otherwise just draw a column of - signs in the last column
+				else
+					currentCell[y][x] = 0;
+
+				switch(currentCell[y][x]) {
+					case 0:
+					ch = '-';
+					break;
+					case 1:
 					ch = '+';
+					break;
 				}
-			}
+			} 
+			else if (x+1 == user_coords.x && y == user_coords.y)
+				currentCell[y][x] = 0;
 			else
-				ch = '+';
+					ch = '>';
 			mvwaddch(win, y, x, ch); // put character on window		
 		}
 	}

@@ -13,6 +13,13 @@ const int winX = 80;
 const int winY = 30;
 const int DEF_TIMEOUT = 250;
 
+struct Coords
+{
+	int x, y;
+};
+
+typedef struct Coords Coords;
+
 class Drawer
 {
 protected:
@@ -29,6 +36,8 @@ protected:
 	int gTimeout;
 	char input;
 	WINDOW * win;
+	Coords user_coords;
+
 
 	void clearArray(int** array);
 	void countNeighbors();
@@ -39,7 +48,8 @@ public:
 	~Drawer();
 	void initWindow(int y, int x);
 	void startMovement();
-	virtual bool moveScreenLeft() = 0;
+	virtual void moveScreenLeft() = 0;
+	virtual void drawCells() = 0;
 };
 
 #endif
