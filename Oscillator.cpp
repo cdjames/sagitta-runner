@@ -77,29 +77,22 @@ void Oscillator::moveScreenLeft()
 	{
 		for (int x = 0; x < WINX; x++)
 		{
-			if (!(x == user_coords.x && y == user_coords.y)
-				// && !(x+1 == user_coords.x && y == user_coords.y)
-				) {
-				// copy the cell to the right of the current one if it's not the last column
-				if(x != WINX-1)
-					currentCell[y][x] = currentCell[y][x+1];
-				// otherwise just draw a column of - signs in the last column
-				else
-					currentCell[y][x] = 0;
-
-				switch(currentCell[y][x]) {
-					case 0:
-					ch = BLANK;
-					break;
-					case 1:
-					ch = OBSTACLE;
-					break;
-				}
-			} 
-			else if (x+1 == user_coords.x && y == user_coords.y)
+			// if at window edge, make some obstacles
+			if(x != WINX-1) {
+				currentCell[y][x] = currentCell[y][x+1];
+			}
+			// otherwise just draw a column of - signs in the last column
+			else
 				currentCell[y][x] = 0;
-			// else
-			// 		ch = SHIP;
+
+			switch(currentCell[y][x]) {
+				case 0:
+				ch = BLANK;
+				break;
+				case 1:
+				ch = OBSTACLE;
+				break;
+			}
 			mvwaddch(win, y, x, ch); // put character on window		
 		}
 	}

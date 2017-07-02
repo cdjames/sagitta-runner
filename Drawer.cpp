@@ -19,6 +19,7 @@ Drawer::Drawer()
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
 	fr_counter = 0;
+	doGameOver = FALSE;
 }
 
 Drawer::Drawer(int x, int y, int size) // need to change elsewhere
@@ -40,6 +41,7 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
 	fr_counter = 0;
+	doGameOver = FALSE;
 }
 
 Drawer::~Drawer()
@@ -159,6 +161,7 @@ void Drawer::initWindow(int yIn, int xIn)
 
 void Drawer::startMovement() {
 	drawCells(); // pure virtual; needs to be implemented in child class
+	mvwaddch(win, user_coords.y, user_coords.x, SHIP); // draw the ship
 	do
 	{
 		// save the previous user coordinates
@@ -212,6 +215,8 @@ void Drawer::startMovement() {
 			mvwaddch(win, user_coords.y, user_coords.x, EXPLOSION);
 			mvprintw(0, 24, "explosion ");
 			refresh();
+			doGameOver = TRUE;
+			break; // get out of loop, game is over
 		}
 		else {
 			mvwaddch(win, user_coords.y, user_coords.x, SHIP);
@@ -221,4 +226,11 @@ void Drawer::startMovement() {
 		wrefresh(win);
 
 	} while ((input = getch()) != 'q');
+
+	if(doGameOver){
+		/* game over loop */
+		do {
+			mvprintw(0, 24, "game over      ");
+		} while ((input = getch()) != 'q');
+	}
 }

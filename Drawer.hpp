@@ -45,6 +45,7 @@ protected:
 	Coords prev_user_coords;
 	int fr_multiplier;
 	int fr_counter;
+	bool doGameOver;
 
 
 	void clearArray(int** array);
