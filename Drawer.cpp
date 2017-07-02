@@ -159,9 +159,9 @@ void Drawer::initWindow(int yIn, int xIn)
 
 void Drawer::startMovement() {
 	drawCells(); // pure virtual; needs to be implemented in child class
-	moveScreenLeft();
 	do
 	{
+		// save the previous user coordinates
 		prev_user_coords = user_coords;
 		/* determine background framerate (gTimeout * fr_multiplier) and update background
 			as necessary 
@@ -172,36 +172,35 @@ void Drawer::startMovement() {
 		} else {
 			fr_counter++;
 		}
-		// drawCells(); // pure virtual; needs to be implemented in child class
 
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
 		switch (input){
 			case KEY_UP:
-				mvprintw(0, 24, "pressed up   ");
+				// mvprintw(0, 24, "pressed up   ");
 				refresh();
 				if(user_coords.y > 0)
 					user_coords.y--;
 				break;
 			case KEY_DOWN:
-				mvprintw(0, 24, "pressed down ");
+				// mvprintw(0, 24, "pressed down ");
 				refresh();
 				if(user_coords.y < WINY)
 					user_coords.y++;
 				break;
 			case KEY_LEFT:
-				mvprintw(0, 24, "pressed left ");
+				// mvprintw(0, 24, "pressed left ");
 				refresh();
 				if(user_coords.x > 0)
 					user_coords.x--;
 				break;
 			case KEY_RIGHT:
-				mvprintw(0, 24, "pressed right");
+				// mvprintw(0, 24, "pressed right");
 				refresh();
 				if(user_coords.x < WINX)
 					user_coords.x++;
 				break;
-			default: // 'o' or anything else
+			default: 
 				break;
 		}
 		
@@ -209,7 +208,16 @@ void Drawer::startMovement() {
 		// erase the old ship
 		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, BLANK);
 		// move the ship
-		mvwaddch(win, user_coords.y, user_coords.x, SHIP);
+		if(currentCell[user_coords.y][user_coords.x] != 0 || currentCell[prev_user_coords.y][prev_user_coords.x] != 0) {
+			mvwaddch(win, user_coords.y, user_coords.x, EXPLOSION);
+			mvprintw(0, 24, "explosion ");
+			refresh();
+		}
+		else {
+			mvwaddch(win, user_coords.y, user_coords.x, SHIP);
+			mvprintw(0, 24, "          ");
+			refresh();
+		}
 		wrefresh(win);
 
 	} while ((input = getch()) != 'q');

@@ -22,10 +22,10 @@ void Oscillator::initArrays()
 	{
 		for (int x = 0; x < WINX; x++)
 		{
-			if (x == WINX-2)
+			if (x == WINX-1)
 				currentCell[i][x] = 1;
-			else if (x == user_coords.x && i == user_coords.y)
-				currentCell[i][x] = 2;
+			// else if (x == user_coords.x && i == user_coords.y)
+			// 	currentCell[i][x] = 2;
 			else
 				currentCell[i][x] = 0;
 
@@ -48,9 +48,9 @@ void Oscillator::drawCells()
 			if(currentCell[i][x] == 0) {
 				ch = BLANK;
 			}
-			else if(currentCell[i][x] == 2) {
-				ch = SHIP;
-			}
+			// else if(currentCell[i][x] == 2) {
+			// 	ch = SHIP;
+			// }
 			else {
 				ch = OBSTACLE;
 			}
@@ -78,7 +78,8 @@ void Oscillator::moveScreenLeft()
 		for (int x = 0; x < WINX; x++)
 		{
 			if (!(x == user_coords.x && y == user_coords.y)
-				&& !(x+1 == user_coords.x && y == user_coords.y)) {
+				// && !(x+1 == user_coords.x && y == user_coords.y)
+				) {
 				// copy the cell to the right of the current one if it's not the last column
 				if(x != WINX-1)
 					currentCell[y][x] = currentCell[y][x+1];
@@ -97,8 +98,8 @@ void Oscillator::moveScreenLeft()
 			} 
 			else if (x+1 == user_coords.x && y == user_coords.y)
 				currentCell[y][x] = 0;
-			else
-					ch = SHIP;
+			// else
+			// 		ch = SHIP;
 			mvwaddch(win, y, x, ch); // put character on window		
 		}
 	}
