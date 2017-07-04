@@ -15,7 +15,7 @@ const int DEF_TIMEOUT = 50;		// default getch timeout; controls ship framerate
 const int DEF_MULTIPLIER = 3;	// background framerate is this * timeout
 const int RAND_MULTIPLIER = 20;	// background framerate is this * timeout
 const char SHIP = '>';
-const char EXPLOSION = 'x';
+const char EXPLOSION = '*';
 const char BLANK = ' ';
 const char OBSTACLE = '+';
 
@@ -36,6 +36,7 @@ protected:
 	int colSize;
 	int** currentCell;
 	int** newCell;
+	// int** explosion;
 	int xMove;
 	int yMove;
 	int currentState;
@@ -51,6 +52,9 @@ protected:
 
 	void clearArray(int** array);
 	void countNeighbors();
+	void doExplosion();
+	virtual void moveScreenLeft() = 0;
+	virtual void drawCells() = 0;
 	
 public:
 	Drawer();
@@ -58,8 +62,7 @@ public:
 	~Drawer();
 	void initWindow(int y, int x);
 	void startMovement();
-	virtual void moveScreenLeft() = 0;
-	virtual void drawCells() = 0;
+	
 };
 
 #endif

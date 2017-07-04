@@ -33,6 +33,13 @@ void Oscillator::initArrays()
 				currentCell[i][x] = 0;
 
 			newCell[i][x] = 0;
+
+			// if(i < 3 && x < 3) {
+			// 	if(i == 1 && x == 1)
+			// 		explosion[i][x] = 1;
+			// 	else
+			// 		explosion[i][x] = 0;
+			// }
 		}
 	}
 }

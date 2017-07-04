@@ -10,7 +10,7 @@ CXX += Oscillator.cpp
 # CXX += Gun.cpp
 CXX += main.cpp
 
-PROG1 = main
+PROG1 = runner
 
 default:
 	g++ ${OPS} ${CXX} -o ${PROG1}
