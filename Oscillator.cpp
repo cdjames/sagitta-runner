@@ -2,7 +2,7 @@
 // #include "Cell.hpp"
 #include <iostream>
 #include <curses.h>
-#include <ctime>
+#include <cstdlib>
 
 Oscillator::Oscillator(): Drawer() {}
 
