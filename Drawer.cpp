@@ -24,7 +24,7 @@ Drawer::Drawer()
 	user_coords.y = WINY/2;
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
-	fr_counter = 0;
+	fr_counter = fr_counter_2 = 0;
 	doGameOver = FALSE;
 }
 
@@ -47,7 +47,7 @@ Drawer::Drawer(int x, int y, int size) // need to change elsewhere
 	user_coords.y = WINY/2;
 	input = ' ';
 	fr_multiplier = DEF_MULTIPLIER;
-	fr_counter = 0;
+	fr_counter = fr_counter_2 = 0;
 	doGameOver = FALSE;
 }
 
@@ -187,30 +187,31 @@ void Drawer::startMovement() {
 			then draw a blank where it used to be, finally refreshing the window */
 		switch (input){
 			case KEY_UP:
-				// mvprintw(0, 24, "pressed up   ");
+				mvprintw(0, 24, "pressed up     ");
 				// refresh();
 				if(user_coords.y > 0)
 					user_coords.y--;
 				break;
 			case KEY_DOWN:
-				// mvprintw(0, 24, "pressed down ");
+				mvprintw(0, 24, "pressed down   ");
 				// refresh();
 				if(user_coords.y < WINY-1)
 					user_coords.y++;
 				break;
 			case KEY_LEFT:
-				// mvprintw(0, 24, "pressed left ");
+				mvprintw(0, 24, "pressed left   ");
 				// refresh();
 				if(user_coords.x > 0)
 					user_coords.x--;
 				break;
 			case KEY_RIGHT:
-				// mvprintw(0, 24, "pressed right");
+				mvprintw(0, 24, "pressed right  ");
 				// refresh();
 				if(user_coords.x < WINX-1)
 					user_coords.x++;
 				break;
 			default: 
+				mvprintw(0, 24, "pressed nothing");
 				break;
 		}
 		
@@ -219,51 +220,44 @@ void Drawer::startMovement() {
 		mvwaddch(win, prev_user_coords.y, prev_user_coords.x, BLANK);
 		// move the ship
 		if(currentCell[user_coords.y][user_coords.x] != 0 || currentCell[prev_user_coords.y][prev_user_coords.x] != 0) {
-			// doExplosion();
-			// mvwaddch(win, user_coords.y, user_coords.x, EXPLOSION);
-			// mvprintw(0, 24, "explosion ");
-			// refresh();
-			// wrefresh(win);
-			// doGameOver = TRUE;
+			wrefresh(win);
+			doGameOver = TRUE;
 			break; // get out of loop, game is over
 		}
 		else {
 			mvwaddch(win, user_coords.y, user_coords.x, SHIP);
-			mvprintw(0, 24, "          ");
-			refresh();
 		}
 		wrefresh(win);
 
 	} while ((input = getch()) != 'q');
 
-	doExplosion();
+	if(doGameOver)
+		doExplosion();
 }
 
 void Drawer::doExplosion() {
-	// explosion is a 3x3 array filled with blanks (0) and a ship (1) at the center
 	int adder[3] = {-1, 0, 1};
-	mvwaddch(win, user_coords.y, user_coords.x, EXPLOSION);
-	mvprintw(0, 24, "game over ");
+	mvprintw(0, 24, "game over      ");
 	refresh();
-	wrefresh(win);
-	doGameOver = TRUE;
-
+	fr_multiplier -= 2;
+	
 	while ((input = getch()) != 'q'){
-		for (int y = 0; y < 3; y++)
-		{
-			for (int x = 0; x < 3; x++)
+		if(fr_counter_2 == fr_multiplier) {
+			for (int y = 0; y < 3; y++)
 			{
-				if( ((1 + rand()) % 5) == 0)
-					mvwaddch(win, user_coords.y+adder[y], user_coords.x+adder[x], EXPLOSION);
-				else
-					mvwaddch(win, user_coords.y+adder[y], user_coords.x+adder[x], BLANK);
+				for (int x = 0; x < 3; x++)
+				{
+					if( ((1 + rand()) % 5) == 0)
+						mvwaddch(win, user_coords.y+adder[y], user_coords.x+adder[x], EXPLOSION);
+					else
+						mvwaddch(win, user_coords.y+adder[y], user_coords.x+adder[x], BLANK);
+				}
 			}
-		}
-		if(fr_counter == fr_multiplier-2) {
-			wrefresh(win); // pure virtual; needs to be implemented in child class
-			fr_counter = 0;
+			wrefresh(win);
+			fr_counter_2 = 0;
 		} else {
-			fr_counter++;
+			fr_counter_2++;
 		}
+
 	}
 }
