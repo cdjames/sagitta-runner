@@ -2,6 +2,7 @@
 #include <iostream>
 #include <curses.h>
 #include <cstdlib>
+#include <ctime>
 
 Drawer::Drawer()
 {
