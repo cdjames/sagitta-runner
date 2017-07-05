@@ -19,12 +19,12 @@ Oscillator::~Oscillator() {}
 *********************************************************************/
 void Oscillator::initArrays() 
 {
-	for (int i = 0; i < WINY; i++)
+	for (int i = 0; i < winY; i++)
 	{
-		for (int x = 0; x < WINX; x++)
+		for (int x = 0; x < winX; x++)
 		{
 			// at window edge, make some obstacles
-			if (x == WINX-1) {
+			if (x == winX-1) {
 				if( ((1 + rand()) % RAND_MULTIPLIER) == 0)
 					currentCell[i][x] = 1;
 				else
@@ -52,9 +52,9 @@ void Oscillator::initArrays()
 void Oscillator::drawCells() 
 {
 	char ch;
-	for (int i = 0; i < WINY; i++)
+	for (int i = 0; i < winY; i++)
 	{
-		for (int x = 0; x < WINX; x++)
+		for (int x = 0; x < winX; x++)
 		{
 			if(currentCell[i][x] == 0) {
 				ch = BLANK;
@@ -84,12 +84,12 @@ void Oscillator::drawCells()
 void Oscillator::moveScreenLeft() 
 {
 	char ch;
-	for (int y = 0; y < WINY; y++)
+	for (int y = 0; y < winY; y++)
 	{
-		for (int x = 0; x < WINX; x++)
+		for (int x = 0; x < winX; x++)
 		{
 			// if not at window edge, copy from right to left
-			if(x != WINX-1) {
+			if(x != winX-1) {
 				currentCell[y][x] = currentCell[y][x+1];
 			}
 			// otherwise make some obstacles

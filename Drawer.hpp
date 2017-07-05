@@ -30,6 +30,8 @@ class Drawer
 {
 protected:
 	int SIZE;
+	int winX;
+	int winY;
 	int startX;
 	int startY;
 	int rowSize;
@@ -54,6 +56,7 @@ protected:
 	void clearArray(int** array);
 	void countNeighbors();
 	void doExplosion();
+	void setScreenSize();
 	virtual void moveScreenLeft() = 0;
 	virtual void drawCells() = 0;
 	
