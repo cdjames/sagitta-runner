@@ -1,6 +1,5 @@
-# Game of Life
-
-A C++ implementation of Conway's Game of Life coded as an assignment for Oregon State University's post-bacc in computer science program. 
+# Infinite Runner
+An infinite, networked runner in C++. 
 
 ## Build
 
@@ -8,4 +7,4 @@ On unix-like systems, call `make` from a terminal. You will need the ncurses lib
 
 ## Usage
 
-Call `./main` from a terminal.
+Call `./runner` from a terminal.
