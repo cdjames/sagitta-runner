@@ -4,11 +4,7 @@
 
 OPS = -lncurses
 
-CXX = Drawer.cpp
-CXX += Oscillator.cpp
-# CXX += Glider.cpp
-# CXX += Gun.cpp
-CXX += main.cpp
+CXX = main.cpp
 
 PROG1 = runner
 
