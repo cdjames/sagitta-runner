@@ -8,7 +8,7 @@
 
 /* protected */
 void GameManager::initWindow() {
-	scrollok(win, FALSE);
+	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
 	// char c = 32;
 	// keypad(win, TRUE);

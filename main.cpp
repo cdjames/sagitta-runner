@@ -27,7 +27,7 @@ void initWindow(WINDOW * win) {
 	initscr();				// Start curses mode
 	cbreak();				/* Line buffering disabled, Pass on everything to me */
 	keypad(stdscr, TRUE);	/* I need that nifty F1 */
-	scrollok(stdscr, FALSE);
+	// scrollok(stdscr, FALSE);
 	timeout(DEF_TIMEOUT); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
