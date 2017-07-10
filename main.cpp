@@ -15,6 +15,7 @@ int main()
 	WINDOW * win;
 	initWindow(win);
 	GameManager GM = GameManager(win);
+	GM.run();
 	while (getch() != 'q'){
 		continue;
 	}

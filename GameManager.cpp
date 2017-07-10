@@ -10,20 +10,20 @@
 void GameManager::initWindow() {
 	scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
-	char c = 32;
-	keypad(win, TRUE);
-	for (int y = 0; y < maxGBWinXY.y; y++)
-	{
-		for (int x = 0; x < maxGBWinXY.x; x++)
-		{
-			mvwaddch(win, y, x, c);
-			if(c < 126)
-				c++;
-			else
-				c = 32;
-		}
-	}
-	wrefresh(win);
+	// char c = 32;
+	// keypad(win, TRUE);
+	// for (int y = 0; y < maxGBWinXY.y; y++)
+	// {
+	// 	for (int x = 0; x < maxGBWinXY.x; x++)
+	// 	{
+			// mvwaddch(win, 5, 10, '>');
+	// 		// if(c < 126)
+	// 		// 	c++;
+	// 		// else
+	// 		// 	c = 32;
+	// 	}
+	// }
+	// wrefresh(win);
 }
 
 void GameManager::initGameboard() {
@@ -43,7 +43,10 @@ void GameManager::initGameboard() {
 	// }
 }
 
-void GameManager::placeShip() {}
+void GameManager::placeShip() {
+	mvwaddch(win, (maxWinXY.y / 2), 3, '>');
+}
+
 void GameManager::moveShip() {}
 void GameManager::createObstacles() {}
 void GameManager::moveObstacles() {}
@@ -51,11 +54,14 @@ void GameManager::doExplosions() {}
 void GameManager::fireBullet() {}
 void GameManager::moveBullets() {}
 void GameManager::gameOver() {}
+
 void GameManager::setScreenSize() {
 	struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
     maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
     maxWinXY.x = w.ws_col;
+    // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
+    // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
 }
 
 /* public */
@@ -64,7 +70,10 @@ GameManager::GameManager(WINDOW * win) {
 	setScreenSize();
 	initGameboard();
 	initWindow();
+	placeShip();
 }
 
 GameManager::~GameManager() {}
-void run() {}
+void GameManager::run() {
+	wrefresh(win);
+}

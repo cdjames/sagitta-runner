@@ -11,6 +11,7 @@
 #include <vector>
 #include "SagittaTypes.hpp"
 #include <sys/ioctl.h> // for winsize
+#include <iostream>
 
 using std::vector;
 
