@@ -73,10 +73,13 @@ GameManager::GameManager(WINDOW * win) {
 	initGameboard();
 	initWindow();
 	placeShip();
+	testO = Object(this->win, &gameboard, Coord {3+DEF_BUFFER, (maxWinXY.y / 2)+DEF_BUFFER}, maxWinXY);
 }
 
 GameManager::~GameManager() {}
 
 void GameManager::run() {
 	wrefresh(win);
+	testO.testgameboard();
+	std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }

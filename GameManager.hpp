@@ -10,6 +10,7 @@
 #include <curses.h>
 #include <vector>
 #include "SagittaTypes.hpp"
+#include "Object.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 
@@ -27,6 +28,8 @@ protected:
 			obstacleRefreshCounter,
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
+
+	Object testO;
 
 	void initWindow();
 	void initGameboard();
