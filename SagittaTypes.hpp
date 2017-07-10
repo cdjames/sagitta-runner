@@ -8,22 +8,23 @@
 #define SAGITTATYPES_HPP
 
 #define DEF_TIMEOUT 20
+#define DEF_BUFFER 10
 
 /* some enumerations of types that will be used throughout the game */
-enum ObjectType { SHIP = 0, BULLET, OBSTACLE };
+enum ObjectType { SHIP = 0, BULLET, OBSTACLE, NONE };
 enum CollisionType { FRIENDLY = OBSTACLE + 1, GAMEOVER, HIT };
 enum ThemeType { SPORTS = HIT + 1, FOOD, SPACE };
 
 /* simple coordinate structure */
 typedef struct Coord {
-	short x;
-	short y;
+	int x;
+	int y;
 } Coord;
 
 /* info about particle used in the main gameboard, and also in Particles themselves */
 typedef struct ParticleInfo {
-	ObjectType obj_type;
-	unsigned long objectID;
+	ObjectType type;
+	unsigned long id;
 } ParticleInfo;
 
 /* forms the building blocks of objects like ships, bullets, obstacles, and explosions */

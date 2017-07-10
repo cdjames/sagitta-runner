@@ -10,20 +10,25 @@
 #include <curses.h>
 #include <vector>
 #include "SagittaTypes.hpp"
+#include <sys/ioctl.h> // for winsize
+
+using std::vector;
 
 class GameManager
 {
 protected:
 	WINDOW * win;
-	std::vector<ObjectType> gameboard;
+	vector< vector<ParticleInfo> > gameboard;
 
-	Coord maxWinXY;
+	Coord maxWinXY,
+		  maxGBWinXY;
 	short 	baseRefresh,
 			obstacleRefreshCounter,
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
 
 	void initWindow();
+	void initGameboard();
 	void placeShip();
 	void moveShip();
 	void createObstacles();
@@ -32,6 +37,7 @@ protected:
 	void fireBullet();
 	void moveBullets();
 	void gameOver();
+	void setScreenSize();
 	
 public:
 	GameManager(WINDOW * win);

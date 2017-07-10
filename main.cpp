@@ -14,6 +14,7 @@ int main()
 {
 	WINDOW * win;
 	initWindow(win);
+	GameManager GM = GameManager(win);
 	while (getch() != 'q'){
 		continue;
 	}
@@ -25,8 +26,7 @@ void initWindow(WINDOW * win) {
 	initscr();				// Start curses mode
 	cbreak();				/* Line buffering disabled, Pass on everything to me */
 	keypad(stdscr, TRUE);	/* I need that nifty F1 */
-	win = newwin(10, 10, 0, 0); // make a new window
-	keypad(win, TRUE);
+	scrollok(stdscr, FALSE);
 	timeout(DEF_TIMEOUT); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible

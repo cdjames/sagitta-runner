@@ -5,6 +5,7 @@
 OPS = -lncurses
 
 CXX = main.cpp
+CXX += GameManager.cpp
 
 PROG1 = runner
 
