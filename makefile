@@ -3,6 +3,7 @@
 # if that doesn't work, 'make -f makefile' might be useful.
 
 OPS = -lncurses
+OPS += -std=c++11
 
 CXX = main.cpp
 CXX += GameManager.cpp

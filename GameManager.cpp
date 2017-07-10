@@ -44,7 +44,9 @@ void GameManager::initGameboard() {
 }
 
 void GameManager::placeShip() {
+	 // ParticleInfo check {SHIP, 1};
 	mvwaddch(win, (maxWinXY.y / 2), 3, '>');
+	gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER] = ParticleInfo {SHIP, 1};
 }
 
 void GameManager::moveShip() {}
@@ -74,6 +76,7 @@ GameManager::GameManager(WINDOW * win) {
 }
 
 GameManager::~GameManager() {}
+
 void GameManager::run() {
 	wrefresh(win);
 }
