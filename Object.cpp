@@ -61,10 +61,12 @@ void Object::draw() {
 	{
 		for (int w = 0; w < width; w++)
 		{
+			// printw("h%d w%d s=%c", particles[h][w].coords.x)
 			// change color
 			attron(COLOR_PAIR(particles[h][w].color));
 			// add character
-			mvwaddch(win, particles[h][w].coords.x, particles[h][w].coords.x, particles[h][w].symbol);
+			mvwaddch(win, particles[h][w].coords.y, particles[h][w].coords.x, particles[h][w].symbol);
+			// update gameboard
 		}
 	}
 	// restore color?
