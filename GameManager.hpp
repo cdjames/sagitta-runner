@@ -33,6 +33,7 @@ protected:
 
 	void initWindow();
 	void initGameboard();
+	void initColors();
 	void placeShip();
 	void moveShip();
 	void createObstacles();

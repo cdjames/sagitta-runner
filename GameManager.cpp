@@ -10,6 +10,7 @@
 void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
+	initColors();
 	// char c = 32;
 	// keypad(win, TRUE);
 	// for (int y = 0; y < maxGBWinXY.y; y++)
@@ -43,10 +44,22 @@ void GameManager::initGameboard() {
 	// }
 }
 
+void GameManager::initColors() {
+	start_color();
+    // printw("This terminal supports %d colors\n", COLORS);
+    for (int i = 0; i < COLORS; i++)
+    {
+        /* code */
+        init_pair(i, i, COLOR_BLACK);
+        // attron(COLOR_PAIR(i));
+        // printw("%d ", i);
+    }
+}
+
 void GameManager::placeShip() {
-	 // ParticleInfo check {SHIP, 1};
-	mvwaddch(win, (maxWinXY.y / 2), 3, '>');
-	gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER] = ParticleInfo {SHIP, 1};
+	// mvwaddch(win, (maxWinXY.y / 2), 3, '>');
+	// gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER] = ParticleInfo {SHIP, 1};
+	testO.draw();
 }
 
 void GameManager::moveShip() {}
@@ -72,14 +85,14 @@ GameManager::GameManager(WINDOW * win) {
 	setScreenSize();
 	initGameboard();
 	initWindow();
-	placeShip();
 	testO = Object(this->win, &gameboard, Coord {3+DEF_BUFFER, (maxWinXY.y / 2)+DEF_BUFFER}, maxWinXY);
+	placeShip();
 }
 
 GameManager::~GameManager() {}
 
 void GameManager::run() {
 	wrefresh(win);
-	testO.testgameboard();
-	std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
+	// testO.testgameboard();
+	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }

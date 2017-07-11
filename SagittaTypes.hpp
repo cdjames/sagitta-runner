@@ -9,10 +9,11 @@
 
 #define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
+#define BLANK ' '
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, OBSTACLE, NONE };
-enum CollisionType { FRIENDLY = OBSTACLE + 1, GAMEOVER, HIT };
+enum CollisionType { FRIENDLY = OBSTACLE + 1, GAMEOVER, HIT, NOHIT };
 enum ThemeType { SPORTS = HIT + 1, FOOD, SPACE };
 
 /* simple coordinate structure */
@@ -35,5 +36,7 @@ typedef struct Particle {
 	ParticleInfo info;
 	CollisionType collided;
 } Particle;
+
+
 
 #endif

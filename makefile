@@ -12,17 +12,16 @@ CXX += GameManager.cpp
 
 PROG1 = runner
 
-Object.o:
+default: runner
+
+Object.o: clean
 	g++ ${OPS} -c Object.cpp
 
-GameManager.o:
+GameManager.o: clean
 	g++ ${OPS} -c GameManager.cpp
 
 runner: clean GameManager.o Object.o
 	g++ ${OPS} main.cpp GameManager.o Object.o -o ${PROG1}
-
-default:
-	g++ ${OPS} ${CXX} -o ${PROG1}
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}

@@ -20,14 +20,32 @@ class Object
 protected:
 	WINDOW * win;
 	vector< vector<ParticleInfo> > * gameboard;
-	Coord start;
-	Coord max;
+	Coord start; // starting coordinates for the object
+	Coord max; // coordinates of the max drawing area of the window
+	Coord trajectory;
+	short width, height;
+	ParticleInfo type;
+	vector< vector<Particle> > particles;
+	vector< vector<Particle> > prevParticles;
+
+	Particle detectCollision(Particle p);
+
+	/*********************************************************************
+	** Description: 
+	** creates the particles that make up the object
+	*********************************************************************/
+	void initParticles();
 	
 public:
 	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max);
 	Object();
 	~Object();
 	void testgameboard();
+	void draw();
+	void erase();
+	Particle move();
+	// virtual void setType() = 0;
+	void setTrajectory(Coord tr);
 };
 
 #endif

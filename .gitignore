@@ -5,3 +5,4 @@ runner
 *.jpeg
 runnerdemo
 *.o
+runner.dSYM
