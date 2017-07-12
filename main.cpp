@@ -7,23 +7,23 @@
 #include <iostream>
 #include "GameManager.hpp"
 
-void initWindow(WINDOW * win);
+void initScreen();
 void exitCurses(WINDOW * win);
 
 int main()
 {
 	WINDOW * win;
-	initWindow(win);
+	initScreen();
 	GameManager GM = GameManager(win);
-	GM.run();
-	while (getch() != 'q'){
-		continue;
-	}
+	GM.run(); // runs until user presses q
+	// while (getch() != 'q'){
+	// 	continue;
+	// }
 	exitCurses(win);
 	return 0;
 }
 
-void initWindow(WINDOW * win) {
+void initScreen() {
 	initscr();				// Start curses mode
 	cbreak();				/* Line buffering disabled, Pass on everything to me */
 	keypad(stdscr, TRUE);	/* I need that nifty F1 */

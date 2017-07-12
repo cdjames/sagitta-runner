@@ -30,6 +30,7 @@ protected:
 			numObstaclesCreateOnPass;
 
 	Object testO;
+	int input;
 
 	void initWindow();
 	void initGameboard();
