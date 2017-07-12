@@ -26,50 +26,42 @@ Particle Object::detectCollision(Particle p) {}
 
 void Object::initParticles() {
 	/* do a ship for practice */
+	id = 1;
+	numParticles = 9;
 	height = 3;
 	width = 5;
-	type = {SHIP, 1};
-	Particle dummyP = { start, BLANK, 7, type, NOHIT }; // color 7 is white
-	particles = vector< vector<Particle> >(height, vector<Particle>(width, dummyP));
-	for (int h = 0; h < height; h++)
-	{
-		for (int w = 0; w < width; w++)
-		{
-			particles[h][w].coords.x = start.x + w;
-			particles[h][w].coords.y = start.y + h;
-		}
-	}
-	particles[0][1].symbol = '\\';
-	particles[0][1].color = 1; //red
-	particles[0][2].symbol = '\\';
-	particles[0][2].color = 1; //red
-	particles[1][0].symbol = '}';
-	particles[1][1].symbol = '=';
-	particles[1][2].symbol = 'x';
-	particles[1][2].color = 1;
-	particles[1][3].symbol = '=';
-	particles[1][4].symbol = '>';
-	particles[2][1].symbol = '/';
-	particles[2][1].color = 1; //red
-	particles[2][2].symbol = '/';
-	particles[2][2].color = 1; //red
+	info = {SHIP, id};
+	// Particle dummyP = { start, BLANK, 7, type, NOHIT }; // color 7 is white
+
+	particles.push_back( Particle { Coord{start.x+1, start.y+0}, '\\', 1, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+2, start.y+0}, '\\', 1, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+0, start.y+1}, '}', 7, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+1, start.y+1}, '=', 7, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+2, start.y+1}, 'x', 1, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+3, start.y+1}, '=', 7, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+4, start.y+1}, '>', 7, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+1, start.y+2}, '/', 1, info, NOHIT } );
+	particles.push_back( Particle { Coord{start.x+2, start.y+2}, '/', 1, info, NOHIT } );
+
 } // may be virtual in the end
 
 void Object::draw() {
-	// save color?
-	for (int h = 0; h < height; h++)
+	int x, y, c;
+	for (int i = 0; i < numParticles; i++)
 	{
-		for (int w = 0; w < width; w++)
-		{
-			// printw("h%d w%d s=%c", particles[h][w].coords.x)
-			// change color
-			attron(COLOR_PAIR(particles[h][w].color));
-			// add character
-			mvwaddch(win, particles[h][w].coords.y, particles[h][w].coords.x, particles[h][w].symbol);
-			// update gameboard
-		}
+		// save some info for convenience
+		x = particles[i].coords.x;
+		y = particles[i].coords.y;
+		c = particles[i].color;
+		// change color
+		wattron(win, COLOR_PAIR(c));
+		// add character
+		mvwaddch(win, y, x, particles[i].symbol);
+		// turn color off
+		wattroff(win, COLOR_PAIR(c));
+		// update gameboard
+		(*gameboard)[y+DEF_BUFFER][x] = info; // add DEF_BUFFER as actual window dimensions start here
 	}
-	// restore color?
 }
 void Object::erase() {}
 Particle Object::move() {}

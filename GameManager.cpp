@@ -38,10 +38,6 @@ void GameManager::initGameboard() {
 	
 	/* create a vector of vectors, v[maxY][maxX] */
 	gameboard = vector< vector<ParticleInfo> > (maxGBWinXY.y, vector<ParticleInfo>(maxGBWinXY.x, dummyParticle));
-	// for (int y = 0; y < maxY; y++)
-	// {
-	// 	gameboard.push_back( vector<ParticleInfo>(maxX, dummyParticle) );
-	// }
 }
 
 void GameManager::initColors() {
@@ -85,7 +81,7 @@ GameManager::GameManager(WINDOW * win) {
 	setScreenSize();
 	initGameboard();
 	initWindow();
-	testO = Object(this->win, &gameboard, Coord {3+DEF_BUFFER, (maxWinXY.y / 2)+DEF_BUFFER}, maxWinXY);
+	testO = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY);
 	placeShip();
 }
 

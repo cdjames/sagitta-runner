@@ -18,29 +18,45 @@ using std::vector;
 class Object
 {
 protected:
-	WINDOW * win;
-	vector< vector<ParticleInfo> > * gameboard;
+	WINDOW * win; // inherited from GameManager
+	vector< vector<ParticleInfo> > * gameboard; // inherited; max.x+DEF_BUFFER x max.y+(DEF_BUFFER*2)
 	Coord start; // starting coordinates for the object
 	Coord max; // coordinates of the max drawing area of the window
-	Coord trajectory;
-	short width, height;
-	ParticleInfo type;
-	vector< vector<Particle> > particles;
-	vector< vector<Particle> > prevParticles;
+	Coord trajectory; // amount in x and y to adjust in each direction
+	short width, height; // maybe unused
+	int numParticles; // how many particles actually make up the object
+	unsigned long id; // id of object
+	ParticleInfo info; // info about the object meant for the gameboard
+	vector<Particle> particles; // the actual particles that make up the object
+	vector<Particle> prevParticles; // place for storing particles
 
 	Particle detectCollision(Particle p);
 
 	/*********************************************************************
-	** Description: 
+	** Description: initParticles()
 	** creates the particles that make up the object
+	** may become virtual depending on implementation
 	*********************************************************************/
 	void initParticles();
 	
 public:
+	/*********************************************************************
+	** Description: Object constructor
+	** Inherit win and gameboard from creating class. Passed a start coord 
+	** for the object and max coord (dimensions of win)
+
+	** calls initParticles()
+	*********************************************************************/
 	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max);
-	Object();
-	~Object();
-	void testgameboard();
+	Object(); // unused
+	~Object(); // unused currently
+
+	void testgameboard(); // testing only
+
+	/*********************************************************************
+	** Description: draw()
+	** Place the object on the window and gameboard
+	*********************************************************************/
 	void draw();
 	void erase();
 	Particle move();
