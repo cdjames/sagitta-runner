@@ -12,6 +12,7 @@ Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord s
 	this->start = start;
 	this->max = max;
 	initParticles();
+	trajectory = {0, 0};
 }
 
 Object::Object() {}
@@ -30,6 +31,10 @@ void Object::initParticles() {
 	numParticles = 9;
 	height = 3;
 	width = 5;
+	topy = start.y;
+	bottomy = start.y + height;
+	leftx = start.x;
+	rightx = start.x + width;
 	info = {SHIP, id};
 	// Particle dummyP = { start, BLANK, 7, type, NOHIT }; // color 7 is white
 
@@ -46,24 +51,104 @@ void Object::initParticles() {
 } // may be virtual in the end
 
 void Object::draw() {
-	int x, y, c;
+	
 	for (int i = 0; i < numParticles; i++)
 	{
 		// save some info for convenience
-		x = particles[i].coords.x;
-		y = particles[i].coords.y;
-		c = particles[i].color;
-		// change color
-		wattron(win, COLOR_PAIR(c));
-		// add character
-		mvwaddch(win, y, x, particles[i].symbol);
-		// turn color off
-		wattroff(win, COLOR_PAIR(c));
-		// update gameboard
-		(*gameboard)[y+DEF_BUFFER][x] = info; // add DEF_BUFFER as actual window dimensions start here
+		// x = particles[i].coords.x;
+		// y = particles[i].coords.y;
+		// c = particles[i].color;
+		// // change color
+		// wattron(win, COLOR_PAIR(c));
+		// // add character
+		// mvwaddch(win, y, x, particles[i].symbol);
+		// // turn color off
+		// wattroff(win, COLOR_PAIR(c));
+		// // update gameboard
+		// (*gameboard)[y+DEF_BUFFER][x] = info; // add DEF_BUFFER as actual window dimensions start here
+		_drawParticle(particles[i], info);
 	}
 }
+
 void Object::erase() {}
-Particle Object::move() {}
+Particle Object::move(Coord tr) {
+	Particle r_particle = DUMMY_PARTICLE;
+	setTrajectory(tr);
+	/* look for collisions and return result of collision (or later 
+		return "dummy" particle after the move) */
+	/* if no collisions with other objects, check for boundaries */
+	if( !(topy + tr.y < 0
+	   || bottomy + tr.y > max.y 
+	   || leftx + tr.x < 0
+	   || rightx + tr.x > max.x) ) {
+		// move if not against boundaries
+		ParticleInfo blankInfo = { NONE, 0 };
+		prevParticles = particles;
+
+		/* need to start at first particle if moving left and up
+			otherwise start at last particle */
+		int i, psize, incdec;
+		if (tr.y < 0 || tr.x < 0) { // moving left or up
+			i = 0;
+			psize = particles.size();
+			incdec = 1;
+		} else {
+			i = particles.size()-1;
+			psize = 0;
+			incdec = -1;
+		}
+		bool done = false;
+		/* loop, erasing previous particle and drawing new one in one pass */
+		while(!done)
+		{	
+			// erase old particle
+			prevParticles[i].symbol = ' ';
+			_drawParticle(prevParticles[i], blankInfo);
+
+			// draw new one
+			particles[i].coords += trajectory;
+			_drawParticle(particles[i], info);
+
+			// increment/decrement and get out of loop
+			i += incdec;
+			if (tr.y < 0 || tr.x < 0) {
+				if (i == psize)
+					done = true;
+			} else {
+				if (i < psize)
+					done = true;
+			}
+		}
+
+		/* recompute boundaries of ship */
+		topy += tr.y;
+		bottomy += tr.y;
+		leftx += tr.x;
+		rightx += tr.x;
+	} else {
+		// hit an edge, so set the collision type in return particle
+		r_particle.collided = EDGE;
+	}
+
+	return r_particle;
+}
+
+void Object::_drawParticle(Particle &p, ParticleInfo pi) {
+	int x, y, c;
+	// p->coords += this->trajectory;
+	x = p.coords.x;
+	y = p.coords.y;
+	c = p.color;
+	// change color
+	wattron(win, COLOR_PAIR(c));
+	// add character
+	mvwaddch(win, y, x, p.symbol);
+	// turn color off
+	wattroff(win, COLOR_PAIR(c));
+	// update gameboard
+	(*gameboard)[y+DEF_BUFFER][x] = pi;
+}
 // virtual void setType() = 0;
-void Object::setTrajectory(Coord tr) {}
+void Object::setTrajectory(Coord tr) {
+	this->trajectory = tr;
+}

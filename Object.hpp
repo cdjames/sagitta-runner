@@ -12,6 +12,7 @@
 #include "SagittaTypes.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
+#include <algorithm>
 
 using std::vector;
 
@@ -23,7 +24,8 @@ protected:
 	Coord start; // starting coordinates for the object
 	Coord max; // coordinates of the max drawing area of the window
 	Coord trajectory; // amount in x and y to adjust in each direction
-	short width, height; // maybe unused
+	unsigned short width, height; // for computing top, left, right, bottom values
+	int topy, bottomy, leftx, rightx;
 	int numParticles; // how many particles actually make up the object
 	unsigned long id; // id of object
 	ParticleInfo info; // info about the object meant for the gameboard
@@ -38,6 +40,7 @@ protected:
 	** may become virtual depending on implementation
 	*********************************************************************/
 	void initParticles();
+	void _drawParticle(Particle &p, ParticleInfo pi);
 	
 public:
 	/*********************************************************************
@@ -59,7 +62,7 @@ public:
 	*********************************************************************/
 	void draw();
 	void erase();
-	Particle move();
+	Particle move(Coord tr);
 	// virtual void setType() = 0;
 	void setTrajectory(Coord tr);
 };

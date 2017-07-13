@@ -90,6 +90,8 @@ GameManager::GameManager(WINDOW * win) {
 GameManager::~GameManager() {}
 
 void GameManager::run() {
+	bool moveShip = false;
+	Coord trajectory;
 	do 
 	{
 		input = getch();
@@ -110,27 +112,27 @@ void GameManager::run() {
 		switch (input){
 			case KEY_UP:
 				mvprintw(0, 24, "pressed up     ");
-				// refresh();
-				// if(user_coords.y > 0)
-				// 	user_coords.y--;
+				// set the trajectory in the ship
+				trajectory = {0, -1}; 
+				moveShip = true;
 				break;
+
 			case KEY_DOWN:
 				mvprintw(0, 24, "pressed down   ");
-				// refresh();
-				// if(user_coords.y < winY-1)
-				// 	user_coords.y++;
+				trajectory = {0, 1}; 
+				moveShip = true;
 				break;
+
 			case KEY_LEFT:
 				mvprintw(0, 24, "pressed left   ");
-				// refresh();
-				// if(user_coords.x > 0)
-				// 	user_coords.x--;
+				trajectory = {-1, 0}; 
+				moveShip = true;
 				break;
+
 			case KEY_RIGHT:
 				mvprintw(0, 24, "pressed right  ");
-				// refresh();
-				// if(user_coords.x < winX-1)
-				// 	user_coords.x++;
+				trajectory = {1, 0};
+				moveShip = true;
 				break;
 			// case 32-100:
 			// 	mvprintw(0, 24, "pressed %c     ", input);
@@ -138,6 +140,17 @@ void GameManager::run() {
 			default: 
 				break;
 		}
+
+		if(moveShip) {
+			shipStatus = testO.move(trajectory);
+			if (shipStatus.collided == EDGE) {
+				mvprintw(0, 48, "hit the edge  ");
+			} else {
+				mvprintw(0, 48, "              ");
+			}
+			moveShip = false;
+		}
+
 		refresh(); // for status screen
 		
 		// erase the old ship

@@ -31,6 +31,7 @@ protected:
 
 	Object testO;
 	int input;
+	Particle shipStatus;
 
 	void initWindow();
 	void initGameboard();
