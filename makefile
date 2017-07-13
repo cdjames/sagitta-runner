@@ -15,13 +15,13 @@ PROG1 = runner
 default: runner
 
 Object.o: clean
-	g++ ${OPS} -c Object.cpp
+	g++ -c Object.cpp ${OPS}
 
 GameManager.o: clean
-	g++ ${OPS} -c GameManager.cpp
+	g++ -c GameManager.cpp ${OPS}
 
 runner: clean GameManager.o Object.o
-	g++ ${OPS} main.cpp GameManager.o Object.o -o ${PROG1}
+	g++ main.cpp GameManager.o Object.o -o ${PROG1} ${OPS}
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}
