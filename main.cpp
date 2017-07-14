@@ -1,90 +1,41 @@
 /*********************************************************************
 ** Author: Collin James
-** Date: 10/1/15
-** Description: Main routines for Conway's game simulator
+** Date: 7/9/17
+** Description: Main routines Team Sagitta's infinite runner game
 *********************************************************************/
 
 #include <iostream>
-#include "Oscillator.hpp"
-// #include "Oscillator.hpp"
-// #include "Glider.hpp"
-// #include "Gun.hpp"
-#include <curses.h>
-// #include <stdlib.h>
-void getUserPrefs(char &pref, int &x, int &y);
+#include "GameManager.hpp"
+
+void initScreen();
+void exitCurses(WINDOW * win);
 
 int main()
 {
-	char prefs = 'o',
-		 ch; // for while loop
-	int x = 0, 
-		y = 0;
-	/* set pointers to null and use if statements when deleting to avoid
-	 * segmentation fault on flip */
-	Oscillator* myOscillator = new Oscillator(1, 2, 3);
-
-	// getUserPrefs(prefs, x, y);
-
-	myOscillator->initWindow(2, 0);
-	/* decide which cell to instantiate */
-	// switch (prefs)
-	// {
-	// 	case 'g':
-	// 		myGlider = new Glider(x, y, 4); // 4 is the size of the array in the class
-	// 		myGlider->initWindow(2, 0);	// starts ncurses mode and draws box
-	// 		break;
-	// 	case 'c':
-	// 		myGun = new Gun(x, y, 38);
-	// 		myGun->initWindow(2, 0);	// starts ncurses mode and draws box
-	// 		break;
-	// 	default: // 'o' or anything else
-	// 		myOsc = new Oscillator(x, y, 3);
-	// 		myOsc->initWindow(2, 0);		// starts ncurses mode and draws box
+	WINDOW * win;
+	initScreen();
+	GameManager GM = GameManager(win);
+	GM.run(); // runs until user presses q
+	// while (getch() != 'q'){
+	// 	continue;
 	// }
-	
-	/* draw the cells; quit only when 'q' is pressed */
-	myOscillator->startMovement();
-
-
-	/* clean up pointers before exit. Only do this if the pointer was
-	 * actually used */
-	if(myOscillator != NULL)
-	{
-		delete myOscillator; 	
-		myOscillator = 0;
-	}
-	// if(myGlider != NULL)
-	// {
-	// 	delete myGlider; 	
-	// 	myGlider = 0;
-	// }
-	// if(myGun != NULL)
-	// {
-	// 	delete myGun; 	
-	// 	myGun = 0;
-	// }
-
+	exitCurses(win);
 	return 0;
 }
 
-/*********************************************************************
-** Description: 
-** Get the preference for type of cell, starting x and y
-*********************************************************************/
-void getUserPrefs(char &pref, int &x, int &y)
-{
-	std::cout 	<< "What kind of cell to start with?\n'o' for Oscillator, 'g' for Glider, 'c' for Gun"
-				<< std::endl;
-	/* accept input only if o, g, or c */
-	do
-		std::cin >> pref;
-	while (pref != 'o' && pref != 'g' && pref != 'c');
+void initScreen() {
+	initscr();				// Start curses mode
+	cbreak();				/* Line buffering disabled, Pass on everything to me */
+	keypad(stdscr, TRUE);	/* I need that nifty F1 */
+	// scrollok(stdscr, FALSE);
+	timeout(DEF_TIMEOUT); 				// wait x Ms for user input before going to next getch() call
+	noecho(); 					// don't print user input
+	curs_set(0);				// make cursor invisible if possible
+	printw("Press 'q' to quit.");	// instructions at top of screen
+	refresh();					// put the printw on the screen
+}
 
-	std::cout	<< "Choose x/y coordinates for cell."
-				<<	"\nX range is between 0 and 39. Y range is between 0 and 19."
-				<<	"\n"
-				<< "Choose x" << std::endl;
-	std::cin >> x;
-	std::cout 	<< "Choose y" << std::endl;
-	std::cin >> y;
+void exitCurses(WINDOW * win) {
+	delwin(win);	// delete the window
+	endwin();		// End curses mode
 }
