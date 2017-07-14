@@ -3,3 +3,6 @@ runner
 *.png
 *.jpg
 *.jpeg
+runnerdemo
+*.o
+runner.dSYM
