@@ -14,7 +14,16 @@ int main()
 {
 	WINDOW * win;
 	initScreen();
-	GameManager GM = GameManager(win);
+
+	// MenuManager MM = MenuManager(win); -> Inherit from GameManager. Set up window
+	// Pass settings as parameter to GM 
+	// Use arrow keys to move up and down. Model after run() in GM. Only allow y trajectory; ignore x
+	// mvprintw(y, x, "Option 1: ..."); to print the options
+	// getyx(WINDOW *win,int y,int x) or just keep track of y movement to get the current y position 
+	// if getch() == KEY_UP and cursorPosition == valid option line -> go to next screen
+	// put the above in a loop. When the user chooses exit or play, break the loop and continue.
+
+	GameManager GM = GameManager(win); 
 	GM.run(); // runs until user presses q
 	// while (getch() != 'q'){
 	// 	continue;
