@@ -9,6 +9,7 @@
 
 #include <curses.h>
 #include <vector>
+#include "MenuManager.hpp"
 #include "SagittaTypes.hpp"
 #include "Object.hpp"
 #include <sys/ioctl.h> // for winsize
@@ -45,11 +46,12 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
-	
+	int difficulty;	
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
 	void run();
+	void updateSettings(MenuManager);
 };
 
 #endif
