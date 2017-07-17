@@ -9,17 +9,17 @@
 
 void initScreen();
 void exitCurses(WINDOW * win);
+void initObjects();
 
 int main()
 {
-	createShipBlueprint();
+	/* create the blueprints for the objects (might take a second) */
+	createShipBlueprints();
 	WINDOW * win;
 	initScreen();
+	// initObjects();
 	GameManager GM = GameManager(win);
 	GM.run(); // runs until user presses q
-	// while (getch() != 'q'){
-	// 	continue;
-	// }
 	exitCurses(win);
 	return 0;
 }
@@ -39,4 +39,8 @@ void initScreen() {
 void exitCurses(WINDOW * win) {
 	delwin(win);	// delete the window
 	endwin();		// End curses mode
+}
+
+void initObjects() {
+	createShipBlueprints();
 }

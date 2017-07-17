@@ -8,8 +8,6 @@
 #define OBJECT_HPP
 
 #include <curses.h>
-// #include <vector>
-// #include "SagittaTypes.hpp"
 #include "ObjectBlueprints.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
@@ -27,12 +25,11 @@ protected:
 	Coord trajectory; // amount in x and y to adjust in each direction
 	unsigned short width, height; // for computing top, left, right, bottom values
 	int topy, bottomy, leftx, rightx;
-	int numParticles; // how many particles actually make up the object
+	short numParticles; // how many particles actually make up the object
 	unsigned long id; // id of object
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
-	// vector< vector<int> > * blueprint;
 
 	Particle detectCollision(Particle p);
 
@@ -55,8 +52,6 @@ public:
 	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max);
 	Object(); // unused
 	~Object(); // unused currently
-
-	void testgameboard(); // testing only
 
 	/*********************************************************************
 	** Description: draw()

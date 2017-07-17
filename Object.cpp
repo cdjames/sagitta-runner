@@ -13,46 +13,35 @@ Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord s
 	this->max = max;
 	initParticles();
 	trajectory = {0, 0};
-	// blueprint = bp;	
 }
 
 Object::Object() {}
 Object::~Object() {}
 
-void Object::testgameboard() {
-	// std::cout << (*gameboard)[start.y][start.x].id << std::endl;
-	(*gameboard)[start.y][start.x].id = 2;
-}
-
 Particle Object::detectCollision(Particle p) {}
 
 void Object::initParticles() {
 	/* do a ship for practice */
+	numParticles = DEF_SHIP_BP.size()-1;
 	id = 1;
-	numParticles = 9;
 	height = DEF_SHIP_BP[0].coords.x;
 	width = DEF_SHIP_BP[0].coords.y;
-	short bp_size = DEF_SHIP_BP.size();
-	// height = 3;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
 	rightx = start.x + width;
 	info = {SHIP, id};
 
-	for (short i = 1; i < bp_size; ++i)
+	for (short i = 1; i <= numParticles; ++i)
 	{
 		particles.push_back( 
 			Particle { 
-				ParticleCore {
-					Coord{start.x+DEF_SHIP_BP[i].coords.x, start.y+DEF_SHIP_BP[i].coords.y}, 
-					(char)DEF_SHIP_BP[i].symbol, 
-					(unsigned int)DEF_SHIP_BP[i].color
-				},
+				DEF_SHIP_BP[i],
 				info, 
 				NOHIT 
 			} 
 		);
+		particles[i-1].core.coords += start; // adjust by the starting coordinates
 	}
 } // may be virtual in the end
 
@@ -71,6 +60,7 @@ Particle Object::move(Coord tr) {
 	setTrajectory(tr);
 	/* look for collisions and return result of collision (or later 
 		return "dummy" particle after the move) */
+
 	/* if no collisions with other objects, check for boundaries */
 	if( !(topy + tr.y < 0
 	   || bottomy + tr.y > max.y 
