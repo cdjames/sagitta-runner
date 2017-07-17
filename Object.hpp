@@ -32,6 +32,7 @@ protected:
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
+	vector< vector<int> > * blueprint;
 
 	Particle detectCollision(Particle p);
 
@@ -66,6 +67,7 @@ public:
 	Particle move(Coord tr);
 	// virtual void setType() = 0;
 	void setTrajectory(Coord tr);
+	// void setThemeBP(vector< vector<int> > &bp);
 };
 
 #endif

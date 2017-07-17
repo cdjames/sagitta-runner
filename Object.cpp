@@ -13,6 +13,7 @@ Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord s
 	this->max = max;
 	initParticles();
 	trajectory = {0, 0};
+	blueprint = bp;	
 }
 
 Object::Object() {}
@@ -29,9 +30,9 @@ void Object::initParticles() {
 	/* do a ship for practice */
 	id = 1;
 	numParticles = 9;
-	height = SHIP_BP[0][0];
-	width = SHIP_BP[0][1];
-	short bp_size = SHIP_BP.size();
+	height = DEF_SHIP_BP[0][0];
+	width = DEF_SHIP_BP[0][1];
+	short bp_size = DEF_SHIP_BP.size();
 	// height = 3;
 	topy = start.y;
 	bottomy = start.y + height;
@@ -43,9 +44,9 @@ void Object::initParticles() {
 	{
 		particles.push_back( 
 			Particle { 
-				Coord{start.x+SHIP_BP[i][0], start.y+SHIP_BP[i][1]}, 
-				(char)SHIP_BP[i][2], 
-				(unsigned int)SHIP_BP[i][3], 
+				Coord{start.x+DEF_SHIP_BP[i][0], start.y+DEF_SHIP_BP[i][1]}, 
+				(char)DEF_SHIP_BP[i][2], 
+				(unsigned int)DEF_SHIP_BP[i][3], 
 				info, 
 				NOHIT 
 			} 
@@ -145,3 +146,7 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
 }
+
+// void Object::setThemeBP(vector< vector<int> > &bp) {
+// 	this->blueprint = bp;
+// }

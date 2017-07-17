@@ -84,6 +84,7 @@ GameManager::GameManager(WINDOW * win) {
 	initWindow();
 	initColors();
 	testO = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY);
+	// testO.setThemeBP(DEF_SHIP_BP);
 	placeShip();
 }
 
