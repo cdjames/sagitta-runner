@@ -10,6 +10,7 @@
 #include <curses.h>
 #include <vector>
 #include "SagittaTypes.hpp"
+#include "ObjectBlueprints.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 #include <algorithm>

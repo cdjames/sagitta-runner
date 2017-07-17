@@ -29,48 +29,40 @@ void Object::initParticles() {
 	/* do a ship for practice */
 	id = 1;
 	numParticles = 9;
-	height = 3;
-	width = 5;
+	height = SHIP_BP[0][0];
+	width = SHIP_BP[0][1];
+	short bp_size = SHIP_BP.size();
+	// height = 3;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
 	rightx = start.x + width;
 	info = {SHIP, id};
-	// Particle dummyP = { start, BLANK, 7, type, NOHIT }; // color 7 is white
 
-	particles.push_back( Particle { Coord{start.x+1, start.y+0}, '\\', 1, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+2, start.y+0}, '\\', 1, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+0, start.y+1}, '}', 7, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+1, start.y+1}, '=', 7, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+2, start.y+1}, 'x', 1, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+3, start.y+1}, '=', 7, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+4, start.y+1}, '>', 7, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+1, start.y+2}, '/', 1, info, NOHIT } );
-	particles.push_back( Particle { Coord{start.x+2, start.y+2}, '/', 1, info, NOHIT } );
-
+	for (short i = 1; i < bp_size; ++i)
+	{
+		particles.push_back( 
+			Particle { 
+				Coord{start.x+SHIP_BP[i][0], start.y+SHIP_BP[i][1]}, 
+				(char)SHIP_BP[i][2], 
+				(unsigned int)SHIP_BP[i][3], 
+				info, 
+				NOHIT 
+			} 
+		);
+	}
 } // may be virtual in the end
 
 void Object::draw() {
 	
 	for (int i = 0; i < numParticles; i++)
 	{
-		// save some info for convenience
-		// x = particles[i].coords.x;
-		// y = particles[i].coords.y;
-		// c = particles[i].color;
-		// // change color
-		// wattron(win, COLOR_PAIR(c));
-		// // add character
-		// mvwaddch(win, y, x, particles[i].symbol);
-		// // turn color off
-		// wattroff(win, COLOR_PAIR(c));
-		// // update gameboard
-		// (*gameboard)[y+DEF_BUFFER][x] = info; // add DEF_BUFFER as actual window dimensions start here
 		_drawParticle(particles[i], info);
 	}
 }
 
 void Object::erase() {}
+
 Particle Object::move(Coord tr) {
 	Particle r_particle = DUMMY_PARTICLE;
 	setTrajectory(tr);
@@ -148,6 +140,7 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 	// update gameboard
 	(*gameboard)[y+DEF_BUFFER][x] = pi;
 }
+
 // virtual void setType() = 0;
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
