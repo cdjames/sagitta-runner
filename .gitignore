@@ -6,3 +6,4 @@ runner
 runnerdemo
 *.o
 runner.dSYM
+*.exe
