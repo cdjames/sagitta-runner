@@ -12,6 +12,7 @@ void exitCurses(WINDOW * win);
 
 int main()
 {
+	createShipBlueprint();
 	WINDOW * win;
 	initScreen();
 	GameManager GM = GameManager(win);

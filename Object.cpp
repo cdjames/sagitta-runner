@@ -13,7 +13,7 @@ Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord s
 	this->max = max;
 	initParticles();
 	trajectory = {0, 0};
-	blueprint = bp;	
+	// blueprint = bp;	
 }
 
 Object::Object() {}
@@ -30,8 +30,8 @@ void Object::initParticles() {
 	/* do a ship for practice */
 	id = 1;
 	numParticles = 9;
-	height = DEF_SHIP_BP[0][0];
-	width = DEF_SHIP_BP[0][1];
+	height = DEF_SHIP_BP[0].coords.x;
+	width = DEF_SHIP_BP[0].coords.y;
 	short bp_size = DEF_SHIP_BP.size();
 	// height = 3;
 	topy = start.y;
@@ -44,9 +44,11 @@ void Object::initParticles() {
 	{
 		particles.push_back( 
 			Particle { 
-				Coord{start.x+DEF_SHIP_BP[i][0], start.y+DEF_SHIP_BP[i][1]}, 
-				(char)DEF_SHIP_BP[i][2], 
-				(unsigned int)DEF_SHIP_BP[i][3], 
+				ParticleCore {
+					Coord{start.x+DEF_SHIP_BP[i].coords.x, start.y+DEF_SHIP_BP[i].coords.y}, 
+					(char)DEF_SHIP_BP[i].symbol, 
+					(unsigned int)DEF_SHIP_BP[i].color
+				},
 				info, 
 				NOHIT 
 			} 
@@ -95,11 +97,11 @@ Particle Object::move(Coord tr) {
 		while(!done)
 		{	
 			// erase old particle
-			prevParticles[i].symbol = ' ';
+			prevParticles[i].core.symbol = ' ';
 			_drawParticle(prevParticles[i], blankInfo);
 
 			// draw new one
-			particles[i].coords += trajectory;
+			particles[i].core.coords += trajectory;
 			_drawParticle(particles[i], info);
 
 			// increment/decrement and get out of loop
@@ -129,13 +131,13 @@ Particle Object::move(Coord tr) {
 void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 	int x, y, c;
 	// p->coords += this->trajectory;
-	x = p.coords.x;
-	y = p.coords.y;
-	c = p.color;
+	x = p.core.coords.x;
+	y = p.core.coords.y;
+	c = p.core.color;
 	// change color
 	wattron(win, COLOR_PAIR(c));
 	// add character
-	mvwaddch(win, y, x, p.symbol);
+	mvwaddch(win, y, x, p.core.symbol);
 	// turn color off
 	wattroff(win, COLOR_PAIR(c));
 	// update gameboard

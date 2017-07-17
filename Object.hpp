@@ -8,8 +8,8 @@
 #define OBJECT_HPP
 
 #include <curses.h>
-#include <vector>
-#include "SagittaTypes.hpp"
+// #include <vector>
+// #include "SagittaTypes.hpp"
 #include "ObjectBlueprints.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
@@ -32,7 +32,7 @@ protected:
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
-	vector< vector<int> > * blueprint;
+	// vector< vector<int> > * blueprint;
 
 	Particle detectCollision(Particle p);
 
