@@ -74,7 +74,8 @@ typedef struct Particle {
 } Particle;
 
 
-
+#define NUM_TYPES OBSTACLE+1
+#define NUM_THEMES SPORTS+1 
 #define DUMMY_PARTICLE Particle { ParticleCore { Coord {-99, -99}, BLANK, 0 }, NONE, NOHIT }; // color 7 is white
 
 #endif
