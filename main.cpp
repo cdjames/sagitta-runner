@@ -14,7 +14,7 @@ void initObjects();
 int main()
 {
 	/* create the blueprints for the objects (might take a second) */
-	createShipBlueprints();
+	createAllBlueprints();
 	WINDOW * win;
 	initScreen();
 	// initObjects();

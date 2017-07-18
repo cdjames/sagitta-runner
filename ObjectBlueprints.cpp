@@ -1,5 +1,25 @@
 #include "ObjectBlueprints.hpp"
 
+vector<ParticleCore> DEF_SHIP_BP;
+vector<ParticleCore> DEF_BULLET_BP;
+vector<ParticleCore> DEF_EXP_BP;
+vector<ParticleCore> DEF_OBST_BP;
+vector<ParticleCore> OBJECT;
+
+vector< vector<ParticleCore> > OBJECT_VARS;
+
+vector< vector< vector<ParticleCore> > > OBJ_THEMES (SPORTS+1);
+
+vector< 			// x object types
+		vector<			// y theme types
+			vector<		// z blueprints
+				vector<ParticleCore> // a single blueprint
+				> > > OBJ_BLPRNTS (OBSTACLE+1);
+
+void resizeObjThemes() {
+	OBJ_THEMES.clear();
+	OBJ_THEMES.resize(SPORTS+1);
+}
 
 void createShipBlueprints() {
 	/* create for theme 0 */
@@ -19,22 +39,132 @@ void createShipBlueprints() {
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
-	SHIP_THEMES.at(SPACE) = OBJECT_VARS;
+	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+
+	/* clear the vars array to reuse */
+	// vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+	OBJECT_VARS.clear();
+
+	/* create more items for each them or just push existing item */
+	OBJECT_VARS.push_back(DEF_SHIP_BP);
+	OBJ_THEMES.at(FOOD) = OBJECT_VARS;
+	// vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+	OBJECT_VARS.clear();
+
+	OBJECT_VARS.push_back(DEF_SHIP_BP);
+	OBJ_THEMES.at(SPORTS) = OBJECT_VARS;
+	// vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+	OBJECT_VARS.clear();
+
+	/* Finally, append to the master blueprint */
+	OBJ_BLPRNTS.at(SHIP) = OBJ_THEMES;
+
+	/* clear the OBJ_THEMES array to reuse */
+	resizeObjThemes();
+
+}
+
+void createBulletBlueprints() {
+	/* create for theme 0 */
+	DEF_BULLET_BP.push_back( ParticleCore { Coord {1, 1} , 0, 0} ); // first line is the height and width
+	DEF_BULLET_BP.push_back( ParticleCore { Coord {0, 0}, '*', 166} ); // then x, y, symbol, color
+
+	/* add to themes array */
+	OBJECT_VARS.push_back(DEF_BULLET_BP);
+	// push more variations if necessary
+
+	/* when done, push themes onto the main blueprints array */
+	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
 
 	/* clear the vars array to reuse */
 	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
-	OBJECT_VARS.push_back(DEF_SHIP_BP);
-	SHIP_THEMES.at(FOOD) = OBJECT_VARS;
+	OBJECT_VARS.push_back(DEF_BULLET_BP);
+	OBJ_THEMES.at(FOOD) = OBJECT_VARS;
 	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
 
-	OBJECT_VARS.push_back(DEF_SHIP_BP);
-	SHIP_THEMES.at(SPORTS) = OBJECT_VARS;
+	OBJECT_VARS.push_back(DEF_BULLET_BP);
+	OBJ_THEMES.at(SPORTS) = OBJECT_VARS;
 	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
 
 	/* Finally, append to the master blueprint */
-	OBJ_BLPRNTS.at(SHIP) = SHIP_THEMES;
+	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+
+	/* clear the OBJ_THEMES array to reuse */
+	resizeObjThemes();
+
+}
+
+void createExplosionBlueprints() {
+	/* create for theme 0 */
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
+	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 1}, '*', 11} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 0}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, '*', 166} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 1}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 2}, '*', 11} ); // then x, y, symbol, color
+
+	/* add to themes array */
+	OBJECT_VARS.push_back(DEF_EXP_BP);
+	// push more variations if necessary
+
+	/* when done, push themes onto the main blueprints array */
+	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+
+	/* clear the vars array to reuse */
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	/* create more items for each them or just push existing item */
+	OBJECT_VARS.push_back(DEF_EXP_BP);
+	OBJ_THEMES.at(FOOD) = OBJECT_VARS;
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	OBJECT_VARS.push_back(DEF_EXP_BP);
+	OBJ_THEMES.at(SPORTS) = OBJECT_VARS;
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	/* Finally, append to the master blueprint */
+	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+
+	/* clear the OBJ_THEMES array to reuse */
+	resizeObjThemes();
+
+}
+
+void createObstacleBlueprints() {
+	/* create for theme 0 */
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
+	DEF_OBST_BP.push_back( ParticleCore { Coord {0, 1}, '+', 8} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 0}, '+', 8} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, '+', 8} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {2, 1}, '+', 8} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 2}, '+', 8} ); // then x, y, symbol, color
+
+	/* add to themes array */
+	OBJECT_VARS.push_back(DEF_OBST_BP);
+	// push more variations if necessary
+
+	/* when done, push themes onto the main blueprints array */
+	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+
+	/* 	clear the vars array to reuse */
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	/* create more items for each them or just push existing item */
+	OBJECT_VARS.push_back(DEF_OBST_BP);
+	OBJ_THEMES.at(FOOD) = OBJECT_VARS;
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	OBJECT_VARS.push_back(DEF_OBST_BP);
+	OBJ_THEMES.at(SPORTS) = OBJECT_VARS;
+	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
+
+	/* Finally, append to the master blueprint */
+	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+
+	/* clear the OBJ_THEMES array to reuse */
+	resizeObjThemes();
 
 }
 
@@ -49,19 +179,12 @@ void createAllBlueprints() {
 	// 		/* code */
 	// 	}
 	// }
+	createShipBlueprints();
+	createBulletBlueprints();
+	createExplosionBlueprints();
+	createObstacleBlueprints();
 }
 
-vector<ParticleCore> DEF_SHIP_BP;
-// vector<ParticleCore> FOOD_SHIP_BP;
-// vector<ParticleCore> SPORTS_SHIP_BP;
-vector<ParticleCore> OBJECT;
-vector< vector<ParticleCore> > OBJECT_VARS;
-vector< vector< vector<ParticleCore> > > SHIP_THEMES (SPORTS+1);
-
-vector< 			// x object types
-		vector<			// y types
-			vector<		// z blueprints
-				vector<ParticleCore> > > > OBJ_BLPRNTS (OBSTACLE+1);
 // vector< vector<int> > DEF_OBST_BP (5, vector<int> (4, ));
 // vector< vector<int> > DEF_OBST_BP = {
 // 	{3, 3, -1, -1}, // first line is the height and width
@@ -72,7 +195,7 @@ vector< 			// x object types
 // };
 
 // /* number of themes in vector should equal the number of theme types in SagittaTypes */
-// vector< vector< vector<int> > > SHIP_THEMES = {
+// vector< vector< vector<int> > > OBJ_THEMES = {
 // 	def_ship_bp,
 // 	def_ship_bp,
 // 	def_ship_bp

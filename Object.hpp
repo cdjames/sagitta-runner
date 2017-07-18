@@ -30,6 +30,7 @@ protected:
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
+	// vector<ParticleCore> blueprint;
 
 	Particle detectCollision(Particle p);
 

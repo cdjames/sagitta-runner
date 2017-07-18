@@ -13,6 +13,8 @@ Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord s
 	this->max = max;
 	initParticles();
 	trajectory = {0, 0};
+	id = 1;
+	info = {SHIP, id};
 }
 
 Object::Object() {}
@@ -21,22 +23,24 @@ Object::~Object() {}
 Particle Object::detectCollision(Particle p) {}
 
 void Object::initParticles() {
+	ObjectType type = info.type;
+	ThemeType theme = SPACE;
 	/* do a ship for practice */
-	numParticles = DEF_SHIP_BP.size()-1;
-	id = 1;
+	// numParticles = DEF_SHIP_BP.size()-1;
+	numParticles = OBJ_BLPRNTS[type][theme][0].size()-1;
 	height = DEF_SHIP_BP[0].coords.x;
 	width = DEF_SHIP_BP[0].coords.y;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
 	rightx = start.x + width;
-	info = {SHIP, id};
 
 	for (short i = 1; i <= numParticles; ++i)
 	{
 		particles.push_back( 
 			Particle { 
 				DEF_SHIP_BP[i],
+				// OBJ_BLPRNTS[type][theme][0][i],
 				info, 
 				NOHIT 
 			} 
