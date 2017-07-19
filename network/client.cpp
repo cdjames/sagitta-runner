@@ -1,4 +1,3 @@
-// Client side C/C++ program to demonstrate Socket programming
 #include <stdio.h>
 #include <sys/socket.h>
 #include <stdlib.h>
@@ -6,17 +5,18 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <iostream>
-#define PORT 8081
+#include <unistd.h>
+#define PORT 8888
   
 int main(int argc, char const *argv[])
 {
     struct sockaddr_in address;
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
-    char *hello = "Hello from client";
     char buffer[1024] = {0};
     char end[1024] = {0};
-    std::string name;
+    std::string response;
+    int num, numPlayers;
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -41,29 +41,25 @@ int main(int argc, char const *argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    while(1) {
 
-        printf("Play game? Y or N ->");
-        // cin.ignore()
-        getline (std::cin,name);
-        if(name.compare("Y") == 0) {
-            send(sock, name.c_str(), strlen(name.c_str()), 0);
-            recv( sock , end, 1024, 0);
-            if(strcmp(end, "end") == 0) {
-                return 0;
-            }
+    //Return from server the number of players connected to game.
+    numPlayers = recv(sock, &num, sizeof(num), 0);
+    if(num == 2) {
+        printf("Sorry, two players already in game.\n");
+    }
+    else {
+        printf("Play game? Type Y.");
+        getline (std::cin, response);
+        if(response.compare("Y") == 0) {
+            send(sock, response.c_str(), strlen(response.c_str()), 0);
         }
         else {
-            printf("Play game? Y or N ->");
-            // cin.ignore()
-            getline (std::cin,name);
+            printf("User typed N, closing socket connection.\n");
+            //CLOSE SOCKET CONNECTION?
         }
-        
-        // send(sock , hello , strlen(hello) , 0 );
-        // printf("Hello message sent\n");
-        // valread = recv( sock , buffer, 1024, 0);
-        // printf("%s\n",buffer );
+
     }
-    
+    numPlayers = recv(sock, &num, sizeof(num), 0);
+    printf("numPlayers = %d\n", num); 
     return 0;
 }
