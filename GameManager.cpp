@@ -11,20 +11,6 @@ void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
 	keypad(win, TRUE);
-	// char c = 32;
-	// keypad(win, TRUE);
-	// for (int y = 0; y < maxGBWinXY.y; y++)
-	// {
-	// 	for (int x = 0; x < maxGBWinXY.x; x++)
-	// 	{
-			// mvwaddch(win, 5, 10, '>');
-	// 		// if(c < 126)
-	// 		// 	c++;
-	// 		// else
-	// 		// 	c = 32;
-	// 	}
-	// }
-	// wrefresh(win);
 }
 
 void GameManager::initGameboard() {
@@ -57,8 +43,6 @@ void GameManager::placeObject(Object &o) {
 }
 
 void GameManager::placeShip() {
-	// mvwaddch(win, (maxWinXY.y / 2), 3, '>');
-	// gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER] = ParticleInfo {SHIP, 1};
 	theShip.draw();
 }
 
@@ -88,7 +72,7 @@ GameManager::GameManager(WINDOW * win) {
 	initWindow();
 	initColors();
 	theShip = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
-	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
+	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, EXPLOSION, SPACE);
 	placeShip();
 	placeObject(testO);
 }
@@ -159,23 +143,9 @@ void GameManager::run() {
 
 		refresh(); // for status screen
 		
-		// erase the old ship
-		// mvwaddch(win, prev_user_coords.y, prev_user_coords.x, BLANK);
-		// // move the ship
-		// if(currentCell[user_coords.y][user_coords.x] != 0 || currentCell[prev_user_coords.y][prev_user_coords.x] != 0) {
-		// 	wrefresh(win);
-		// 	doGameOver = TRUE;
-		// 	break; // get out of loop, game is over
-		// }
-		// else {
-		// 	mvwaddch(win, user_coords.y, user_coords.x, SHIP);
-		// }
 		wrefresh(win); // for window
-		// refresh();
 
 	} while (input != 'q');
-	// wrefresh(win);
-	// refresh();
-	// theShip.testgameboard();
+
 	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }
