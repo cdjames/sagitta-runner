@@ -26,11 +26,11 @@ typedef struct Coord {
 		return *this;
 	}
 
-	Coord& operator=(const Coord& rhs) {
-		x = rhs.x;
-		y = rhs.y;
-		return *this;
-	}
+	// Coord& operator=(const Coord& rhs) {
+	// 	x = rhs.x;
+	// 	y = rhs.y;
+	// 	return *this;
+	// }
 } Coord;
 
 /* info about particle used in the main gameboard, and also in Particles themselves */
@@ -48,12 +48,12 @@ typedef struct ParticleCore {
 	Coord coords;
 	char symbol;
 	unsigned int color; // to be used with ncurses color pairs
-	ParticleCore& operator=(const ParticleCore rhs) {
-		coords = rhs.coords;
-		symbol = rhs.symbol;
-		color = rhs.color;
-		return *this;
-	}
+	// ParticleCore& operator=(const ParticleCore rhs) {
+	// 	coords = rhs.coords;
+	// 	symbol = rhs.symbol;
+	// 	color = rhs.color;
+	// 	return *this;
+	// }
 } ParticleCore;
 
 /* forms the building blocks of objects like ships, bullets, obstacles, and explosions */
@@ -65,12 +65,12 @@ typedef struct Particle {
 	ParticleInfo info;
 	CollisionType collided;
 
-	Particle& operator=(const Particle rhs) {
-		core = rhs.core;
-		info = rhs.info;
-		collided = rhs.collided;
-		return *this;
-	}
+	// Particle& operator=(const Particle rhs) {
+	// 	core = rhs.core;
+	// 	info = rhs.info;
+	// 	collided = rhs.collided;
+	// 	return *this;
+	// }
 } Particle;
 
 

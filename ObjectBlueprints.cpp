@@ -1,19 +1,20 @@
 #include "ObjectBlueprints.hpp"
+#include <iostream>
 
 ObjectBlueprints::ObjectBlueprints() {
 	// vector< vector< vector<ParticleCore> > > OBJ_THEMES.resize(SPORTS+1);
-	vector< 			// x object types
-		vector<			// y theme types
-			vector<		// z blueprints
-				vector<ParticleCore> // a single blueprint
-				> > > OBJ_BLPRNTS(OBSTACLE+1);
+	// vector< 			// x object types
+	// 	vector<			// y theme types
+	// 		vector<		// z blueprints
+	// 			vector<ParticleCore> // a single blueprint
+	// 			> > > OBJ_BLPRNTS;
 	createAllBlueprints();
 }
 
 ObjectBlueprints::~ObjectBlueprints() {}
 
 void ObjectBlueprints::createShipBlueprints() {
-	vector< vector< vector<ParticleCore> > > OBJ_THEMES(SPORTS+1);
+	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
@@ -32,22 +33,25 @@ void ObjectBlueprints::createShipBlueprints() {
 
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_SHIP_BP);
+	std::cout << "ship, space, first symbol=" << OBJECT_VARS[0][1].symbol << std::endl;
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
-	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+	OBJ_THEMES.push_back(OBJECT_VARS);
 
 
 	/* create more items for each them or just push existing item */
 	OBJECT_VARS2.push_back(DEF_SHIP_BP);
-	OBJ_THEMES.at(FOOD) = OBJECT_VARS2;
+	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 
 	OBJECT_VARS3.push_back(DEF_SHIP_BP);
-	OBJ_THEMES.at(SPORTS) = OBJECT_VARS3;
+	OBJ_THEMES.push_back(OBJECT_VARS3);
+	std::cout << "ship, space, first symbol=" << OBJ_THEMES[0][0][1].symbol << std::endl;
 
 	/* Finally, append to the master blueprint */
-	OBJ_BLPRNTS.at(SHIP) = OBJ_THEMES;
+	OBJ_BLPRNTS.push_back(OBJ_THEMES);
+	std::cout << "ship, space, first symbol=" << OBJ_BLPRNTS[0][0][0][1].symbol << std::endl;
 
 	/* clear the OBJ_THEMES array to reuse */
 	// resizeObjThemes();
@@ -55,7 +59,7 @@ void ObjectBlueprints::createShipBlueprints() {
 }
 
 void ObjectBlueprints::createBulletBlueprints() {
-	vector< vector< vector<ParticleCore> > > OBJ_THEMES(SPORTS+1);
+	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
@@ -69,22 +73,22 @@ void ObjectBlueprints::createBulletBlueprints() {
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
-	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+	OBJ_THEMES.push_back(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
 	OBJECT_VARS2.push_back(DEF_BULLET_BP);
-	OBJ_THEMES.at(FOOD) = OBJECT_VARS2;
+	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 	OBJECT_VARS3.push_back(DEF_BULLET_BP);
-	OBJ_THEMES.at(SPORTS) = OBJECT_VARS3;
+	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */
-	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
 }
 
 void ObjectBlueprints::createExplosionBlueprints() {
-	vector< vector< vector<ParticleCore> > > OBJ_THEMES(SPORTS+1);
+	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
@@ -102,25 +106,25 @@ void ObjectBlueprints::createExplosionBlueprints() {
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
-	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+	OBJ_THEMES.push_back(OBJECT_VARS);
 
 	/* clear the vars array to reuse */
 	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
 	OBJECT_VARS2.push_back(DEF_EXP_BP);
-	OBJ_THEMES.at(FOOD) = OBJECT_VARS2;
+	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 	OBJECT_VARS3.push_back(DEF_EXP_BP);
-	OBJ_THEMES.at(SPORTS) = OBJECT_VARS3;
+	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */
-	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
 }
 
 void ObjectBlueprints::createObstacleBlueprints() {
-	vector< vector< vector<ParticleCore> > > OBJ_THEMES(SPORTS+1);
+	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
@@ -138,17 +142,17 @@ void ObjectBlueprints::createObstacleBlueprints() {
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
-	OBJ_THEMES.at(SPACE) = OBJECT_VARS;
+	OBJ_THEMES.push_back(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
 	OBJECT_VARS2.push_back(DEF_OBST_BP);
-	OBJ_THEMES.at(FOOD) = OBJECT_VARS2;
+	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 	OBJECT_VARS3.push_back(DEF_OBST_BP);
-	OBJ_THEMES.at(SPORTS) = OBJECT_VARS3;
+	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */
-	OBJ_BLPRNTS.at(BULLET) = OBJ_THEMES;
+	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
 }
 
