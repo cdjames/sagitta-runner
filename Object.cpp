@@ -6,15 +6,22 @@
 
 #include "Object.hpp"
 
-Object::Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max) {
+Object::Object(WINDOW * win, 
+				vector< vector<ParticleInfo> > * gameboard, 
+				Coord start, Coord max, 
+				ObjectType type, 
+				ThemeType theme) 
+{
 	this->win = win;
 	this->gameboard = gameboard;
 	this->start = start;
 	this->max = max;
-	initParticles();
 	trajectory = {0, 0};
 	id = 1;
-	info = {SHIP, id};
+	info = {type, id};
+	this->theme = theme;
+	blueprint = OBJ_BLPRNTS[type][theme][0];
+	initParticles();
 }
 
 Object::Object() {}
@@ -23,13 +30,10 @@ Object::~Object() {}
 Particle Object::detectCollision(Particle p) {}
 
 void Object::initParticles() {
-	ObjectType type = info.type;
-	ThemeType theme = SPACE;
-	/* do a ship for practice */
-	// numParticles = DEF_SHIP_BP.size()-1;
-	numParticles = OBJ_BLPRNTS[type][theme][0].size()-1;
-	height = DEF_SHIP_BP[0].coords.x;
-	width = DEF_SHIP_BP[0].coords.y;
+	/* make a ship for practice */
+	numParticles = blueprint.size()-1;
+	height = blueprint[0].coords.x;
+	width = blueprint[0].coords.y;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
@@ -39,8 +43,7 @@ void Object::initParticles() {
 	{
 		particles.push_back( 
 			Particle { 
-				DEF_SHIP_BP[i],
-				// OBJ_BLPRNTS[type][theme][0][i],
+				blueprint[i],
 				info, 
 				NOHIT 
 			} 

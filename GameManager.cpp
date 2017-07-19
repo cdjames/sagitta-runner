@@ -52,10 +52,14 @@ void GameManager::initColors() {
     }
 }
 
+void GameManager::placeObject(Object &o) {
+	o.draw();
+}
+
 void GameManager::placeShip() {
 	// mvwaddch(win, (maxWinXY.y / 2), 3, '>');
 	// gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER] = ParticleInfo {SHIP, 1};
-	testO.draw();
+	theShip.draw();
 }
 
 void GameManager::moveShip() {}
@@ -83,9 +87,10 @@ GameManager::GameManager(WINDOW * win) {
 	initGameboard();
 	initWindow();
 	initColors();
-	testO = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY);
-	// testO.setThemeBP(DEF_SHIP_BP);
+	theShip = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
+	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
 	placeShip();
+	placeObject(testO);
 }
 
 GameManager::~GameManager() {}
@@ -143,7 +148,7 @@ void GameManager::run() {
 		}
 
 		if(moveShip) {
-			shipStatus = testO.move(trajectory);
+			shipStatus = theShip.move(trajectory);
 			if (shipStatus.collided == EDGE) {
 				mvprintw(0, 48, "hit the edge  ");
 			} else {
@@ -171,6 +176,6 @@ void GameManager::run() {
 	} while (input != 'q');
 	// wrefresh(win);
 	// refresh();
-	// testO.testgameboard();
+	// theShip.testgameboard();
 	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }

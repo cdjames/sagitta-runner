@@ -160,4 +160,5 @@ void createAllBlueprints() {
 	createBulletBlueprints();
 	createExplosionBlueprints();
 	createObstacleBlueprints();
+	std::cout << "ship, space, first size=" << OBJ_BLPRNTS[0][0][0].size() << std::endl;
 }

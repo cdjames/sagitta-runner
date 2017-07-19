@@ -37,11 +37,11 @@ typedef struct Coord {
 typedef struct ParticleInfo {
 	ObjectType type;
 	unsigned long id;
-	ParticleInfo& operator=(const ParticleInfo rhs) {
-		type = rhs.type;
-		id = rhs.id;
-		return *this;
-	}
+	// ParticleInfo& operator=(const ParticleInfo rhs) {
+	// 	type = rhs.type;
+	// 	id = rhs.id;
+	// 	return *this;
+	// }
 } ParticleInfo;
 
 typedef struct ParticleCore {

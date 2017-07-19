@@ -29,7 +29,7 @@ protected:
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
 
-	Object testO;
+	Object theShip;
 	int input;
 	Particle shipStatus;
 
@@ -37,6 +37,7 @@ protected:
 	void initGameboard();
 	void initColors();
 	void placeShip();
+	void placeObject(Object &o);
 	void moveShip();
 	void createObstacles();
 	void moveObstacles();

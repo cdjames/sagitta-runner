@@ -30,7 +30,8 @@ protected:
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
-	// vector<ParticleCore> blueprint;
+	vector<ParticleCore> blueprint;
+	short theme;
 
 	Particle detectCollision(Particle p);
 
@@ -50,7 +51,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max);
+	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme);
 	Object(); // unused
 	~Object(); // unused currently
 
