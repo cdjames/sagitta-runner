@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
-#define PORT 8080
+#define PORT 8081
 int main(int argc, char const *argv[])
 {
     int server_fd, new_socket, valread;
@@ -13,6 +13,9 @@ int main(int argc, char const *argv[])
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
     char *hello = "Hello from server";
+    char end[1024] = "continue";
+    char stop[1024] = "stop";
+    int numPlayers = 0;
       
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -22,12 +25,12 @@ int main(int argc, char const *argv[])
     }
       
     // Forcefully attaching socket to the port 8080
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
-                                                  &opt, sizeof(opt)))
-    {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
-    }
+    // if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+    //                                               &opt, sizeof(opt)))
+    // {
+    //     perror("setsockopt");
+    //     exit(EXIT_FAILURE);
+    // }
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
@@ -50,9 +53,23 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    valread = recv( new_socket , buffer, 1024, 0);
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
-    return 0;
+    
+    printf("numPlayers = %d\n", numPlayers);
+    while(numPlayers != 2) {
+        valread = recv( new_socket , buffer, sizeof(buffer),0);
+        if(strcmp(buffer, "Y") == 0) {
+            numPlayers++;
+            send(new_socket , end , strlen(end) , 0 );
+        }
+        memset(&buffer, '0', sizeof(buffer));
+        if(numPlayers == 2) {
+            printf("We got two players, the game is ready to begin.\n");
+            send(new_socket , stop , strlen(stop) , 0 );
+            return 0;
+        }
+    }
+    
+    // send(new_socket , hello , strlen(hello) , 0 );
+    // printf("Hello message sent\n");
+    
 }

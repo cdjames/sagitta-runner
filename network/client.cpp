@@ -5,7 +5,8 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
-#define PORT 8080
+#include <iostream>
+#define PORT 8081
   
 int main(int argc, char const *argv[])
 {
@@ -14,6 +15,9 @@ int main(int argc, char const *argv[])
     struct sockaddr_in serv_addr;
     char *hello = "Hello from client";
     char buffer[1024] = {0};
+    char end[1024] = {0};
+    std::string name;
+
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         printf("\n Socket creation error \n");
@@ -37,9 +41,29 @@ int main(int argc, char const *argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    send(sock , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
-    valread = recv( sock , buffer, 1024, 0);
-    printf("%s\n",buffer );
+    while(1) {
+
+        printf("Play game? Y or N ->");
+        // cin.ignore()
+        getline (std::cin,name);
+        if(name.compare("Y") == 0) {
+            send(sock, name.c_str(), strlen(name.c_str()), 0);
+            recv( sock , end, 1024, 0);
+            if(strcmp(end, "end") == 0) {
+                return 0;
+            }
+        }
+        else {
+            printf("Play game? Y or N ->");
+            // cin.ignore()
+            getline (std::cin,name);
+        }
+        
+        // send(sock , hello , strlen(hello) , 0 );
+        // printf("Hello message sent\n");
+        // valread = recv( sock , buffer, 1024, 0);
+        // printf("%s\n",buffer );
+    }
+    
     return 0;
 }
