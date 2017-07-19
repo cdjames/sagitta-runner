@@ -27,11 +27,11 @@ protected:
 	int topy, bottomy, leftx, rightx;
 	short numParticles; // how many particles actually make up the object
 	unsigned long id; // id of object
+	short theme; // the theme of the object
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
-	short theme;
 
 	Particle detectCollision(Particle p);
 
@@ -41,7 +41,20 @@ protected:
 	** may become virtual depending on implementation
 	*********************************************************************/
 	void initParticles();
+
+	/*********************************************************************
+	** Description: _drawParticle()
+	** Change color to color of particle, add the particle to the screen and
+	** its ParticleInfo to the gameboard
+	*********************************************************************/
 	void _drawParticle(Particle &p, ParticleInfo pi);
+
+	/*********************************************************************
+	** Description: _eraseParticle()
+	** Change the particle symbol to ' ' and send particle and blank info to 
+	** _drawParticle()
+	*********************************************************************/
+	void _eraseParticle(Particle &p);
 	
 public:
 	/*********************************************************************
@@ -60,9 +73,42 @@ public:
 	** Place the object on the window and gameboard
 	*********************************************************************/
 	void draw();
+
+	/*********************************************************************
+	** Description: erase()
+	** call _eraseParticle on each particle in this->particles
+	*********************************************************************/
 	void erase();
+
+	/*********************************************************************
+	** Description: clearObject()
+	** call erase(); call vector.clear() on particles, resulting in a 
+	** vector of size 0
+	*********************************************************************/
+	void clearObject();
+
+	/*********************************************************************
+	** Description: move()
+	** Parameter: Coord tr = trajectory for the movement. I.e. -1, -1 means
+	** move diagonally up.
+	**
+	** Sets trajectory of object
+	** Erases old particle, draws new one, updating particle coords.
+	** Recomputes ship boundaries (topy, topx, etc.)
+	** Detects collisions
+	**
+	** Returns: Particle with collided set to EDGE if edge is encountered;
+				Partice with collided set to GAMEOVER if obstacle is encountered;
+				Particle with collided set to HIT if bullet hits obstacle
+	*********************************************************************/
 	Particle move(Coord tr);
+
 	// virtual void setType() = 0;
+
+	/*********************************************************************
+	** Description: setTrajectory()
+	** Parameter: Coord tr = trajectory for the object. See move()
+	*********************************************************************/
 	void setTrajectory(Coord tr);
 	// void setThemeBP(vector< vector<int> > &bp);
 };

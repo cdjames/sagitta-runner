@@ -2,6 +2,7 @@
 ** Author: Collin James
 ** Date: 7/9/17
 ** Description: Base class for objects such as the ship, obstacles, bullets, explosions
+** see header file for more info
 *********************************************************************/
 
 #include "Object.hpp"
@@ -60,9 +61,34 @@ void Object::draw() {
 	}
 }
 
-void Object::erase() {}
+void Object::clearObject() {
+	/* erase from the screen and gameboard */
+	erase();
+	/* clear all of the particles */
+	particles.clear();
+}
+
+void Object::erase() {
+	/* draw blanks where ship used to be */
+	for (int i = 0; i < numParticles; i++)
+	{
+		_eraseParticle(particles[i]);
+	}
+	/* clear*/
+}
+
+void Object::_eraseParticle(Particle &p) {
+	ParticleInfo blankInfo = { NONE, 0 };
+	p.core.symbol = ' ';
+	_drawParticle(p, blankInfo);
+}
 
 Particle Object::move(Coord tr) {
+	/* make sure you have info for your object */
+	if(!particles.size())
+		initParticles(); // create a new object from whatever template you have
+		// return DUMMY_PARTICLE; // get out, you have no object
+
 	Particle r_particle = DUMMY_PARTICLE;
 	setTrajectory(tr);
 	/* look for collisions and return result of collision (or later 
@@ -94,8 +120,9 @@ Particle Object::move(Coord tr) {
 		while(!done)
 		{	
 			// erase old particle
-			prevParticles[i].core.symbol = ' ';
-			_drawParticle(prevParticles[i], blankInfo);
+			// prevParticles[i].core.symbol = ' ';
+			// _drawParticle(prevParticles[i], blankInfo);
+			_eraseParticle(prevParticles[i]);
 
 			// draw new one
 			particles[i].core.coords += trajectory;
@@ -145,7 +172,3 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
 }
-
-// void Object::setThemeBP(vector< vector<int> > &bp) {
-// 	this->blueprint = bp;
-// }
