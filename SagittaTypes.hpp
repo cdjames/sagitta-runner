@@ -25,12 +25,11 @@ typedef struct Coord {
 		y += rhs.y;
 		return *this;
 	}
-	// Coord& operator+(const Coord& rhs) {
-	// 	Coord res = *this;
-	// 	res += rhs;
-	// 	// res.y += rhs.y;
-	// 	return res;
-	// }
+	friend Coord operator+(const Coord& rhs, const Coord& lhs) {
+		Coord res = rhs;
+		res += lhs;
+		return res;
+	}
 
 	// Coord& operator=(const Coord& rhs) {
 	// 	x = rhs.x;

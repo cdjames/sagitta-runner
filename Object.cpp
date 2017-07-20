@@ -131,14 +131,13 @@ Particle Object::move(Coord tr) {
 		while(!done)
 		{	
 			/* look for collisions and return result of collision */
-			printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
-			new_coords = particles[i].core.coords;
-			new_coords += trajectory;
-			printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
+			// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
+			new_coords = particles[i].core.coords + trajectory;
+			// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
 			/* check gameboard at that location; if obstacle is hit, 
 			 add the ParticleInfo to the return particle */
 			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x];
-			printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
+			// printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
 
 			if(detectCollision(r_particle, gb_info)) {
 				done = true; // get out of loop, send back r_particle with collision
