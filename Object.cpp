@@ -28,7 +28,16 @@ Object::Object(WINDOW * win,
 Object::Object() {}
 Object::~Object() {}
 
-Particle Object::detectCollision(Particle p) {}
+bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
+	if(pi.type == OBSTACLE) {
+		p.info = pi; // send object info back
+		p.collided = GAMEOVER; // set collision info and send back
+		return true;
+	} else {
+		return false;
+	}
+		
+}
 
 void Object::initParticles() {
 	/* make a ship for practice */
@@ -90,6 +99,8 @@ Particle Object::move(Coord tr) {
 		// return DUMMY_PARTICLE; // get out, you have no object
 
 	Particle r_particle = DUMMY_PARTICLE;
+	ParticleInfo gb_info;
+	Coord new_coords;
 	setTrajectory(tr);
 	/* look for collisions and return result of collision (or later 
 		return "dummy" particle after the move) */
@@ -119,23 +130,38 @@ Particle Object::move(Coord tr) {
 		/* loop, erasing previous particle and drawing new one in one pass */
 		while(!done)
 		{	
-			// erase old particle
-			// prevParticles[i].core.symbol = ' ';
-			// _drawParticle(prevParticles[i], blankInfo);
-			_eraseParticle(prevParticles[i]);
+			/* look for collisions and return result of collision */
+			printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
+			new_coords = particles[i].core.coords;
+			new_coords += trajectory;
+			printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
+			/* check gameboard at that location; if obstacle is hit, 
+			 add the ParticleInfo to the return particle */
+			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x];
+			printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
 
-			// draw new one
-			particles[i].core.coords += trajectory;
-			_drawParticle(particles[i], info);
-
-			// increment/decrement and get out of loop
-			i += incdec;
-			if (tr.y < 0 || tr.x < 0) {
-				if (i == psize)
-					done = true;
+			if(detectCollision(r_particle, gb_info)) {
+				done = true; // get out of loop, send back r_particle with collision
+				r_particle.core.coords = new_coords; // will be used to start explosion
 			} else {
-				if (i < psize)
-					done = true;
+				// erase old particle
+				// prevParticles[i].core.symbol = ' ';
+				// _drawParticle(prevParticles[i], blankInfo);
+				_eraseParticle(prevParticles[i]);
+
+				// draw new one
+				particles[i].core.coords += trajectory;
+				_drawParticle(particles[i], info);
+
+				// increment/decrement and get out of loop
+				i += incdec;
+				if (tr.y < 0 || tr.x < 0) {
+					if (i == psize)
+						done = true;
+				} else {
+					if (i < psize)
+						done = true;
+				}
 			}
 		}
 
@@ -171,4 +197,5 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 // virtual void setType() = 0;
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
+	mvprintw(0, 100, " %d, %d  ", tr.x, tr.y);
 }

@@ -33,7 +33,7 @@ protected:
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
 
-	Particle detectCollision(Particle p);
+	bool detectCollision(Particle &p, ParticleInfo &pi);
 
 	/*********************************************************************
 	** Description: initParticles()

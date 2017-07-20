@@ -72,7 +72,7 @@ GameManager::GameManager(WINDOW * win) {
 	initWindow();
 	initColors();
 	theShip = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
-	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, EXPLOSION, SPACE);
+	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
 	placeShip();
 	placeObject(testO);
 }
@@ -135,6 +135,8 @@ void GameManager::run() {
 			shipStatus = theShip.move(trajectory);
 			if (shipStatus.collided == EDGE) {
 				mvprintw(0, 48, "hit the edge  ");
+			} else if(shipStatus.collided == GAMEOVER) {
+				mvprintw(0, 48, "gameover      ");
 			} else {
 				mvprintw(0, 48, "              ");
 			}

@@ -25,6 +25,12 @@ typedef struct Coord {
 		y += rhs.y;
 		return *this;
 	}
+	// Coord& operator+(const Coord& rhs) {
+	// 	Coord res = *this;
+	// 	res += rhs;
+	// 	// res.y += rhs.y;
+	// 	return res;
+	// }
 
 	// Coord& operator=(const Coord& rhs) {
 	// 	x = rhs.x;
@@ -32,6 +38,12 @@ typedef struct Coord {
 	// 	return *this;
 	// }
 } Coord;
+
+// Coord operator+(const Coord& right, const Coord& left) {
+// 	Coord res = right;
+// 	res += left;
+// 	return res;
+// }
 
 /* info about particle used in the main gameboard, and also in Particles themselves */
 typedef struct ParticleInfo {
