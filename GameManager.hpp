@@ -28,7 +28,7 @@ protected:
 			obstacleRefreshCounter,
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
-
+	unsigned short fr_counter, fr_factor;
 	Object theShip;
 	int input;
 	Particle shipStatus;

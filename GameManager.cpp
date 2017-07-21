@@ -67,12 +67,15 @@ void GameManager::setScreenSize() {
 GameManager::GameManager(WINDOW * win) {
 	this->win = win;
 	input = ' ';
+	fr_counter = 0;
+	fr_factor = 4;
 	setScreenSize();
 	initGameboard();
 	initWindow();
 	initColors();
 	theShip = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
 	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
+	testO.setEnemy(SHIP);
 	placeShip();
 	placeObject(testO);
 }
@@ -89,15 +92,15 @@ short GameManager::run() {
 		input = getch();
 		// save the previous user coordinates
 		// prev_user_coords = user_coords;
-		// /* determine background framerate (gTimeout * fr_multiplier) and update background
-		// 	as necessary 
-		// */
-		// if(fr_counter == fr_multiplier) {
-		// 	moveScreenLeft(); // pure virtual; needs to be implemented in child class
-		// 	fr_counter = 0;
-		// } else {
-		// 	fr_counter++;
-		// }
+		/* determine background framerate (gTimeout * fr_multiplier) and update background
+			as necessary 
+		*/
+		if(fr_counter == fr_factor) {
+			// move the objects
+			fr_counter = 0;
+		} else {
+			fr_counter++;
+		}
 
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
