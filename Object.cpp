@@ -22,6 +22,7 @@ Object::Object(WINDOW * win,
 	info = {type, id};
 	this->theme = theme;
 	blueprint = OBJ_BLPRNTS[type][theme][0];
+	enemy = OBSTACLE;
 	initParticles();
 }
 
@@ -29,7 +30,7 @@ Object::Object() {}
 Object::~Object() {}
 
 bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
-	if(pi.type == OBSTACLE) {
+	if(pi.type == enemy) {
 		p.info = pi; // send object info back
 		p.collided = GAMEOVER; // set collision info and send back
 		return true;
@@ -197,4 +198,8 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
 	mvprintw(0, 100, " %d, %d  ", tr.x, tr.y);
+}
+
+void Object::setEnemy(ObjectType enemy) {
+	this->enemy = enemy;
 }

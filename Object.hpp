@@ -32,6 +32,7 @@ protected:
 	vector<Particle> particles; // the actual particles that make up the object
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
+	ObjectType enemy;
 
 	bool detectCollision(Particle &p, ParticleInfo &pi);
 
@@ -111,6 +112,8 @@ public:
 	*********************************************************************/
 	void setTrajectory(Coord tr);
 	// void setThemeBP(vector< vector<int> > &bp);
+
+	void setEnemy(ObjectType enemy);
 };
 
 #endif
