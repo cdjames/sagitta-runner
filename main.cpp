@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "GameManager.hpp"
+#include "MenuManager.hpp"
 
 void initScreen();
 void exitCurses(WINDOW * win);
@@ -14,11 +15,13 @@ int main()
 {
 	WINDOW * win;
 	initScreen();
-	GameManager GM = GameManager(win);
-	GM.run(); // runs until user presses q
-	// while (getch() != 'q'){
-	// 	continue;
-	// }
+	MenuManager MM = MenuManager();
+	GameManager GM = GameManager(win); 
+	int play = MM.mainMenu();
+	if (play == 1){
+		GM.updateSettings(MM);	
+		GM.run(); // runs until user presses q
+	}
 	exitCurses(win);
 	return 0;
 }
@@ -31,7 +34,7 @@ void initScreen() {
 	timeout(DEF_TIMEOUT); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
-	printw("Press 'q' to quit.");	// instructions at top of screen
+//	printw("Press 'q' to quit.");	// instructions at top of screen
 	refresh();					// put the printw on the screen
 }
 

@@ -20,8 +20,11 @@ Object.o: clean
 GameManager.o: clean
 	g++ -c GameManager.cpp ${OPS}
 
-runner: clean GameManager.o Object.o
-	g++ main.cpp GameManager.o Object.o -o ${PROG1} ${OPS}
+MenuManager.o: clean
+	g++ -c MenuManager.cpp ${OPS}
+
+runner: clean GameManager.o Object.o MenuManager.o
+	g++ main.cpp GameManager.o Object.o MenuManager.o -o ${PROG1} ${OPS}
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}

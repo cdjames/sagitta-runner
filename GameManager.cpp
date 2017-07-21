@@ -173,3 +173,7 @@ void GameManager::run() {
 	// testO.testgameboard();
 	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }
+
+void GameManager::updateSettings(MenuManager MM){
+	difficulty = MM.difficultyLevel;
+}
