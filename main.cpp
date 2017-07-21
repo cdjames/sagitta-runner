@@ -18,12 +18,9 @@ int main()
 	MenuManager MM = MenuManager();
 	GameManager GM = GameManager(win); 
 	int play = MM.mainMenu();
-	GM.updateSettings(MM);	
 	if (play == 1){
+		GM.updateSettings(MM);	
 		GM.run(); // runs until user presses q
-		while (getch() != 'q'){
-	 		continue;
-		}
 	}
 	exitCurses(win);
 	return 0;
