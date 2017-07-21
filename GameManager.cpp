@@ -79,8 +79,10 @@ GameManager::GameManager(WINDOW * win) {
 
 GameManager::~GameManager() {}
 
-void GameManager::run() {
+short GameManager::run() {
 	bool moveShip = false;
+	short gameStatus = -1;
+	gameover = false;
 	Coord trajectory;
 	do 
 	{
@@ -137,6 +139,7 @@ void GameManager::run() {
 				mvprintw(0, 48, "hit the edge  ");
 			} else if(shipStatus.collided == GAMEOVER) {
 				mvprintw(0, 48, "gameover      ");
+				gameover = true;
 			} else {
 				mvprintw(0, 48, "              ");
 			}
@@ -147,7 +150,14 @@ void GameManager::run() {
 		
 		wrefresh(win); // for window
 
-	} while (input != 'q');
+	} while (input != 'q' && !gameover);
+
+	if(input == 'q')
+		gameStatus = 0;
+	else if (gameover)
+		gameStatus = 1;
+
+	return gameStatus; // 0 or 1, or -1 if some strange error occurred
 
 	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
 }

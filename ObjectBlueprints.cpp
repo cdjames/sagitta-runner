@@ -32,7 +32,7 @@ void createShipBlueprints() {
 
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_SHIP_BP);
-	std::cout << "ship, space, first symbol=" << OBJECT_VARS[0][1].symbol << std::endl;
+	// std::cout << "ship, space, first symbol=" << OBJECT_VARS[0][1].symbol << std::endl;
 	// push more variations if necessary
 
 	/* when done, push themes onto the main blueprints array */
@@ -46,11 +46,11 @@ void createShipBlueprints() {
 
 	OBJECT_VARS3.push_back(DEF_SHIP_BP);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
-	std::cout << "ship, space, first symbol=" << OBJ_THEMES[0][0][1].symbol << std::endl;
+	// std::cout << "ship, space, first symbol=" << OBJ_THEMES[0][0][1].symbol << std::endl;
 
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
-	std::cout << "ship, space, first symbol=" << OBJ_BLPRNTS[0][0][0][1].symbol << std::endl;
+	// std::cout << "ship, space, first symbol=" << OBJ_BLPRNTS[0][0][0][1].symbol << std::endl;
 
 	/* clear the OBJ_THEMES array to reuse */
 	// resizeObjThemes();
@@ -160,5 +160,5 @@ void createAllBlueprints() {
 	createBulletBlueprints();
 	createExplosionBlueprints();
 	createObstacleBlueprints();
-	std::cout << "ship, space, first size=" << OBJ_BLPRNTS[0][0][0].size() << std::endl;
+	// std::cout << "ship, space, first size=" << OBJ_BLPRNTS[0][0][0].size() << std::endl;
 }

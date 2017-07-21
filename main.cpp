@@ -9,18 +9,23 @@
 
 void initScreen();
 void exitCurses(WINDOW * win);
-void initObjects();
 
 int main()
 {
-	/* create the blueprints for the objects (might take a second) */
+	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;
 	initScreen();
-	// initObjects();
 	GameManager GM = GameManager(win);
-	GM.run(); // runs until user presses q
+	short playerdied = GM.run(); // runs until user presses q or hits an obstacle
 	exitCurses(win);
+
+	if(playerdied == 1)
+		std::cout << "player hit an obstacle" << std::endl;
+	else if (!playerdied) // i.e. 0
+		std::cout << "player pressed q to quit" << std::endl;
+	else // i.e. -1
+		std::cout << "something strange happened in run()" << std::endl;
 	return 0;
 }
 
@@ -39,8 +44,4 @@ void initScreen() {
 void exitCurses(WINDOW * win) {
 	delwin(win);	// delete the window
 	endwin();		// End curses mode
-}
-
-void initObjects() {
-	createShipBlueprints();
 }

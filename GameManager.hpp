@@ -32,6 +32,7 @@ protected:
 	Object theShip;
 	int input;
 	Particle shipStatus;
+	bool gameover;
 
 	void initWindow();
 	void initGameboard();
@@ -50,7 +51,7 @@ protected:
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
-	void run();
+	short run();
 };
 
 #endif
