@@ -17,6 +17,7 @@ Object::Object(WINDOW * win,
 	this->gameboard = gameboard;
 	this->start = start;
 	this->max = max;
+	this->gbMax = Coord {max.x + (DEF_BUFFER*2), max.y + (DEF_BUFFER*2)};
 	trajectory = {0, 0};
 	id = 1;
 	info = {type, id};
@@ -95,85 +96,90 @@ void Object::_eraseParticle(Particle &p) {
 }
 
 Particle Object::move(Coord tr) {
+	unsigned short onScreen = 0; // incremented if any particle in object is drawn
 	/* make sure you have info for your object */
 	if(!particles.size())
-		initParticles(); // create a new object from whatever template you have
-		// return DUMMY_PARTICLE; // get out, you have no object
+		return DUMMY_PARTICLE; // get out, you have no object
 
 	Particle r_particle = DUMMY_PARTICLE;
 	ParticleInfo gb_info;
 	Coord new_coords;
 	setTrajectory(tr);
-	/* look for collisions and return result of collision (or later 
-		return "dummy" particle after the move) */
 
-	/* if no collisions with other objects, check for boundaries */
-	if( !(topy + tr.y < 0
-	   || bottomy + tr.y > max.y 
-	   || leftx + tr.x < 0
-	   || rightx + tr.x > max.x) ) {
-		// move if not against boundaries
-		ParticleInfo blankInfo = { NONE, 0 };
-		prevParticles = particles;
+	ParticleInfo blankInfo = { NONE, 0 };
+	prevParticles = particles;
 
-		/* need to start at first particle if moving left and up
-			otherwise start at last particle */
-		int i, psize, incdec;
-		if (tr.y < 0 || tr.x < 0) { // moving left or up
-			i = 0;
-			psize = particles.size();
-			incdec = 1;
-		} else {
-			i = particles.size()-1;
-			psize = 0;
-			incdec = -1;
-		}
-		bool done = false;
-		/* loop, erasing previous particle and drawing new one in one pass */
-		while(!done)
-		{	
-			/* look for collisions and return result of collision */
-			// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
-			new_coords = particles[i].core.coords + trajectory;
-			// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
-			/* check gameboard at that location; if obstacle is hit, 
-			 add the ParticleInfo to the return particle */
+	/* need to start at first particle if moving left and up
+		otherwise start at last particle */
+	int i, psize, incdec;
+	if (tr.y < 0 || tr.x < 0) { // moving left or up
+		i = 0;
+		psize = particles.size();
+		incdec = 1;
+	} else {
+		i = particles.size()-1;
+		psize = 0;
+		incdec = -1;
+	}
+	bool done = false;
+	/* loop, erasing previous particle and drawing new one in one pass */
+	while(!done)
+	{	
+		// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
+		new_coords = particles[i].core.coords + trajectory;
+		// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
+		
+		/* check to see if we're still on the screen */
+		if (_inBounds(new_coords)) {
+			/* we're still on the screen, so increment onScreen and handle movement */
+			onScreen++;
+
+			/* get info about particle at new location on gameboard */
 			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x+DEF_BUFFER];
 			// printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
 
+			/* check gameboard at that location; if obstacle is hit, 
+			 add the ParticleInfo to the return particle */
 			if(detectCollision(r_particle, gb_info)) {
 				done = true; // get out of loop, send back r_particle with collision
 				r_particle.core.coords = new_coords; // will be used to start explosion
 			} else {
 				// erase old particle
-				// prevParticles[i].core.symbol = ' ';
-				// _drawParticle(prevParticles[i], blankInfo);
 				_eraseParticle(prevParticles[i]);
 
-				// draw new one
+				/* draw new one 
+					If none are drawn during the whole loop, onScreen flag will be zero */
 				particles[i].core.coords += trajectory;
 				_drawParticle(particles[i], info);
-
-				// increment/decrement and get out of loop
-				i += incdec;
-				if (tr.y < 0 || tr.x < 0) {
-					if (i == psize)
-						done = true;
-				} else {
-					if (i < psize)
-						done = true;
-				}
 			}
 		}
+		/* else object is not drawn because it has gone past the screen */
+		else {
+			/* but still need to update coords and erase old particle */
+			_eraseParticle(prevParticles[i]);
+			particles[i].core.coords += trajectory;
+		}
 
-		/* recompute boundaries of ship */
+		// increment/decrement and get out of loop
+		i += incdec;
+		if (tr.y < 0 || tr.x < 0) {
+			if (i == psize)
+				done = true;
+		} else {
+			if (i < psize)
+				done = true;
+		}
+	}
+
+	if(!onScreen) {
+		r_particle.collided = DESTROY;
+	} else {
+		/* if we're still on the screen, recompute boundaries of ship */
 		topy += tr.y;
 		bottomy += tr.y;
 		leftx += tr.x;
 		rightx += tr.x;
-	} else {
-		// hit an edge, so set the collision type in return particle
-		r_particle.collided = EDGE;
+		r_particle.collided = ALIVE;
 	}
 
 	return r_particle;
@@ -197,6 +203,20 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 	wattroff(win, COLOR_PAIR(c));
 	// update gameboard
 	(*gameboard)[y+DEF_BUFFER][x+DEF_BUFFER] = pi;
+}
+
+/*********************************************************************
+** Description: _checkBounds()
+** Look at 
+*********************************************************************/
+bool Object::_inBounds(Coord nc) {
+	if(nc.y >= 0 &&
+		nc.y < max.y &&
+		nc.x >= 0 &&
+		nc.x < max.x)
+		return true;
+	else
+		return false;
 }
 
 // virtual void setType() = 0;

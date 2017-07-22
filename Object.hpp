@@ -22,6 +22,7 @@ protected:
 	vector< vector<ParticleInfo> > * gameboard; // inherited; max.x+DEF_BUFFER x max.y+(DEF_BUFFER*2)
 	Coord start; // starting coordinates for the object
 	Coord max; // coordinates of the max drawing area of the window
+	Coord gbMax; // maximum indexes for gameboard
 	Coord trajectory; // amount in x and y to adjust in each direction
 	unsigned short width, height; // for computing top, left, right, bottom values
 	int topy, bottomy, leftx, rightx;
@@ -56,6 +57,8 @@ protected:
 	** _drawParticle()
 	*********************************************************************/
 	void _eraseParticle(Particle &p);
+
+	bool _inBounds(Coord nc);
 	
 public:
 	/*********************************************************************

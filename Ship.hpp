@@ -28,6 +28,22 @@ public:
 	Ship(); // unused
 	~Ship(); // unused currently
 
+	/*********************************************************************
+	** Description: Ship::move() overrides Object::move() (see * for differences)
+	** Parameter: Coord tr = trajectory for the movement. I.e. -1, -1 means
+	** move diagonally up.
+	**
+	** Sets trajectory of object
+	** Erases old particle, draws new one, updating particle coords.
+	** Recomputes ship boundaries (topy, topx, etc.)
+	** Detects collisions
+	**
+	** Returns: * Particle with collided set to EDGE if edge is encountered;
+				Partice with collided set to GAMEOVER if obstacle is encountered;
+				Particle with collided set to HIT if bullet hits obstacle
+	*********************************************************************/
+	Particle move(Coord tr);
+
 };
 
 #endif

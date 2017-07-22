@@ -18,12 +18,12 @@ void GameManager::initGameboard() {
 	   maxY is window + buffer on top and bottom */
 	maxGBWinXY.x = maxWinXY.x + (DEF_BUFFER*2);
 	maxGBWinXY.y = maxWinXY.y + (DEF_BUFFER*2);
-	ParticleInfo dummyParticle;
-	dummyParticle.type = NONE;
-	dummyParticle.id = 0;
+	ParticleInfo dummyInfo;
+	dummyInfo.type = NONE;
+	dummyInfo.id = 0;
 	
 	/* create a vector of vectors, v[maxY][maxX] */
-	gameboard = vector< vector<ParticleInfo> > (maxGBWinXY.y, vector<ParticleInfo>(maxGBWinXY.x, dummyParticle));
+	gameboard = vector< vector<ParticleInfo> > (maxGBWinXY.y, vector<ParticleInfo>(maxGBWinXY.x, dummyInfo));
 }
 
 void GameManager::initColors() {
@@ -146,16 +146,15 @@ short GameManager::run() {
 			Particle obstStatus;
 			// move the objects
 			obstStatus = testO.dftMove();
-			if (obstStatus.collided == EDGE) {
-				mvprintw(0, 48, "obst hit edge  ");
-				testO.clearObject();
-			} else if(obstStatus.collided == GAMEOVER) {
+			if (obstStatus.collided == GAMEOVER) {
 				mvprintw(0, 48, "gameover object");
 				gameover = true;
-			} 
-			// else {
-			// 	mvprintw(0, 48, "obstStatus.collided=%d", obstStatus.collided);
-			// }
+			} else if (obstStatus.collided == DESTROY) {
+				// mvprintw(0, 48, "object is offscreen and can be destroyed");
+				std::cout << "object is offscreen and can be destroyed" << std::endl;
+			} else if (obstStatus.collided == NOHIT) {
+				std::cout << "no more object" << std::endl;
+			}
 			fr_counter = 0;
 		} else {
 			fr_counter++;

@@ -10,10 +10,11 @@
 #define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
+#define STATUS_SIZE 2
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
-enum CollisionType { FRIENDLY = NONE + 1, GAMEOVER, HIT, NOHIT, EDGE };
+enum CollisionType { FRIENDLY = NONE + 1, GAMEOVER, HIT, NOHIT, EDGE, DESTROY, ALIVE };
 enum ThemeType { SPACE = 0, FOOD, SPORTS };
 
 /* simple coordinate structure */
