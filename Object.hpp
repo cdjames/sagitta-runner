@@ -24,6 +24,7 @@ protected:
 	Coord max; // coordinates of the max drawing area of the window
 	Coord gbMax; // maximum indexes for gameboard
 	Coord trajectory; // amount in x and y to adjust in each direction
+	Coord * front;
 	unsigned short width, height; // for computing top, left, right, bottom values
 	int topy, bottomy, leftx, rightx;
 	short numParticles; // how many particles actually make up the object
@@ -72,6 +73,7 @@ public:
 	Object(); // unused
 	~Object(); // unused currently
 
+	Coord getFront();
 	unsigned long getId();
 	/*********************************************************************
 	** Description: draw()

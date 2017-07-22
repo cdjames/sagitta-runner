@@ -19,7 +19,7 @@ void createShipBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS3;
 
 	/* create for theme 0 */
-	DEF_SHIP_BP.push_back( ParticleCore { Coord {3, 5} , 0, 0} ); // first line is the height and width
+	DEF_SHIP_BP.push_back( ParticleCore { Coord {3, 5} , 0, 6} ); // first line is the height and width
 	DEF_SHIP_BP.push_back( ParticleCore { Coord {1, 0}, '\\', 1} ); // then x, y, symbol, color
 	DEF_SHIP_BP.push_back( ParticleCore { Coord {2, 0}, '\\', 1} );
 	DEF_SHIP_BP.push_back( ParticleCore { Coord {0, 1}, '}', 7} );

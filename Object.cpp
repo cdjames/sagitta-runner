@@ -30,6 +30,10 @@ Object::Object(WINDOW * win,
 Object::Object() {}
 Object::~Object() {}
 
+Coord Object::getFront() {
+	return *(this->front);
+}
+
 unsigned long Object::getId() {
 	return this->id;
 }
@@ -67,6 +71,7 @@ void Object::initParticles() {
 		);
 		particles[i-1].core.coords += start; // adjust by the starting coordinates
 	}
+	front = &(particles[blueprint[0].color].core.coords);
 } // may be virtual in the end
 
 void Object::draw() {

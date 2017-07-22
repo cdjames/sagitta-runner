@@ -14,7 +14,7 @@ CXX += GameManager.cpp
 
 PROG1 = runner
 
-default: runner
+default: testing
 
 ObjectBlueprints.o:
 	g++ -c ObjectBlueprints.cpp ${OPS}
@@ -28,11 +28,16 @@ Ship.o:
 Obstacle.o:
 	g++ -c Obstacle.cpp ${OPS_NC}
 
+Bullet.o:
+	g++ -c Bullet.cpp ${OPS_NC}
+
 GameManager.o:
 	g++ -c GameManager.cpp ${OPS_NC}
 
-runner: clean Object.o Ship.o Obstacle.o ObjectBlueprints.o GameManager.o 
-	g++ main.cpp GameManager.o Object.o Ship.o Obstacle.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+runner: Object.o Ship.o Obstacle.o Bullet.o ObjectBlueprints.o GameManager.o 
+	g++ main.cpp GameManager.o Object.o Ship.o Obstacle.o Bullet.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+
+testing: clean runner
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}

@@ -79,6 +79,9 @@ GameManager::GameManager(WINDOW * win) {
 	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
 	placeShip();
 
+	testBullet = Bullet(this->win, &gameboard, theShip.getFront()+Coord{1, 0}, maxWinXY, BULLET, SPACE, ++bulletId);
+	testBullet.draw();
+
 	testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO.setEnemy(SHIP);
 	placeObject(testO, obstacleId);
