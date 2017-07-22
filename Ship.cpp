@@ -13,9 +13,10 @@ Ship::Ship(WINDOW * win,
 				ObjectType type, 
 				ThemeType theme) : Object(win, gameboard, start, max, type, theme)
 {
+	id = 1;
 }
 
-Ship::Ship() {}
+Ship::Ship() : Object() {}
 Ship::~Ship() {}
 
 Particle Ship::move(Coord tr) {

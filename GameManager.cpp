@@ -38,8 +38,9 @@ void GameManager::initColors() {
     }
 }
 
-void GameManager::placeObject(Object &o) {
+void GameManager::placeObject(Object &o, unsigned long &id) {
 	o.draw();
+	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Object>(id,o));
 }
 
 void GameManager::placeShip() {
@@ -65,6 +66,7 @@ void GameManager::setScreenSize() {
 
 /* public */
 GameManager::GameManager(WINDOW * win) {
+	obstacleId = bulletId = explosionId = 0;
 	this->win = win;
 	input = ' ';
 	fr_counter = 0;
@@ -74,15 +76,16 @@ GameManager::GameManager(WINDOW * win) {
 	initWindow();
 	initColors();
 	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
-	testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
+	testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO.setEnemy(SHIP);
 	placeShip();
-	placeObject(testO);
+	placeObject(testO, obstacleId);
 }
 
 GameManager::~GameManager() {}
 
 short GameManager::run() {
+	std::map<unsigned long,Object>::iterator obst_it;
 	bool moveShip = false;
 	short gameStatus = -1;
 	gameover = false;
@@ -139,25 +142,30 @@ short GameManager::run() {
 		}
 
 		/* after user moves, move objects */
-		/* determine background framerate (gTimeout * fr_multiplier) and update background
+		/* determine background framerate (fr_factor * timeout) and update obstacles
 			as necessary 
 		*/
-		if(fr_counter == fr_factor && !gameover) {
-			Particle obstStatus;
-			// move the objects
-			obstStatus = testO.dftMove();
-			if (obstStatus.collided == GAMEOVER) {
-				mvprintw(0, 48, "gameover object");
-				gameover = true;
-			} else if (obstStatus.collided == DESTROY) {
-				// mvprintw(0, 48, "object is offscreen and can be destroyed");
-				std::cout << "object is offscreen and can be destroyed" << std::endl;
-			} else if (obstStatus.collided == NOHIT) {
-				std::cout << "no more object" << std::endl;
+		if(Obstacles.size()){
+			if(fr_counter == fr_factor && !gameover) {
+				Particle obstStatus;
+				// move the objects
+				for(obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
+					obstStatus = obst_it->second.dftMove();
+					if (obstStatus.collided == GAMEOVER) {
+						mvprintw(0, 48, "gameover object");
+						gameover = true;
+					} else if (obstStatus.collided == DESTROY) {
+						// mvprintw(0, 48, "object is offscreen and can be destroyed");
+						std::cout << "object is offscreen and can be destroyed" << std::endl;
+						Obstacles.erase(obst_it); // remove from the map
+					} else if (obstStatus.collided == NOHIT) {
+						std::cout << "no more object" << std::endl;
+					}
+				}
+				fr_counter = 0;
+			} else {
+				fr_counter++;
 			}
-			fr_counter = 0;
-		} else {
-			fr_counter++;
 		}
 
 		refresh(); // for status screen

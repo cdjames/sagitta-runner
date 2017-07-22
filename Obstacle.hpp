@@ -24,7 +24,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Obstacle(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme);
+	Obstacle(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
 	Obstacle(); // unused
 	~Obstacle(); // unused currently
 

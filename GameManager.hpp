@@ -9,6 +9,7 @@
 
 #include <curses.h>
 #include <vector>
+#include <map>
 #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
@@ -30,17 +31,25 @@ protected:
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor;
-	Object theShip;
+	Ship theShip;
 	Object testO;
 	int input;
 	Particle shipStatus;
 	bool gameover;
 
+	std::map<unsigned long,Object> Obstacles;
+	std::map<unsigned long,Object> Bullets;
+	std::map<unsigned long,Object> Explosions;
+
+	unsigned long obstacleId,
+					bulletId,
+					explosionId;
+
 	void initWindow();
 	void initGameboard();
 	void initColors();
 	void placeShip();
-	void placeObject(Object &o);
+	void placeObject(Object &o, unsigned long &id);
 	void moveShip();
 	void createObstacles();
 	void moveObstacles();

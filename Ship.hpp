@@ -42,7 +42,7 @@ public:
 				Partice with collided set to GAMEOVER if obstacle is encountered;
 				Particle with collided set to HIT if bullet hits obstacle
 	*********************************************************************/
-	Particle move(Coord tr);
+	virtual Particle move(Coord tr);
 
 };
 

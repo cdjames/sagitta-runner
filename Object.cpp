@@ -19,7 +19,6 @@ Object::Object(WINDOW * win,
 	this->max = max;
 	this->gbMax = Coord {max.x + (DEF_BUFFER*2), max.y + (DEF_BUFFER*2)};
 	trajectory = {0, 0};
-	id = 1;
 	info = {type, id};
 	this->theme = theme;
 	blueprint = OBJ_BLPRNTS[type][theme][0];
@@ -31,10 +30,15 @@ Object::Object(WINDOW * win,
 Object::Object() {}
 Object::~Object() {}
 
+unsigned long Object::getId() {
+	return this->id;
+}
+
 bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
 	if(pi.type == enemy) {
 		p.info = pi; // send object info back
 		p.collided = GAMEOVER; // set collision info and send back
+		std::cout << "detected collision" << std::cout;
 		return true;
 	} else {
 		return false;
@@ -151,6 +155,9 @@ Particle Object::move(Coord tr) {
 					If none are drawn during the whole loop, onScreen flag will be zero */
 				particles[i].core.coords += trajectory;
 				_drawParticle(particles[i], info);
+
+				// set collided type
+				r_particle.collided = ALIVE;
 			}
 		}
 		/* else object is not drawn because it has gone past the screen */
@@ -179,7 +186,6 @@ Particle Object::move(Coord tr) {
 		bottomy += tr.y;
 		leftx += tr.x;
 		rightx += tr.x;
-		r_particle.collided = ALIVE;
 	}
 
 	return r_particle;

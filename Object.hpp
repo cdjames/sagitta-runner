@@ -72,6 +72,7 @@ public:
 	Object(); // unused
 	~Object(); // unused currently
 
+	unsigned long getId();
 	/*********************************************************************
 	** Description: draw()
 	** Place the object on the window and gameboard
@@ -105,7 +106,7 @@ public:
 				Partice with collided set to GAMEOVER if obstacle is encountered;
 				Particle with collided set to HIT if bullet hits obstacle
 	*********************************************************************/
-	Particle move(Coord tr);
+	virtual Particle move(Coord tr);
 	Particle dftMove();
 
 	// virtual void setType() = 0;
