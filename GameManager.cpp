@@ -90,6 +90,8 @@ GameManager::GameManager(WINDOW * win) {
 	testO2.setEnemy(SHIP);
 	placeObject(testO2, obstacleId);
 
+	testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
+	testExplosion.draw();
 }
 
 GameManager::~GameManager() {}

@@ -31,11 +31,14 @@ Obstacle.o:
 Bullet.o:
 	g++ -c Bullet.cpp ${OPS_NC}
 
+Explosion.o:
+	g++ -c Explosion.cpp ${OPS_NC}
+
 GameManager.o:
 	g++ -c GameManager.cpp ${OPS_NC}
 
-runner: Object.o Ship.o Obstacle.o Bullet.o ObjectBlueprints.o GameManager.o 
-	g++ main.cpp GameManager.o Object.o Ship.o Obstacle.o Bullet.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o 
+	g++ main.cpp GameManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
 
 testing: clean runner
 

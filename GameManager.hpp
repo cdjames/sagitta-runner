@@ -14,6 +14,7 @@
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
 #include "Bullet.hpp" // includes Object
+#include "Explosion.hpp" // includes Object
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 
@@ -36,6 +37,7 @@ protected:
 	Object testO;
 	Object testO2;
 	Object testBullet;
+	Object testExplosion;
 	int input;
 	Particle shipStatus;
 	bool gameover;
