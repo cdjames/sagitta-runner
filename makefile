@@ -25,11 +25,14 @@ Object.o:
 Ship.o:
 	g++ -c Ship.cpp ${OPS_NC}
 
+Obstacle.o:
+	g++ -c Obstacle.cpp ${OPS_NC}
+
 GameManager.o:
 	g++ -c GameManager.cpp ${OPS_NC}
 
-runner: clean GameManager.o Object.o Ship.o ObjectBlueprints.o
-	g++ main.cpp GameManager.o Object.o Ship.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+runner: clean Object.o Ship.o Obstacle.o ObjectBlueprints.o GameManager.o 
+	g++ main.cpp GameManager.o Object.o Ship.o Obstacle.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}

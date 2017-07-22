@@ -11,6 +11,7 @@
 #include <vector>
 #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
+#include "Obstacle.hpp" // includes Object
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 
