@@ -228,7 +228,7 @@ bool Object::_inBounds(Coord nc) {
 // virtual void setType() = 0;
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
-	mvprintw(0, 100, " %d, %d  ", tr.x, tr.y);
+	// mvprintw(0, 100, " %d, %d  ", tr.x, tr.y);
 }
 
 void Object::setEnemy(ObjectType enemy) {

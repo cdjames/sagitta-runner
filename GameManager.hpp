@@ -33,6 +33,7 @@ protected:
 	unsigned short fr_counter, fr_factor;
 	Ship theShip;
 	Object testO;
+	Object testO2;
 	int input;
 	Particle shipStatus;
 	bool gameover;

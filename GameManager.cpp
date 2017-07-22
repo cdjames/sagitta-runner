@@ -75,11 +75,18 @@ GameManager::GameManager(WINDOW * win) {
 	initGameboard();
 	initWindow();
 	initColors();
+
 	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
+	placeShip();
+
 	testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO.setEnemy(SHIP);
-	placeShip();
 	placeObject(testO, obstacleId);
+
+	testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 0}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
+	testO2.setEnemy(SHIP);
+	placeObject(testO2, obstacleId);
+
 }
 
 GameManager::~GameManager() {}
@@ -152,21 +159,23 @@ short GameManager::run() {
 				for(obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
 					obstStatus = obst_it->second.dftMove();
 					if (obstStatus.collided == GAMEOVER) {
-						mvprintw(0, 48, "gameover object");
+						// mvprintw(0, 48, "gameover object");
 						gameover = true;
 					} else if (obstStatus.collided == DESTROY) {
 						// mvprintw(0, 48, "object is offscreen and can be destroyed");
-						std::cout << "object is offscreen and can be destroyed" << std::endl;
+						// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
 						Obstacles.erase(obst_it); // remove from the map
-					} else if (obstStatus.collided == NOHIT) {
-						std::cout << "no more object" << std::endl;
-					}
+					} 
+					// else if (obstStatus.collided == NOHIT) {
+					// 	std::cout << "no more object" << std::endl;
+					// }
 				}
 				fr_counter = 0;
 			} else {
 				fr_counter++;
 			}
 		}
+		mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
 
 		refresh(); // for status screen
 		
