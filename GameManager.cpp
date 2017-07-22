@@ -16,7 +16,7 @@ void GameManager::initWindow() {
 void GameManager::initGameboard() {
 	/* maxX is going to be the size of the window + a buffer of x pixels. The buffer is for the placement of new obstacles 
 	   maxY is window + buffer on top and bottom */
-	maxGBWinXY.x = maxWinXY.x + DEF_BUFFER;
+	maxGBWinXY.x = maxWinXY.x + (DEF_BUFFER*2);
 	maxGBWinXY.y = maxWinXY.y + (DEF_BUFFER*2);
 	ParticleInfo dummyParticle;
 	dummyParticle.type = NONE;
@@ -73,8 +73,8 @@ GameManager::GameManager(WINDOW * win) {
 	initGameboard();
 	initWindow();
 	initColors();
-	theShip = Object(this->win, &gameboard, Coord {3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
-	Object testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
+	theShip = Object(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
+	testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
 	testO.setEnemy(SHIP);
 	placeShip();
 	placeObject(testO);
@@ -90,17 +90,6 @@ short GameManager::run() {
 	do 
 	{
 		input = getch();
-		// save the previous user coordinates
-		// prev_user_coords = user_coords;
-		/* determine background framerate (gTimeout * fr_multiplier) and update background
-			as necessary 
-		*/
-		if(fr_counter == fr_factor) {
-			// move the objects
-			fr_counter = 0;
-		} else {
-			fr_counter++;
-		}
 
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
@@ -147,6 +136,29 @@ short GameManager::run() {
 				mvprintw(0, 48, "              ");
 			}
 			moveShip = false;
+		}
+
+		/* after user moves, move objects */
+		/* determine background framerate (gTimeout * fr_multiplier) and update background
+			as necessary 
+		*/
+		if(fr_counter == fr_factor && !gameover) {
+			Particle obstStatus;
+			// move the objects
+			obstStatus = testO.dftMove();
+			if (obstStatus.collided == EDGE) {
+				mvprintw(0, 48, "obst hit edge  ");
+				testO.clearObject();
+			} else if(obstStatus.collided == GAMEOVER) {
+				mvprintw(0, 48, "gameover object");
+				gameover = true;
+			} 
+			// else {
+			// 	mvprintw(0, 48, "obstStatus.collided=%d", obstStatus.collided);
+			// }
+			fr_counter = 0;
+		} else {
+			fr_counter++;
 		}
 
 		refresh(); // for status screen

@@ -30,6 +30,7 @@ protected:
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor;
 	Object theShip;
+	Object testO;
 	int input;
 	Particle shipStatus;
 	bool gameover;

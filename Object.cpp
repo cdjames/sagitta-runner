@@ -24,6 +24,7 @@ Object::Object(WINDOW * win,
 	blueprint = OBJ_BLPRNTS[type][theme][0];
 	enemy = OBSTACLE;
 	initParticles();
+	setTrajectory(Coord {-1, 0}); // by default move left (for obstacles)
 }
 
 Object::Object() {}
@@ -137,7 +138,7 @@ Particle Object::move(Coord tr) {
 			// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
 			/* check gameboard at that location; if obstacle is hit, 
 			 add the ParticleInfo to the return particle */
-			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x];
+			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x+DEF_BUFFER];
 			// printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
 
 			if(detectCollision(r_particle, gb_info)) {
@@ -178,6 +179,10 @@ Particle Object::move(Coord tr) {
 	return r_particle;
 }
 
+Particle Object::dftMove() {
+	return move(trajectory);
+}
+
 void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 	int x, y, c;
 	// p->coords += this->trajectory;
@@ -191,7 +196,7 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 	// turn color off
 	wattroff(win, COLOR_PAIR(c));
 	// update gameboard
-	(*gameboard)[y+DEF_BUFFER][x] = pi;
+	(*gameboard)[y+DEF_BUFFER][x+DEF_BUFFER] = pi;
 }
 
 // virtual void setType() = 0;

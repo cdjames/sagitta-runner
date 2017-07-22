@@ -103,6 +103,7 @@ public:
 				Particle with collided set to HIT if bullet hits obstacle
 	*********************************************************************/
 	Particle move(Coord tr);
+	Particle dftMove();
 
 	// virtual void setType() = 0;
 
