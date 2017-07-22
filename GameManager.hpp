@@ -10,7 +10,7 @@
 #include <curses.h>
 #include <vector>
 #include "SagittaTypes.hpp"
-#include "Object.hpp"
+#include "Ship.hpp" // includes Object
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 

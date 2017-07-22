@@ -73,7 +73,7 @@ GameManager::GameManager(WINDOW * win) {
 	initGameboard();
 	initWindow();
 	initColors();
-	theShip = Object(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
+	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
 	testO = Object(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE);
 	testO.setEnemy(SHIP);
 	placeShip();
