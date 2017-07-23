@@ -11,9 +11,9 @@ Bullet::Bullet(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme)
+				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
-	this->id = id;
+	info = {type, id};
 }
 
 Bullet::Bullet() {}

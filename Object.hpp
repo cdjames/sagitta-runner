@@ -24,11 +24,10 @@ protected:
 	Coord max; // coordinates of the max drawing area of the window
 	Coord gbMax; // maximum indexes for gameboard
 	Coord trajectory; // amount in x and y to adjust in each direction
-	Coord * front;
+	unsigned short front;
 	unsigned short width, height; // for computing top, left, right, bottom values
 	int topy, bottomy, leftx, rightx;
 	short numParticles; // how many particles actually make up the object
-	unsigned long id; // id of object
 	short theme; // the theme of the object
 	ParticleInfo info; // info about the object meant for the gameboard
 	vector<Particle> particles; // the actual particles that make up the object
@@ -69,7 +68,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme);
+	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
 	Object(); // unused
 	~Object(); // unused currently
 

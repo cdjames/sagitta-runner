@@ -34,16 +34,16 @@ protected:
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor;
 	Ship theShip;
-	Object testO;
-	Object testO2;
-	Object testBullet;
+	Obstacle testO;
+	Obstacle testO2;
+	Bullet testBullet;
 	Object testExplosion;
 	int input;
 	Particle shipStatus;
 	bool gameover;
 
-	std::map<unsigned long,Object> Obstacles;
-	std::map<unsigned long,Object> Bullets;
+	std::map<unsigned long,Obstacle> Obstacles;
+	std::map<unsigned long,Bullet> Bullets;
 	std::map<unsigned long,Object> Explosions;
 
 	unsigned long obstacleId,
@@ -54,7 +54,8 @@ protected:
 	void initGameboard();
 	void initColors();
 	void placeShip();
-	void placeObject(Object &o, unsigned long &id);
+	void placeObstacle(Obstacle &o, unsigned long &id);
+	void placeBullet(unsigned long &id);
 	void moveShip();
 	void createObstacles();
 	void moveObstacles();

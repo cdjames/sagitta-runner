@@ -11,9 +11,11 @@ Ship::Ship(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme) : Object(win, gameboard, start, max, type, theme)
+				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
-	id = 1;
+	info = {type, 1};
+	std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
+
 }
 
 Ship::Ship() : Object() {}
@@ -27,6 +29,7 @@ Particle Ship::move(Coord tr) {
 
 	Particle r_particle = DUMMY_PARTICLE;
 	ParticleInfo gb_info;
+	ParticleInfo cur_gb_info;
 	Coord new_coords;
 	setTrajectory(tr);
 	/* look for collisions and return result of collision (or later 
@@ -55,6 +58,7 @@ Particle Ship::move(Coord tr) {
 		}
 		bool done = false;
 		/* loop, erasing previous particle and drawing new one in one pass */
+		// int m = 1;
 		while(!done)
 		{	
 			/* look for collisions and return result of collision */
@@ -63,16 +67,14 @@ Particle Ship::move(Coord tr) {
 			// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
 			/* check gameboard at that location; if obstacle is hit, 
 			 add the ParticleInfo to the return particle */
+			// cur_gb_info = (*gameboard)[particles[i].core.coords.y+DEF_BUFFER][particles[i].core.coords.x+DEF_BUFFER];
 			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x+DEF_BUFFER];
-			// printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
+			// mvprintw(m++, 100, "gbinfo type=%d ", cur_gb_info.type);
 
 			if(detectCollision(r_particle, gb_info)) {
 				done = true; // get out of loop, send back r_particle with collision
 				r_particle.core.coords = new_coords; // will be used to start explosion
 			} else {
-				// erase old particle
-				// prevParticles[i].core.symbol = ' ';
-				// _drawParticle(prevParticles[i], blankInfo);
 				_eraseParticle(prevParticles[i]);
 
 				// draw new one
@@ -89,6 +91,7 @@ Particle Ship::move(Coord tr) {
 						done = true;
 				}
 			}
+
 		}
 
 		/* recompute boundaries of ship */

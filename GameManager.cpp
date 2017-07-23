@@ -38,9 +38,21 @@ void GameManager::initColors() {
     }
 }
 
-void GameManager::placeObject(Object &o, unsigned long &id) {
+void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	o.draw();
-	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Object>(id,o));
+	std::map<unsigned long,Obstacle>::iterator cntr;
+	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
+}
+
+void GameManager::placeBullet(unsigned long &id) {
+	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
+	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
+											&gameboard, 
+											theShip.getFront()+Coord{1, 0}, 
+											maxWinXY, BULLET, SPACE, ++bulletId)));
+	
+	obst_it->second.draw();
+	obst_it->second.setTrajectory(Coord{1,0});
 }
 
 void GameManager::placeShip() {
@@ -76,34 +88,40 @@ GameManager::GameManager(WINDOW * win) {
 	initWindow();
 	initColors();
 
-	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE);
+	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1);
 	placeShip();
 
-	testBullet = Bullet(this->win, &gameboard, theShip.getFront()+Coord{1, 0}, maxWinXY, BULLET, SPACE, ++bulletId);
-	testBullet.draw();
+	// testBullet = Bullet(this->win, &gameboard, theShip.getFront()+Coord{1, 0}, maxWinXY, BULLET, SPACE, ++bulletId);
+	// testBullet.draw();
 
 	testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO.setEnemy(SHIP);
-	placeObject(testO, obstacleId);
+	placeObstacle(testO, obstacleId);
+
+	mvprintw(0, 80, "id=%d", obstacleId);
 
 	testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 0}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO2.setEnemy(SHIP);
-	placeObject(testO2, obstacleId);
+	placeObstacle(testO2, obstacleId);
 
-	testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
-	testExplosion.draw();
+	// testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
+	// testExplosion.draw();
 }
 
 GameManager::~GameManager() {}
 
 short GameManager::run() {
-	std::map<unsigned long,Object>::iterator obst_it;
+	// std::map<unsigned long,Obstacle>::iterator obst_it;
+	// std::map<unsigned long,Bullet>::iterator bull_it;
+	Particle obstStatus;
 	bool moveShip = false;
 	short gameStatus = -1;
 	gameover = false;
 	Coord trajectory;
 	do 
 	{
+		std::map<unsigned long,Obstacle>::iterator obst_it;
+		// std::map<unsigned long,Bullet>::iterator bull_it;
 		input = getch();
 
 		/* the idea here is to update the user_coords variable, "move" the ship there,
@@ -133,13 +151,56 @@ short GameManager::run() {
 				trajectory = {1, 0};
 				moveShip = true;
 				break;
-			// case 32-100:
-			// 	mvprintw(0, 24, "pressed %c     ", input);
-			// 	break;
+			case 32:
+				mvprintw(0, 24, "pressed space  ");
+				/* create a new bullet and add to Bullets map */
+				placeBullet(++bulletId);
+				break;
 			default: 
 				break;
 		}
 
+
+		/* move the bullets */
+		if(Bullets.size()){
+			// if(fr_counter == fr_factor && !gameover) {
+			Particle obstStatus;
+			// move the objects
+			
+			for(std::map<unsigned long,Bullet>::iterator bull_it = Bullets.begin(); bull_it != Bullets.end(); ++bull_it) {
+				obstStatus = bull_it->second.dftMove();
+				mvprintw(0, 60, "id=%d", obstStatus.info.id);
+				if (obstStatus.collided == GAMEOVER) {
+					// mvprintw(0, 48, "gameover object");
+					
+					/* find the Obstacle it hit and remove it */
+					obst_it = Obstacles.find(obstStatus.info.id);
+					obst_it->second.erase();
+					Obstacles.erase(obst_it);
+					
+					/* must erase bullet after obstacle */
+					bull_it->second.erase();
+					Bullets.erase(bull_it);
+				} 
+
+				// else if (obstStatus.collided == HIT) {
+				// 	// mvprintw(0, 48, "object is offscreen and can be destroyed");
+				// 	// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
+
+				// } 
+				// else if (obstStatus.collided == NOHIT) {
+				// 	std::cout << "no more object" << std::endl;
+				// }
+
+			}
+
+				// fr_counter = 0;
+			// } else {
+			// 	fr_counter++;
+			// }
+		}
+
+		/* move the ship */
 		if(moveShip) {
 			shipStatus = theShip.move(trajectory);
 			if (shipStatus.collided == EDGE) {
@@ -159,28 +220,29 @@ short GameManager::run() {
 		*/
 		if(Obstacles.size()){
 			if(fr_counter == fr_factor && !gameover) {
-				Particle obstStatus;
 				// move the objects
-				for(obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
+				for(std::map<unsigned long,Obstacle>::iterator obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
 					obstStatus = obst_it->second.dftMove();
 					if (obstStatus.collided == GAMEOVER) {
-						// mvprintw(0, 48, "gameover object");
+						mvprintw(0, 48, "object hit ship");
 						gameover = true;
+						continue;
 					} else if (obstStatus.collided == DESTROY) {
 						// mvprintw(0, 48, "object is offscreen and can be destroyed");
 						// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
 						Obstacles.erase(obst_it); // remove from the map
 					} 
-					// else if (obstStatus.collided == NOHIT) {
-					// 	std::cout << "no more object" << std::endl;
-					// }
+					else if (obstStatus.collided == HIT) {
+						// std::cout << "no more object" << std::endl;
+						continue;
+					}
 				}
 				fr_counter = 0;
 			} else {
 				fr_counter++;
 			}
 		}
-		mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
+		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
 
 		refresh(); // for status screen
 		

@@ -11,7 +11,7 @@ Object::Object(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme) 
+				ThemeType theme, unsigned long id) 
 {
 	this->win = win;
 	this->gameboard = gameboard;
@@ -19,8 +19,8 @@ Object::Object(WINDOW * win,
 	this->max = max;
 	this->gbMax = Coord {max.x + (DEF_BUFFER*2), max.y + (DEF_BUFFER*2)};
 	trajectory = {0, 0};
-	info = {type, id};
 	this->theme = theme;
+	info = {type, id};
 	blueprint = OBJ_BLPRNTS[type][theme][0];
 	enemy = OBSTACLE;
 	initParticles();
@@ -31,18 +31,20 @@ Object::Object() {}
 Object::~Object() {}
 
 Coord Object::getFront() {
-	return *(this->front);
+	return particles[front].core.coords;
 }
 
 unsigned long Object::getId() {
-	return this->id;
+	return this->info.id;
 }
 
 bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
+	mvprintw(0, 70, "type=%d", pi.type);
 	if(pi.type == enemy) {
 		p.info = pi; // send object info back
 		p.collided = GAMEOVER; // set collision info and send back
-		std::cout << "detected collision" << std::cout;
+		// std::cout << "detected collision" << std::cout;
+		// mvprintw(0, 70, "type=%d", p.info.type);
 		return true;
 	} else {
 		return false;
@@ -71,7 +73,8 @@ void Object::initParticles() {
 		);
 		particles[i-1].core.coords += start; // adjust by the starting coordinates
 	}
-	front = &(particles[blueprint[0].color].core.coords);
+	front = blueprint[0].color;
+	// std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
 } // may be virtual in the end
 
 void Object::draw() {
