@@ -55,7 +55,7 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 
 void GameManager::placeBullet(unsigned long &id) {
 	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
-	std::map<unsigned long,Object>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Object>(id,Bullet(this->win, 
+	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
 											maxWinXY, BULLET, SPACE, id)));
@@ -131,8 +131,8 @@ GameManager::GameManager(WINDOW * win) {
 GameManager::~GameManager() {}
 
 short GameManager::run() {
-	// std::map<unsigned long,Obstacle>::iterator obst_it;
-	// std::map<unsigned long,Bullet>::iterator bull_it;
+	std::map<unsigned long,Obstacle>::iterator obst_it;
+	std::map<unsigned long,Bullet>::iterator bull_it;
 	Particle obstStatus;
 	bool moveShip = false;
 	bool makeExplosion = false;
@@ -142,7 +142,7 @@ short GameManager::run() {
 	Coord exp_coord;
 	do 
 	{
-		std::map<unsigned long,Obstacle>::iterator obst_it;
+		// std::map<unsigned long,Obstacle>::iterator obst_it;
 		// std::map<unsigned long,Bullet>::iterator bull_it;
 		input = getch();
 
@@ -176,7 +176,7 @@ short GameManager::run() {
 			case 32:
 				mvprintw(0, 24, "pressed space  ");
 				/* create a new bullet and add to Bullets map */
-				// placeBullet(++bulletId);
+				placeBullet(++bulletId);
 				break;
 			default: 
 				break;
@@ -189,30 +189,29 @@ short GameManager::run() {
 			// move the objects
 			
 			
-			for(std::map<unsigned long,Object>::iterator bull_it = Bullets.begin(); bull_it != Bullets.end(); ++bull_it) {
-				explosion:
-				// obstStatus = bull_it->second.dftMove();
-				obstStatus = bull_it->second.move(Coord{1, 0});
+			bull_it = Bullets.begin();
+			// for(std::map<unsigned long,Bullet>::iterator bull_it = Bullets.begin(); bull_it != Bullets.end(); ++bull_it) {
+			while(bull_it != Bullets.end()) {
+				obstStatus = bull_it->second.dftMove();
 				mvprintw(0, 60, "id=%d", obstStatus.info.id);
 				if (obstStatus.collided == GAMEOVER) {
+					mvprintw(maxWinXY.y-1, 50, "gameover object");
+					
 					/* find the Obstacle it hit and remove it */
 					obst_it = Obstacles.find(obstStatus.info.id);
 					obst_it->second.erase();
-					Obstacles.erase(obst_it);
+					obst_it = Obstacles.erase(obst_it);
 					
 					/* must erase bullet after obstacle */
 					bull_it->second.erase();
-					Bullets.erase(bull_it);
+					bull_it = Bullets.erase(bull_it);
 
-					// printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
 					makeExplosion = true;
-
 				} else if (obstStatus.collided == DESTROY) {
-						mvprintw(0, 48, "object is offscreen and can be destroyed");
-						// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
-						bull_it->second.erase();
-						Bullets.erase(bull_it); // remove from the map
-					}
+					bull_it = Bullets.erase(bull_it);
+				} else {
+					++bull_it;
+				}
 				// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
 				// else if (obstStatus.collided == HIT) {
 				// 	// mvprintw(0, 48, "object is offscreen and can be destroyed");
@@ -274,27 +273,38 @@ short GameManager::run() {
 			as necessary 
 		*/
 		if(Obstacles.size()){
-			if(fr_counter == fr_factor && !gameover) {
+			// if(fr_counter == fr_factor && !gameover) {
 				// move the objects
-				for(std::map<unsigned long,Obstacle>::iterator obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
+			// std::map<unsigned long,Obstacle>::iterator obst_it;
+			obst_it = Obstacles.begin();
+				// for(obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
+				while(obst_it != Obstacles.end()){
 					obstStatus = obst_it->second.dftMove();
 					if (obstStatus.collided == GAMEOVER) {
-						mvprintw(0, 48, "object hit ship");
-						gameover = true;
+						mvprintw(90, 48, "object hit ship");
+						obst_it->second.erase();
+						obst_it = Obstacles.erase(obst_it);
+						// gameover = true;
 					} else if (obstStatus.collided == DESTROY) {
 						// mvprintw(0, 48, "object is offscreen and can be destroyed");
 						// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
-						Obstacles.erase(obst_it); // remove from the map
+						obst_it->second.erase();
+						obst_it = Obstacles.erase(obst_it); // remove from the map
 					} 
 					// else if (obstStatus.collided == HIT) {
 					// 	// std::cout << "no more object" << std::endl;
 					// 	continue;
 					// }
+					else{
+						++obst_it;
+					}
+					// if(!Obstacles.size())
+					// 	break;
 				}
-				fr_counter = 0;
-			} else {
-				fr_counter++;
-			}
+			// 	fr_counter = 0;
+			// } else {
+			// 	fr_counter++;
+			// }
 		}
 		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
 
