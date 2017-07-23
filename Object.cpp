@@ -110,10 +110,13 @@ void Object::_eraseParticle(Particle &p) {
 Particle Object::move(Coord tr) {
 	unsigned short onScreen = 0; // incremented if any particle in object is drawn
 	/* make sure you have info for your object */
-	if(!particles.size())
-		return DUMMY_PARTICLE; // get out, you have no object
-
+	mvprintw(2, 90, "gbMax=%d,%d", gbMax.x,  gbMax.y);
+	mvprintw(3, 90, "gb_info coords=%d,%d", particles[0].core.coords.x+DEF_BUFFER,  particles[0].core.coords.y+DEF_BUFFER);
 	Particle r_particle = DUMMY_PARTICLE;
+
+	if(!particles.size())
+		return r_particle; // get out, you have no object
+
 	ParticleInfo gb_info;
 	Coord new_coords;
 	setTrajectory(tr);
@@ -139,6 +142,8 @@ Particle Object::move(Coord tr) {
 	{	
 		// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
 		new_coords = particles[i].core.coords + trajectory;
+		if(info.type == BULLET)
+		mvprintw(0, 100, " %d, %d  ", new_coords.x, new_coords.y);
 		// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
 		
 		/* check to see if we're still on the screen */
@@ -148,7 +153,7 @@ Particle Object::move(Coord tr) {
 
 			/* get info about particle at new location on gameboard */
 			gb_info = (*gameboard)[new_coords.y+DEF_BUFFER][new_coords.x+DEF_BUFFER];
-			// printw("gb_info coords=%d,%d", new_coords.x,  new_coords.y+DEF_BUFFER);
+			
 
 			/* check gameboard at that location; if obstacle is hit, 
 			 add the ParticleInfo to the return particle */
@@ -225,9 +230,9 @@ void Object::_drawParticle(Particle &p, ParticleInfo pi) {
 *********************************************************************/
 bool Object::_inBounds(Coord nc) {
 	if(nc.y >= 0 &&
-		nc.y < max.y &&
+		nc.y <= max.y &&
 		nc.x >= 0 &&
-		nc.x < max.x)
+		nc.x <= max.x)
 		return true;
 	else
 		return false;
@@ -236,7 +241,7 @@ bool Object::_inBounds(Coord nc) {
 // virtual void setType() = 0;
 void Object::setTrajectory(Coord tr) {
 	this->trajectory = tr;
-	// mvprintw(0, 100, " %d, %d  ", tr.x, tr.y);
+
 }
 
 void Object::setEnemy(ObjectType enemy) {

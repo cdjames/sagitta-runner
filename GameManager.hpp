@@ -37,14 +37,14 @@ protected:
 	Ship theShip;
 	Obstacle testO;
 	Obstacle testO2;
-	Bullet testBullet;
+	Object testBullet;
 	Explosion testExplosion;
 	int input;
 	Particle shipStatus;
 	bool gameover;
 
 	std::map<unsigned long,Obstacle> Obstacles;
-	std::map<unsigned long,Bullet> Bullets;
+	std::map<unsigned long,Object> Bullets;
 	std::map<unsigned long,Explosion> Explosions;
 
 	unsigned long obstacleId,

@@ -4,6 +4,7 @@
 
 OPS = -std=c++11
 OPS += -g 
+OPS += -ggdb
 OPS += -Wall 
 
 OPS_NC = -lncurses
