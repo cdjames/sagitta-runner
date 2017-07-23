@@ -21,12 +21,24 @@ Explosion::Explosion() {}
 Explosion::~Explosion() {}
 
 unsigned short Explosion::animate() {
+	prevParticles = particles;
+	if(animations_left%2 == 0) {
+		blueprint = OBJ_BLPRNTS[info.type][1][0];
+	} else {
+		blueprint = OBJ_BLPRNTS[info.type][0][0];
+	}
+
+	particles.clear();
+	initParticles();
+
 	for (int i = 0; i < numParticles; i++)
 	{
 		if(i < numParticles-1)
 			particles[i].core.color = particles[i+1].core.color;
 		else
 			particles[i].core.color = particles[0].core.color;
+				
+		_eraseParticle(prevParticles[i]);
 		_drawParticle(particles[i], info);
 	}
 

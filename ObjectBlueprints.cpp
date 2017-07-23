@@ -93,12 +93,12 @@ void createExplosionBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS3;
 
 	/* create for theme 0 */
-	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
-	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 0}, '*', 11} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 0}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
+	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 1}, '*', 11} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 0}, '*', 9} ); // then x, y, symbol, color
 	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, '*', 166} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 2}, '*', 9} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 2}, '*', 11} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 1}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 2}, '*', 11} ); // then x, y, symbol, color
 
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_EXP_BP);
@@ -111,7 +111,15 @@ void createExplosionBlueprints() {
 	vector< vector<ParticleCore> > ().swap(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
-	OBJECT_VARS2.push_back(DEF_EXP_BP);
+	vector<ParticleCore> exp_2;
+	exp_2.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
+	exp_2.push_back( ParticleCore { Coord {0, 0}, '*', 11} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {2, 0}, '*', 9} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {1, 1}, '*', 166} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {2, 2}, '*', 9} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {0, 2}, '*', 11} ); // then x, y, symbol, color
+
+	OBJECT_VARS2.push_back(exp_2);
 	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 	OBJECT_VARS3.push_back(DEF_EXP_BP);

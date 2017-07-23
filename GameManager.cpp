@@ -92,7 +92,7 @@ GameManager::GameManager(WINDOW * win) {
 	input = ' ';
 	fr_counter = exp_fr_counter = 0;
 	fr_factor = 4;
-	exp_fr_factor = 2;
+	exp_fr_factor = 3;
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -108,7 +108,7 @@ GameManager::GameManager(WINDOW * win) {
 	testO.setEnemy(SHIP);
 	placeObstacle(testO, obstacleId);
 
-	mvprintw(0, 80, "id=%d", obstacleId);
+	// mvprintw(0, 80, "id=%d", obstacleId);
 
 	testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 0}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 	testO2.setEnemy(SHIP);
@@ -214,28 +214,28 @@ short GameManager::run() {
 			// }
 		}
 
-		if(makeExplosion) {
-			printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
+		// if(makeExplosion) {
+		// 	printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
 
-			placeExplosion(++explosionId, obstStatus.core.coords);
-			makeExplosion = false;
-		}
+		// 	placeExplosion(++explosionId, obstStatus.core.coords);
+		// 	makeExplosion = false;
+		// }
 
-		/* handle explosions */
-		if(Explosions.size()){
-			if(exp_fr_counter == exp_fr_factor) {
-				for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
-					unsigned short still_animating = obst_it->second.animate();
-					if (!still_animating) {
-						obst_it->second.erase();
-						Explosions.erase(obst_it);
-					}
-				}
-				exp_fr_counter = 0; 
-			} else {
-				exp_fr_counter++;
-			}
-		}
+		// /* handle explosions */
+		// else if(Explosions.size()){
+		// 	if(exp_fr_counter == exp_fr_factor) {
+		// 		for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
+		// 			unsigned short still_animating = obst_it->second.animate();
+		// 			if (!still_animating) {
+		// 				obst_it->second.erase();
+		// 				Explosions.erase(obst_it);
+		// 			}
+		// 		}
+		// 		exp_fr_counter = 0; 
+		// 	} else {
+		// 		exp_fr_counter++;
+		// 	}
+		// }
 
 		/* move the ship */
 		if(moveShip) {
