@@ -11,6 +11,9 @@
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define STATUS_SIZE 2
+#define MAX_BULLETS 5
+#define STAT_ENEMIES 24
+#define STAT_BULLETS 17
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };

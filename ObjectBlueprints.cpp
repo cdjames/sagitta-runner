@@ -120,24 +120,24 @@ void createExplosionBlueprints() {
 
 	/* create more items for each them or just push existing item */
 	vector<ParticleCore> ship_exp;
-	ship_exp.push_back( ParticleCore { Coord {5, 5}, 0, 0} ); // first line is the height and width
-	ship_exp.push_back( ParticleCore { Coord {2, 1}, ' ', 11} ); // then x, y, symbol, color
+	ship_exp.push_back( ParticleCore { Coord {3, 5}, 0, 0} ); // first line is the height and width
+	ship_exp.push_back( ParticleCore { Coord {2, 0}, '*', 11} ); // then x, y, symbol, color
 	ship_exp.push_back( ParticleCore { Coord {1, 1}, '*', 11} ); // then x, y, symbol, color
 	ship_exp.push_back( ParticleCore { Coord {3, 1}, '*', 9} ); // then x, y, symbol, color
-	ship_exp.push_back( ParticleCore { Coord {2, 2}, '*', 166} ); // then x, y, symbol, color
-	ship_exp.push_back( ParticleCore { Coord {3, 3}, '*', 9} ); // then x, y, symbol, color
-	ship_exp.push_back( ParticleCore { Coord {1, 3}, '*', 11} ); // then x, y, symbol, color
-	ship_exp.push_back( ParticleCore { Coord {2, 4}, ' ', 11} ); // then x, y, symbol, color
+	ship_exp.push_back( ParticleCore { Coord {2, 1}, '*', 166} ); // then x, y, symbol, color
+	ship_exp.push_back( ParticleCore { Coord {3, 2}, ' ', 9} ); // then x, y, symbol, color
+	ship_exp.push_back( ParticleCore { Coord {1, 2}, ' ', 11} ); // then x, y, symbol, color
+	ship_exp.push_back( ParticleCore { Coord {2, 2}, '*', 11} ); // then x, y, symbol, color
 
 	vector<ParticleCore> ship_exp_2;
-	ship_exp_2.push_back( ParticleCore { Coord {5, 5}, 0, 0} ); // first line is the height and width
-	ship_exp_2.push_back( ParticleCore { Coord {1, 1}, '*', 11} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {3, 1}, '*', 9} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {0, 2}, '*', 166} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {2, 2}, '*', 9} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {4, 2}, '*', 166} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {3, 3}, '*', 9} ); // then x, y, symbol, color
-	ship_exp_2.push_back( ParticleCore { Coord {1, 3}, '*', 11} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {3, 5}, 0, 0} ); // first line is the height and width
+	ship_exp_2.push_back( ParticleCore { Coord {1, 0}, '*', 11} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {3, 0}, '*', 9} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {0, 1}, '*', 166} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {2, 1}, '*', 9} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {4, 1}, '*', 166} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {3, 2}, '*', 9} ); // then x, y, symbol, color
+	ship_exp_2.push_back( ParticleCore { Coord {1, 2}, '*', 11} ); // then x, y, symbol, color
 
 	OBJECT_VARS2.push_back(ship_exp);
 	OBJECT_VARS2.push_back(ship_exp_2);

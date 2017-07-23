@@ -87,7 +87,7 @@ void GameManager::setScreenSize() {
 
 /* public */
 GameManager::GameManager(WINDOW * win) {
-	obstacleId = bulletId = explosionId = 0;
+	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
 	input = ' ';
 	fr_counter = exp_fr_counter = 0;
@@ -142,6 +142,7 @@ short GameManager::run() {
 	gameover = false;
 	Coord trajectory;
 	Coord exp_coord;
+	Coord ship_coord;
 
 	/* main loop */
 	do 
@@ -161,33 +162,34 @@ short GameManager::run() {
 			then draw a blank where it used to be, finally refreshing the window */
 		switch (input){
 			case KEY_UP:
-				mvprintw(0, 24, "pressed up     ");
+				// mvprintw(0, 24, "pressed up     ");
 				// set the trajectory in the ship
 				trajectory = {0, -1}; 
 				moveShip = true;
 				break;
 
 			case KEY_DOWN:
-				mvprintw(0, 24, "pressed down   ");
+				// mvprintw(0, 24, "pressed down   ");
 				trajectory = {0, 1}; 
 				moveShip = true;
 				break;
 
 			case KEY_LEFT:
-				mvprintw(0, 24, "pressed left   ");
+				// mvprintw(0, 24, "pressed left   ");
 				trajectory = {-1, 0}; 
 				moveShip = true;
 				break;
 
 			case KEY_RIGHT:
-				mvprintw(0, 24, "pressed right  ");
+				// mvprintw(0, 24, "pressed right  ");
 				trajectory = {1, 0};
 				moveShip = true;
 				break;
 			case 32:
-				mvprintw(0, 24, "pressed space  ");
+				// mvprintw(0, 24, "pressed space  ");
 				/* create a new bullet and add to Bullets map */
-				placeBullet(++bulletId);
+				if(Bullets.size() < MAX_BULLETS)
+					placeBullet(++bulletId);
 				break;
 			default: 
 				break;
@@ -202,9 +204,9 @@ short GameManager::run() {
 			bull_it = Bullets.begin();
 			while(bull_it != Bullets.end()) {
 				obstStatus = bull_it->second.dftMove();
-				mvprintw(0, 60, "id=%d", obstStatus.info.id);
+				// mvprintw(0, 60, "id=%d", obstStatus.info.id);
 				if (obstStatus.collided == GAMEOVER) {
-					mvprintw(maxWinXY.y-1, 50, "gameover object");
+					// mvprintw(maxWinXY.y-1, 50, "gameover object");
 					
 					/* find the Obstacle it hit and remove it */
 					obst_it = Obstacles.find(obstStatus.info.id);
@@ -217,7 +219,7 @@ short GameManager::run() {
 
 					makeExplosion = true;
 					exp_coord = obstStatus.core.coords;
-
+					numObstaclesDestroyed++;
 				} else if (obstStatus.collided == DESTROY) {
 					bull_it = Bullets.erase(bull_it);
 				} else {
@@ -238,15 +240,19 @@ short GameManager::run() {
 			// 	exp_fr_counter++;
 			// }
 		}
-		mvprintw(1, 100, "%d  ", Bullets.size()); // testing	
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", MAX_BULLETS-Bullets.size()); // testing	
 
 		/* move the ship */
 		if(moveShip) {
 			shipStatus = theShip.move(trajectory);
 			if (shipStatus.collided == EDGE) {
-				mvprintw(0, 48, "hit the edge  ");
+				// mvprintw(0, 48, "hit the edge  ");
 			} else if(shipStatus.collided == GAMEOVER) {
-				mvprintw(0, 48, "gameover      ");
+				/* find the Obstacle it hit and remove it */
+				obst_it = Obstacles.find(shipStatus.info.id);
+				obst_it->second.erase();
+				obst_it = Obstacles.erase(obst_it);
+				ship_coord = shipStatus.core.coords;
 				gameover = true;
 			} else {
 				mvprintw(0, 48, "              ");
@@ -266,7 +272,9 @@ short GameManager::run() {
 				while(obst_it != Obstacles.end()){
 					obstStatus = obst_it->second.dftMove();
 					if (obstStatus.collided == GAMEOVER) {
-						mvprintw(90, 48, "object hit ship");
+
+						// mvprintw(90, 48, "object hit ship");
+						ship_coord = obstStatus.core.coords;
 						obst_it->second.erase();
 						obst_it = Obstacles.erase(obst_it);
 						gameover = true;
@@ -288,9 +296,12 @@ short GameManager::run() {
 			}
 		}
 
+		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d |", numObstaclesDestroyed);
+
 		/* create new explosions */
-		if(makeExplosion) {
-			mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
+		if(makeExplosion && !gameover) {
+			// mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
 
 			placeExplosion(++explosionId, exp_coord);
 			// placeExplosion(++explosionId, obstStatus.core.coords);
@@ -298,7 +309,7 @@ short GameManager::run() {
 		}
 
 		/* animate explosions */
-		if(Explosions.size()){	
+		if(Explosions.size() && !gameover){	
 			if(exp_fr_counter == exp_fr_factor) {
 				exp_it = Explosions.begin();
 				while(exp_it != Explosions.end()) {
@@ -316,7 +327,6 @@ short GameManager::run() {
 				exp_fr_counter++;
 			}
 		}
-		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
 
 		refresh(); // for status screen
 		
@@ -324,13 +334,33 @@ short GameManager::run() {
 
 	} while (input != 'q' && !gameover);
 
-	if(input == 'q')
+	/* handle game over scenario */
+	if(input == 'q') // if user quit
 		gameStatus = 0;
-	else if (gameover) {
+	else if (gameover) { // if user died
+		mvprintw(0, 0, "GAMEOVER - press 'q' to quit  ");
 		gameStatus = 1;
+		/* erase the ship */
+		theShip.erase();
+		// wrefresh(win); // for window
+		/* add an explosion where the ship was */
+		// mvprintw(4, 30,"ship_coord=%d,%d", ship_coord.x, ship_coord.y);
+		Explosion shipExplosion(this->win, 
+								&gameboard, 
+								ship_coord - Coord{1,1}, 
+								maxWinXY, EXPLOSION, FOOD, 1);
+		do 
+		{
+			if(exp_fr_counter == exp_fr_factor) {
+				shipExplosion.animate();
+				exp_fr_counter = 0; 
+			} else {
+				exp_fr_counter++;
+			}
+			wrefresh(win); // for window
+			input = getch();
+		} while (input != 'q');
 	}
 
-	return gameStatus; // 0 or 1, or -1 if some strange error occurred
-
-	// std::cout << gameboard[(maxWinXY.y / 2)+DEF_BUFFER][3+DEF_BUFFER].id << std::endl;
+	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }

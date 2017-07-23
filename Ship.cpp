@@ -14,7 +14,7 @@ Ship::Ship(WINDOW * win,
 				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
 	info = {type, 1};
-	std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
+	// std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
 
 }
 
