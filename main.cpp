@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "GameManager.hpp"
+#include "MenuManager.hpp"
 
 void initScreen();
 void exitCurses(WINDOW * win);
@@ -17,8 +18,15 @@ int main()
 	createAllBlueprints();
 	WINDOW * win;
 	initScreen();
-	GameManager GM = GameManager(win);
-	short playerdied = GM.run(); // runs until user presses q or hits an obstacle
+	short playerdied = -1;
+	MenuManager MM = MenuManager();
+	GameManager GM = GameManager(win); 
+	int play = MM.mainMenu();
+	if (play == 1){
+		// mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
+		GM.updateSettings(MM);	
+		playerdied = GM.run(); // runs until user presses q
+	}
 	exitCurses(win);
 
 	if(playerdied == 1)
@@ -38,7 +46,6 @@ void initScreen() {
 	timeout(DEF_TIMEOUT); 				// wait x Ms for user input before going to next getch() call
 	noecho(); 					// don't print user input
 	curs_set(0);				// make cursor invisible if possible
-	printw("Press 'q' to quit.");	// instructions at top of screen
 	refresh();					// put the printw on the screen
 }
 

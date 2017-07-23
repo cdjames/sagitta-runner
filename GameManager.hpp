@@ -10,6 +10,7 @@
 #include <curses.h>
 #include <vector>
 #include <map>
+#include "MenuManager.hpp"
 #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
@@ -69,11 +70,12 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
-	
+	int difficulty;	
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
 	short run();
+	void updateSettings(MenuManager &MM);
 };
 
 #endif

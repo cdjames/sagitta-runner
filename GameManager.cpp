@@ -144,6 +144,8 @@ short GameManager::run() {
 	Coord exp_coord;
 	Coord ship_coord;
 
+	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
+	
 	/* main loop */
 	do 
 	{
@@ -363,4 +365,8 @@ short GameManager::run() {
 	}
 
 	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
+}
+
+void GameManager::updateSettings(MenuManager &MM){
+	difficulty = MM.difficultyLevel;
 }
