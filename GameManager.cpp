@@ -44,12 +44,21 @@ void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
+void GameManager::placeExplosion(unsigned long &id, Coord start) {
+	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
+											&gameboard, 
+											start - Coord{0,1}, 
+											maxWinXY, EXPLOSION, SPACE, id)));
+	obst_it->second.draw();
+	// obst_it->second.setTrajectory(Coord{1,0});
+}
+
 void GameManager::placeBullet(unsigned long &id) {
 	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
 	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
-											maxWinXY, BULLET, SPACE, ++bulletId)));
+											maxWinXY, BULLET, SPACE, id)));
 	
 	obst_it->second.draw();
 	obst_it->second.setTrajectory(Coord{1,0});
@@ -81,8 +90,9 @@ GameManager::GameManager(WINDOW * win) {
 	obstacleId = bulletId = explosionId = 0;
 	this->win = win;
 	input = ' ';
-	fr_counter = 0;
+	fr_counter = exp_fr_counter = 0;
 	fr_factor = 4;
+	exp_fr_factor = 2;
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -104,6 +114,7 @@ GameManager::GameManager(WINDOW * win) {
 	testO2.setEnemy(SHIP);
 	placeObstacle(testO2, obstacleId);
 
+	// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
 	// testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
 	// testExplosion.draw();
 }
@@ -115,9 +126,11 @@ short GameManager::run() {
 	// std::map<unsigned long,Bullet>::iterator bull_it;
 	Particle obstStatus;
 	bool moveShip = false;
+	bool makeExplosion = false;
 	short gameStatus = -1;
 	gameover = false;
 	Coord trajectory;
+	Coord exp_coord;
 	do 
 	{
 		std::map<unsigned long,Obstacle>::iterator obst_it;
@@ -164,15 +177,12 @@ short GameManager::run() {
 		/* move the bullets */
 		if(Bullets.size()){
 			// if(fr_counter == fr_factor && !gameover) {
-			Particle obstStatus;
 			// move the objects
 			
 			for(std::map<unsigned long,Bullet>::iterator bull_it = Bullets.begin(); bull_it != Bullets.end(); ++bull_it) {
 				obstStatus = bull_it->second.dftMove();
 				mvprintw(0, 60, "id=%d", obstStatus.info.id);
 				if (obstStatus.collided == GAMEOVER) {
-					// mvprintw(0, 48, "gameover object");
-					
 					/* find the Obstacle it hit and remove it */
 					obst_it = Obstacles.find(obstStatus.info.id);
 					obst_it->second.erase();
@@ -181,8 +191,12 @@ short GameManager::run() {
 					/* must erase bullet after obstacle */
 					bull_it->second.erase();
 					Bullets.erase(bull_it);
-				} 
 
+					// printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
+					makeExplosion = true;
+
+				} 
+				// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
 				// else if (obstStatus.collided == HIT) {
 				// 	// mvprintw(0, 48, "object is offscreen and can be destroyed");
 				// 	// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
@@ -200,6 +214,29 @@ short GameManager::run() {
 			// }
 		}
 
+		if(makeExplosion) {
+			printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
+
+			placeExplosion(++explosionId, obstStatus.core.coords);
+			makeExplosion = false;
+		}
+
+		/* handle explosions */
+		if(Explosions.size()){
+			if(exp_fr_counter == exp_fr_factor) {
+				for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
+					unsigned short still_animating = obst_it->second.animate();
+					if (!still_animating) {
+						obst_it->second.erase();
+						Explosions.erase(obst_it);
+					}
+				}
+				exp_fr_counter = 0; 
+			} else {
+				exp_fr_counter++;
+			}
+		}
+
 		/* move the ship */
 		if(moveShip) {
 			shipStatus = theShip.move(trajectory);
@@ -212,6 +249,7 @@ short GameManager::run() {
 				mvprintw(0, 48, "              ");
 			}
 			moveShip = false;
+
 		}
 
 		/* after user moves, move objects */

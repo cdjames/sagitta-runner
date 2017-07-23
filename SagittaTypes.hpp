@@ -26,9 +26,19 @@ typedef struct Coord {
 		y += rhs.y;
 		return *this;
 	}
+	Coord& operator-=(const Coord& rhs) {
+		x -= rhs.x;
+		y -= rhs.y;
+		return *this;
+	}
 	friend Coord operator+(const Coord& rhs, const Coord& lhs) {
 		Coord res = rhs;
 		res += lhs;
+		return res;
+	}
+	friend Coord operator-(const Coord& rhs, const Coord& lhs) {
+		Coord res = rhs;
+		res -= lhs;
 		return res;
 	}
 

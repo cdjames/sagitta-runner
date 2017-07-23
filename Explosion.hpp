@@ -14,7 +14,7 @@ using std::vector;
 class Explosion : public Object
 {
 protected:
-	
+	unsigned short animations_left; //
 	
 public:
 	/*********************************************************************
@@ -28,6 +28,7 @@ public:
 	Explosion(); // unused
 	~Explosion(); // unused currently
 
+	unsigned short animate();
 };
 
 #endif

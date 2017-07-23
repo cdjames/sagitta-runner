@@ -94,11 +94,11 @@ void createExplosionBlueprints() {
 
 	/* create for theme 0 */
 	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
-	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 1}, '*', 11} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 0}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 0}, '*', 11} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 0}, '*', 9} ); // then x, y, symbol, color
 	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 1}, '*', 166} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 1}, '*', 9} ); // then x, y, symbol, color
-	DEF_EXP_BP.push_back( ParticleCore { Coord {1, 2}, '*', 11} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {0, 2}, '*', 9} ); // then x, y, symbol, color
+	DEF_EXP_BP.push_back( ParticleCore { Coord {2, 2}, '*', 11} ); // then x, y, symbol, color
 
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_EXP_BP);

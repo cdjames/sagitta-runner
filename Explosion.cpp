@@ -14,7 +14,21 @@ Explosion::Explosion(WINDOW * win,
 				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
 	info = {type, id};
+	animations_left = 10;
 }
 
 Explosion::Explosion() {}
 Explosion::~Explosion() {}
+
+unsigned short Explosion::animate() {
+	for (int i = 0; i < numParticles; i++)
+	{
+		if(i < numParticles-1)
+			particles[i].core.color = particles[i+1].core.color;
+		else
+			particles[i].core.color = particles[0].core.color;
+		_drawParticle(particles[i], info);
+	}
+
+	return --animations_left;
+}
