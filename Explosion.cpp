@@ -23,9 +23,9 @@ Explosion::~Explosion() {}
 unsigned short Explosion::animate() {
 	prevParticles = particles;
 	if(animations_left%2 == 0) {
-		blueprint = OBJ_BLPRNTS[info.type][1][0];
+		blueprint = OBJ_BLPRNTS[info.type][theme][0];
 	} else {
-		blueprint = OBJ_BLPRNTS[info.type][0][0];
+		blueprint = OBJ_BLPRNTS[info.type][theme][1];
 	}
 
 	particles.clear();

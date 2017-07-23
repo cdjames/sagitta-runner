@@ -326,8 +326,9 @@ short GameManager::run() {
 
 	if(input == 'q')
 		gameStatus = 0;
-	else if (gameover)
+	else if (gameover) {
 		gameStatus = 1;
+	}
 
 	return gameStatus; // 0 or 1, or -1 if some strange error occurred
 

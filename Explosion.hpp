@@ -28,6 +28,14 @@ public:
 	Explosion(); // unused
 	~Explosion(); // unused currently
 
+	/*********************************************************************
+	** Description: animate()
+	** instead of moving, explosions animate
+	** the idea is to alternate colors and "states" so it looks like the
+	** explosion is rotating.
+	**
+	** returns a number signifying how many animations it has left
+	*********************************************************************/
 	unsigned short animate();
 };
 
