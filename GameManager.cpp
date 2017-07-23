@@ -39,7 +39,7 @@ void GameManager::initColors() {
 }
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
-	o.draw();
+	// o.draw();
 	std::map<unsigned long,Obstacle>::iterator cntr;
 	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
@@ -49,7 +49,7 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 											&gameboard, 
 											start - Coord{0,1}, 
 											maxWinXY, EXPLOSION, SPACE, id)));
-	obst_it->second.draw();
+	// obst_it->second.draw();
 	// obst_it->second.setTrajectory(Coord{1,0});
 }
 
@@ -60,7 +60,7 @@ void GameManager::placeBullet(unsigned long &id) {
 											theShip.getFront()+Coord{1, 0}, 
 											maxWinXY, BULLET, SPACE, id)));
 	
-	obst_it->second.draw();
+	// obst_it->second.draw();
 	obst_it->second.setTrajectory(Coord{1,0});
 }
 
@@ -90,9 +90,10 @@ GameManager::GameManager(WINDOW * win) {
 	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
 	input = ' ';
-	fr_counter = exp_fr_counter = 0;
-	fr_factor = 4;
-	exp_fr_factor = 3;
+	fr_counter = exp_fr_counter = create_counter = 0;
+	fr_factor = 3;
+	exp_fr_factor = 4;
+	create_factor = 15;
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -147,6 +148,10 @@ short GameManager::run() {
 	Coord trajectory;
 	Coord exp_coord;
 	Coord ship_coord;
+	int basequadsize = maxWinXY.y/QUAD_PARTS;
+	int quadsize = basequadsize;
+	int prevquadsize = 0;
+	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
 	
@@ -156,13 +161,20 @@ short GameManager::run() {
 		input = getch();
 
 		/* create some random obstacles */
-		if(fr_counter == fr_factor) {
-			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(maxWinXY.y-4)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
+		if(create_counter >= create_factor) {
+			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 			testO2.setEnemy(SHIP);
 			placeObstacle(testO2, obstacleId);
-			fr_counter = 0;
+			create_counter = 0;
+			prevquadsize = quadsize;
+			quadsize += basequadsize;
+			if(quadsize >= maxWinXY.y) {
+				quadsize = basequadsize;
+				prevquadsize = 0;
+			}
+			create_counter = 0;
 		} else {
-			fr_counter++;
+			create_counter++;
 		}
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
@@ -279,7 +291,7 @@ short GameManager::run() {
 			as necessary 
 		*/
 		if(Obstacles.size()){
-			if(fr_counter == fr_factor && !gameover) {
+			if(fr_counter >= fr_factor && !gameover) {
 				// move the objects
 				obst_it = Obstacles.begin();
 				while(obst_it != Obstacles.end()){
@@ -326,7 +338,7 @@ short GameManager::run() {
 
 		/* animate explosions */
 		if(Explosions.size() && !gameover){	
-			if(exp_fr_counter == exp_fr_factor) {
+			if(exp_fr_counter >= exp_fr_factor) {
 				exp_it = Explosions.begin();
 				while(exp_it != Explosions.end()) {
 				// for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {

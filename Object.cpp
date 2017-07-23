@@ -21,7 +21,8 @@ Object::Object(WINDOW * win,
 	trajectory = {0, 0};
 	this->theme = theme;
 	info = {type, id};
-	blueprint = OBJ_BLPRNTS[type][theme][0];
+	int numbps = OBJ_BLPRNTS[type][theme].size();
+	blueprint = OBJ_BLPRNTS[type][theme][rand()%numbps];
 	enemy = OBSTACLE;
 	initParticles();
 	setTrajectory(Coord {-1, 0}); // by default move left (for obstacles)

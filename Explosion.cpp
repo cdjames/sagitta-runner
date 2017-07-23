@@ -14,7 +14,7 @@ Explosion::Explosion(WINDOW * win,
 				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
 	info = {type, id};
-	animations_left = 10;
+	animations_left = 6;
 }
 
 Explosion::Explosion() {}

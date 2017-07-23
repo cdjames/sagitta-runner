@@ -36,7 +36,8 @@ protected:
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor,
-					exp_fr_counter, exp_fr_factor;
+					exp_fr_counter, exp_fr_factor,
+					create_counter, create_factor;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
 	Obstacle testO;

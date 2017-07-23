@@ -160,24 +160,49 @@ void createObstacleBlueprints() {
 
 	/* create for theme 0 */
 	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
-	DEF_OBST_BP.push_back( ParticleCore { Coord {0, 1}, '+', 8} ); // then x, y, symbol, color
-	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 0}, '+', 8} ); // then x, y, symbol, color
-	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, '+', 8} ); // then x, y, symbol, color
-	DEF_OBST_BP.push_back( ParticleCore { Coord {2, 1}, '+', 8} ); // then x, y, symbol, color
-	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 2}, '+', 8} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {0, 1}, '<', 5} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 0}, '/', 14} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, '=', 5} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {2, 1}, '[', 15} ); // then x, y, symbol, color
+	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 2}, '\\', 14} ); // then x, y, symbol, color
 
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_OBST_BP);
 	// push more variations if necessary
-
+	vector<ParticleCore> space_obst_2;
+	space_obst_2.push_back( ParticleCore { Coord {7, 5}, 0, 3} );
+	space_obst_2.push_back( ParticleCore { Coord {0, 0}, '/', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {0, 1}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {0, 2}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {0, 3}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {0, 4}, '\\', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {1, 2}, '=', 8} );
+	space_obst_2.push_back( ParticleCore { Coord {2, 1}, '/', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {2, 2}, '|', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {2, 3}, '\\', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {3, 1}, '^', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {3, 2}, 'O', 8} );
+	space_obst_2.push_back( ParticleCore { Coord {3, 3}, '_', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {4, 1}, '\\', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {4, 2}, '|', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {4, 3}, '/', 15} );
+	space_obst_2.push_back( ParticleCore { Coord {5, 2}, '=', 8} );
+	space_obst_2.push_back( ParticleCore { Coord {6, 0}, '\\', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {6, 1}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {6, 2}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {6, 3}, '|', 7} );
+	space_obst_2.push_back( ParticleCore { Coord {6, 4}, '/', 7} );
+	OBJECT_VARS.push_back(space_obst_2);
 	/* when done, push themes onto the main blueprints array */
 	OBJ_THEMES.push_back(OBJECT_VARS);
 
 	/* create more items for each them or just push existing item */
 	OBJECT_VARS2.push_back(DEF_OBST_BP);
+	OBJECT_VARS2.push_back(space_obst_2);
 	OBJ_THEMES.push_back(OBJECT_VARS2);
 
 	OBJECT_VARS3.push_back(DEF_OBST_BP);
+	OBJECT_VARS3.push_back(space_obst_2);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */
