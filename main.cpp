@@ -12,6 +12,7 @@ void exitCurses(WINDOW * win);
 
 int main()
 {
+	srand(std::time(0));
 	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;

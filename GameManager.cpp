@@ -116,12 +116,12 @@ GameManager::GameManager(WINDOW * win) {
 	// testO2.setEnemy(SHIP);
 	// placeObstacle(testO2, obstacleId);
 
-	for (int i = 0; i < 5; i++)
-	{
-		testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), i*4}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
-		testO2.setEnemy(SHIP);
-		placeObstacle(testO2, obstacleId);
-	}
+	// for (int i = 0; i < 5; i++)
+	// {
+	// 	testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), i*4}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
+	// 	testO2.setEnemy(SHIP);
+	// 	placeObstacle(testO2, obstacleId);
+	// }
 
 	// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
 	// testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
@@ -133,6 +133,8 @@ GameManager::~GameManager() {}
 short GameManager::run() {
 	std::map<unsigned long,Obstacle>::iterator obst_it;
 	std::map<unsigned long,Bullet>::iterator bull_it;
+	std::map<unsigned long,Explosion>::iterator exp_it;
+	unsigned short still_animating;
 	Particle obstStatus;
 	bool moveShip = false;
 	bool makeExplosion = false;
@@ -140,12 +142,21 @@ short GameManager::run() {
 	gameover = false;
 	Coord trajectory;
 	Coord exp_coord;
+
+	/* main loop */
 	do 
 	{
-		// std::map<unsigned long,Obstacle>::iterator obst_it;
-		// std::map<unsigned long,Bullet>::iterator bull_it;
 		input = getch();
 
+		/* create some random obstacles */
+		if(fr_counter == fr_factor) {
+			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(maxWinXY.y-4)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
+			testO2.setEnemy(SHIP);
+			placeObstacle(testO2, obstacleId);
+			fr_counter = 0;
+		} else {
+			fr_counter++;
+		}
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
 		switch (input){
@@ -188,9 +199,7 @@ short GameManager::run() {
 			// if(exp_fr_counter == exp_fr_factor) {
 			// move the objects
 			
-			
 			bull_it = Bullets.begin();
-			// for(std::map<unsigned long,Bullet>::iterator bull_it = Bullets.begin(); bull_it != Bullets.end(); ++bull_it) {
 			while(bull_it != Bullets.end()) {
 				obstStatus = bull_it->second.dftMove();
 				mvprintw(0, 60, "id=%d", obstStatus.info.id);
@@ -207,12 +216,13 @@ short GameManager::run() {
 					bull_it = Bullets.erase(bull_it);
 
 					makeExplosion = true;
+					exp_coord = obstStatus.core.coords;
+
 				} else if (obstStatus.collided == DESTROY) {
 					bull_it = Bullets.erase(bull_it);
 				} else {
 					++bull_it;
 				}
-				// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
 				// else if (obstStatus.collided == HIT) {
 				// 	// mvprintw(0, 48, "object is offscreen and can be destroyed");
 				// 	// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
@@ -228,30 +238,7 @@ short GameManager::run() {
 			// 	exp_fr_counter++;
 			// }
 		}
-		mvprintw(1, 100, "%d  ", Bullets.size()); // testing
-
-		// if(makeExplosion) {
-		// 	printw("obstStatus.core.coords=%d,%d", obstStatus.core.coords.x, obstStatus.core.coords.y);
-
-		// 	placeExplosion(++explosionId, obstStatus.core.coords);
-		// 	makeExplosion = false;
-		// }
-
-		// /* handle explosions */
-		// else if(Explosions.size()){
-		// 	if(exp_fr_counter == exp_fr_factor) {
-		// 		for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
-		// 			unsigned short still_animating = obst_it->second.animate();
-		// 			if (!still_animating) {
-		// 				obst_it->second.erase();
-		// 				Explosions.erase(obst_it);
-		// 			}
-		// 		}
-		// 		exp_fr_counter = 0; 
-		// 	} else {
-		// 		exp_fr_counter++;
-		// 	}
-		// }
+		mvprintw(1, 100, "%d  ", Bullets.size()); // testing	
 
 		/* move the ship */
 		if(moveShip) {
@@ -273,21 +260,17 @@ short GameManager::run() {
 			as necessary 
 		*/
 		if(Obstacles.size()){
-			// if(fr_counter == fr_factor && !gameover) {
+			if(fr_counter == fr_factor && !gameover) {
 				// move the objects
-			// std::map<unsigned long,Obstacle>::iterator obst_it;
-			obst_it = Obstacles.begin();
-				// for(obst_it = Obstacles.begin(); obst_it != Obstacles.end(); ++obst_it) {
+				obst_it = Obstacles.begin();
 				while(obst_it != Obstacles.end()){
 					obstStatus = obst_it->second.dftMove();
 					if (obstStatus.collided == GAMEOVER) {
 						mvprintw(90, 48, "object hit ship");
 						obst_it->second.erase();
 						obst_it = Obstacles.erase(obst_it);
-						// gameover = true;
+						gameover = true;
 					} else if (obstStatus.collided == DESTROY) {
-						// mvprintw(0, 48, "object is offscreen and can be destroyed");
-						// std::cout << "object destroyed, num obst=" << obst_it->second.getId() << std::endl;
 						obst_it->second.erase();
 						obst_it = Obstacles.erase(obst_it); // remove from the map
 					} 
@@ -298,13 +281,40 @@ short GameManager::run() {
 					else{
 						++obst_it;
 					}
-					// if(!Obstacles.size())
-					// 	break;
 				}
-			// 	fr_counter = 0;
-			// } else {
-			// 	fr_counter++;
-			// }
+				fr_counter = 0;
+			} else {
+				fr_counter++;
+			}
+		}
+
+		/* create new explosions */
+		if(makeExplosion) {
+			mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
+
+			placeExplosion(++explosionId, exp_coord);
+			// placeExplosion(++explosionId, obstStatus.core.coords);
+			makeExplosion = false;
+		}
+
+		/* animate explosions */
+		if(Explosions.size()){	
+			if(exp_fr_counter == exp_fr_factor) {
+				exp_it = Explosions.begin();
+				while(exp_it != Explosions.end()) {
+				// for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
+					still_animating = exp_it->second.animate();
+					if (!still_animating) {
+						exp_it->second.erase();
+						exp_it = Explosions.erase(exp_it);
+					} else {
+						++exp_it;
+					}
+				}
+				exp_fr_counter = 0; 
+			} else {
+				exp_fr_counter++;
+			}
 		}
 		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing 
 

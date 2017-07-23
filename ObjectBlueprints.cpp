@@ -103,6 +103,13 @@ void createExplosionBlueprints() {
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_EXP_BP);
 	// push more variations if necessary
+	vector<ParticleCore> exp_2;
+	exp_2.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
+	exp_2.push_back( ParticleCore { Coord {0, 0}, '*', 11} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {2, 0}, '*', 9} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {1, 1}, '*', 166} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {2, 2}, '*', 9} ); // then x, y, symbol, color
+	exp_2.push_back( ParticleCore { Coord {0, 2}, '*', 11} ); // then x, y, symbol, color
 
 	/* when done, push themes onto the main blueprints array */
 	OBJ_THEMES.push_back(OBJECT_VARS);

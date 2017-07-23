@@ -17,6 +17,8 @@
 #include "Explosion.hpp" // includes Object
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
+#include <cstdlib> // rand
+#include <ctime> // for seeding rand
 
 using std::vector;
 
