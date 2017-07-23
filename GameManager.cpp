@@ -134,6 +134,10 @@ short GameManager::run() {
 	std::map<unsigned long,Obstacle>::iterator obst_it;
 	std::map<unsigned long,Bullet>::iterator bull_it;
 	std::map<unsigned long,Explosion>::iterator exp_it;
+
+	std::map<unsigned long,Obstacle>::iterator temp_obst_it;
+	std::map<unsigned long,Bullet>::iterator temp_bull_it;
+	std::map<unsigned long,Explosion>::iterator temp_exp_it;
 	unsigned short still_animating;
 	Particle obstStatus;
 	bool moveShip = false;
@@ -207,23 +211,28 @@ short GameManager::run() {
 			while(bull_it != Bullets.end()) {
 				obstStatus = bull_it->second.dftMove();
 				// mvprintw(0, 60, "id=%d", obstStatus.info.id);
+				temp_bull_it = bull_it;
 				if (obstStatus.collided == GAMEOVER) {
 					// mvprintw(maxWinXY.y-1, 50, "gameover object");
 					
 					/* find the Obstacle it hit and remove it */
 					obst_it = Obstacles.find(obstStatus.info.id);
-					obst_it->second.erase();
-					obst_it = Obstacles.erase(obst_it);
+					temp_obst_it = obst_it;
+					++obst_it;
+					temp_obst_it->second.erase();
+					Obstacles.erase(temp_obst_it);
 					
 					/* must erase bullet after obstacle */
-					bull_it->second.erase();
-					bull_it = Bullets.erase(bull_it);
+					++bull_it;
+					temp_bull_it->second.erase();
+					Bullets.erase(temp_bull_it);
 
 					makeExplosion = true;
 					exp_coord = obstStatus.core.coords;
 					numObstaclesDestroyed++;
 				} else if (obstStatus.collided == DESTROY) {
-					bull_it = Bullets.erase(bull_it);
+					++bull_it;
+					Bullets.erase(temp_bull_it);
 				} else {
 					++bull_it;
 				}
@@ -252,8 +261,10 @@ short GameManager::run() {
 			} else if(shipStatus.collided == GAMEOVER) {
 				/* find the Obstacle it hit and remove it */
 				obst_it = Obstacles.find(shipStatus.info.id);
-				obst_it->second.erase();
-				obst_it = Obstacles.erase(obst_it);
+				temp_obst_it = obst_it;
+				++obst_it;
+				temp_obst_it->second.erase();
+				Obstacles.erase(temp_obst_it);
 				ship_coord = shipStatus.core.coords;
 				gameover = true;
 			} else {
@@ -273,16 +284,19 @@ short GameManager::run() {
 				obst_it = Obstacles.begin();
 				while(obst_it != Obstacles.end()){
 					obstStatus = obst_it->second.dftMove();
+					temp_obst_it = obst_it;
 					if (obstStatus.collided == GAMEOVER) {
 
 						// mvprintw(90, 48, "object hit ship");
+						++obst_it;
 						ship_coord = obstStatus.core.coords;
-						obst_it->second.erase();
-						obst_it = Obstacles.erase(obst_it);
+						temp_obst_it->second.erase();
+						Obstacles.erase(temp_obst_it);
 						gameover = true;
 					} else if (obstStatus.collided == DESTROY) {
-						obst_it->second.erase();
-						obst_it = Obstacles.erase(obst_it); // remove from the map
+						++obst_it;
+						temp_obst_it->second.erase();
+						Obstacles.erase(temp_obst_it); // remove from the map
 					} 
 					// else if (obstStatus.collided == HIT) {
 					// 	// std::cout << "no more object" << std::endl;
@@ -318,8 +332,10 @@ short GameManager::run() {
 				// for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
 					still_animating = exp_it->second.animate();
 					if (!still_animating) {
-						exp_it->second.erase();
-						exp_it = Explosions.erase(exp_it);
+						temp_exp_it = exp_it;
+						++exp_it;
+						temp_exp_it->second.erase();
+						Explosions.erase(temp_exp_it);
 					} else {
 						++exp_it;
 					}
