@@ -19,14 +19,17 @@ int main()
 	WINDOW * win;
 	initScreen();
 	short playerdied = -1;
-	MenuManager MM = MenuManager();
-	GameManager GM = GameManager(win); 
+	MenuManager MM = MenuManager(); 
 	int play = MM.mainMenu();
-	if (play == 1){
+	while (play == 1){
+		GameManager GM = GameManager(win);
 		// mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
 		GM.updateSettings(MM);	
 		playerdied = GM.run(); // runs until user presses q
+		play = MM.gameOver();
+		MM.clearScreen();
 	}
+	
 	exitCurses(win);
 
 	if(playerdied == 1)
