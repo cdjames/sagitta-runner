@@ -287,3 +287,54 @@ int MenuManager::difficultyScreen() {
 	difficultyLevel = ceil((xMovement - 8 ) / 4);
 	return settingsMenu();
 }
+
+int MenuManager::gameOver(){
+	clearScreen();
+	mvprintw(yCoord, xCoord, ">");
+	mvprintw(yCoord, xCoord + 2, "Play again");
+	mvprintw(yCoord + 1, xCoord + 2, "Return to the main menu");
+	mvprintw(yCoord + 2, xCoord + 2, "Record your score -- not yet implemented");
+	mvprintw(yCoord + 3, xCoord + 2, "Quit game");
+	
+	int yMovement = yCoord;
+	int i;
+	do {
+		i = getch();
+		switch(i){
+		case KEY_UP:
+			if (yMovement > yCoord){
+				mvprintw(yMovement, xCoord, " ");
+				yMovement--;
+				mvprintw(yMovement, xCoord, ">");
+			}
+			break;
+		
+		case KEY_DOWN:
+			if (yMovement < yCoord + 3){
+				mvprintw(yMovement, xCoord, " ");
+				yMovement++;
+				mvprintw(yMovement, xCoord, ">");
+			} 
+			break;
+			
+		case(10):
+			if (yMovement == yCoord){
+				clearScreen();
+				return 1;
+				}
+			else if (yMovement == yCoord + 1){
+				clearScreen();
+				return mainMenu();
+				}
+			else if (yMovement == yCoord + 2){
+				clearScreen();
+				return 0; //finish
+				}
+			else if (yMovement == yCoord + 3){
+				clearScreen();
+				return -1;
+				}
+		}	
+	} while (i != 10);
+	return -1;
+}
