@@ -40,7 +40,7 @@ void GameManager::initColors() {
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	// o.draw();
-	std::map<unsigned long,Obstacle>::iterator cntr;
+	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
 	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
@@ -132,11 +132,11 @@ GameManager::GameManager(WINDOW * win) {
 GameManager::~GameManager() {}
 
 short GameManager::run() {
-	std::map<unsigned long,Obstacle>::iterator obst_it;
+	std::unordered_map<unsigned long,Obstacle>::iterator obst_it;
 	std::map<unsigned long,Bullet>::iterator bull_it;
 	std::map<unsigned long,Explosion>::iterator exp_it;
 
-	std::map<unsigned long,Obstacle>::iterator temp_obst_it;
+	std::unordered_map<unsigned long,Obstacle>::iterator temp_obst_it;
 	std::map<unsigned long,Bullet>::iterator temp_bull_it;
 	std::map<unsigned long,Explosion>::iterator temp_exp_it;
 	unsigned short still_animating;

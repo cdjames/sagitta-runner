@@ -15,6 +15,8 @@
 #define STAT_ENEMIES 24
 #define STAT_BULLETS 17
 #define QUAD_PARTS 3
+#define MAX_OBSTACLES 100
+#define MAX_EXPLOSIONS 25
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
