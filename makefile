@@ -2,29 +2,49 @@
 # on unix-y systems, type 'make'.
 # if that doesn't work, 'make -f makefile' might be useful.
 
-OPS = -lncurses
-OPS += -std=c++11
+OPS = -std=c++11
 OPS += -g 
+OPS += -ggdb
 OPS += -Wall 
+
+OPS_NC = -lncurses
+OPS_NC += ${OPS}
 
 CXX = main.cpp
 CXX += GameManager.cpp
 
 PROG1 = runner
 
-default: runner
+default: testing
 
-Object.o: clean
-	g++ -c Object.cpp ${OPS}
+ObjectBlueprints.o:
+	g++ -c ObjectBlueprints.cpp ${OPS}
 
-GameManager.o: clean
-	g++ -c GameManager.cpp ${OPS}
+Object.o:
+	g++ -c Object.cpp ${OPS_NC}
 
-MenuManager.o: clean
-	g++ -c MenuManager.cpp ${OPS}
+Ship.o:
+	g++ -c Ship.cpp ${OPS_NC}
 
-runner: clean GameManager.o Object.o MenuManager.o
-	g++ main.cpp GameManager.o Object.o MenuManager.o -o ${PROG1} ${OPS}
+Obstacle.o:
+	g++ -c Obstacle.cpp ${OPS_NC}
+
+Bullet.o:
+	g++ -c Bullet.cpp ${OPS_NC}
+
+Explosion.o:
+	g++ -c Explosion.cpp ${OPS_NC}
+
+GameManager.o:
+	g++ -c GameManager.cpp ${OPS_NC}
+
+MenuManager.o:
+	g++ -c MenuManager.cpp ${OPS_NC}
+
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o
+	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+
+testing: clean runner
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}
