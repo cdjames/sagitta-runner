@@ -30,6 +30,7 @@ public:
 	int playerNameScreen();
 	void clearScreen();
 	char playerName[16];
+	int gameOver();
 };
 
 #endif
