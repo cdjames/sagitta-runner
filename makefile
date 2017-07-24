@@ -3,9 +3,9 @@
 # if that doesn't work, 'make -f makefile' might be useful.
 
 OPS = -std=c++11
-OPS += -g 
-OPS += -ggdb
-OPS += -Wall 
+#OPS += -g 
+#OPS += -ggdb
+#OPS += -Wall 
 
 OPS_NC = -lncurses
 OPS_NC += ${OPS}
@@ -15,7 +15,7 @@ CXX += GameManager.cpp
 
 PROG1 = runner
 
-default: testing
+default: runner
 
 ObjectBlueprints.o:
 	g++ -c ObjectBlueprints.cpp ${OPS}
