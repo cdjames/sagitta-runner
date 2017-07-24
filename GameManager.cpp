@@ -87,6 +87,7 @@ void GameManager::setScreenSize() {
 
 /* public */
 GameManager::GameManager(WINDOW * win) {
+	Obstacles.reserve(MAX_OBSTACLES);
 	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
 	input = ' ';

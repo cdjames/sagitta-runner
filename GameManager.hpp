@@ -12,7 +12,7 @@
 #include <map>
 #include <unordered_map>
 #include "MenuManager.hpp"
-#include "SagittaTypes.hpp"
+// #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
 #include "Bullet.hpp" // includes Object

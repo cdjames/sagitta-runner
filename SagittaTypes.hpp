@@ -7,6 +7,8 @@
 #ifndef SAGITTATYPES_HPP
 #define SAGITTATYPES_HPP
 
+#include <mutex>
+
 #define DEF_TIMEOUT 30
 #define DEF_BUFFER 10
 #define BLANK ' '
@@ -17,6 +19,8 @@
 #define QUAD_PARTS 3
 #define MAX_OBSTACLES 100
 #define MAX_EXPLOSIONS 25
+
+
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
