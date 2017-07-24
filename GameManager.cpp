@@ -263,8 +263,7 @@ short GameManager::run() {
 			// 	exp_fr_counter++;
 			// }
 		}
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", MAX_BULLETS-Bullets.size()); // testing	
-
+		
 		/* move the ship */
 		if(moveShip) {
 			shipStatus = theShip.move(trajectory);
@@ -326,6 +325,8 @@ short GameManager::run() {
 
 		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
 		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d |", numObstaclesDestroyed);
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", MAX_BULLETS-Bullets.size()); // testing	
+
 
 		/* create new explosions */
 		if(makeExplosion && !gameover) {
