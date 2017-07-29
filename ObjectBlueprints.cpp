@@ -159,7 +159,8 @@ void createObstacleBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS3;
 
 	/* create for theme 0 */
-	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, 0, 0} ); // first line is the height and width
+	/* small ship */
+	DEF_OBST_BP.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
 	DEF_OBST_BP.push_back( ParticleCore { Coord {0, 1}, '<', 5} ); // then x, y, symbol, color
 	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 0}, '/', 14} ); // then x, y, symbol, color
 	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 1}, '=', 5} ); // then x, y, symbol, color
@@ -169,7 +170,7 @@ void createObstacleBlueprints() {
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_OBST_BP);
 	// push more variations if necessary
-	vector<ParticleCore> space_obst_2;
+	vector<ParticleCore> space_obst_2; // big ship
 	space_obst_2.push_back( ParticleCore { Coord {7, 5}, 0, 3} );
 	space_obst_2.push_back( ParticleCore { Coord {0, 0}, '/', 7} );
 	space_obst_2.push_back( ParticleCore { Coord {0, 1}, '|', 7} );
@@ -196,13 +197,81 @@ void createObstacleBlueprints() {
 	/* when done, push themes onto the main blueprints array */
 	OBJ_THEMES.push_back(OBJECT_VARS);
 
-	/* create more items for each them or just push existing item */
-	OBJECT_VARS2.push_back(DEF_OBST_BP);
-	OBJECT_VARS2.push_back(space_obst_2);
+	/* FOOD THEMES */
+	/* kiwi */
+	vector<ParticleCore> food_obst_1;
+	food_obst_1.push_back( ParticleCore { Coord {3, 3}, 0, 1});
+	food_obst_1.push_back( ParticleCore { Coord {0, 1}, '(', 70});
+	food_obst_1.push_back( ParticleCore { Coord {1, 0}, '_', 70});
+	food_obst_1.push_back( ParticleCore { Coord {1, 1}, ':', 70});
+	food_obst_1.push_back( ParticleCore { Coord {1, 2}, '"', 202});
+	food_obst_1.push_back( ParticleCore { Coord {2, 1}, ')', 70});
+	OBJECT_VARS2.push_back(food_obst_1);
+
+	/* apple */
+	vector<ParticleCore> food_obst_2; 
+	food_obst_2.push_back( ParticleCore { Coord {3, 5}, 0, 1});
+	food_obst_2.push_back( ParticleCore { Coord {0, 1}, '(', 124});
+	food_obst_2.push_back( ParticleCore { Coord {1, 0}, ',', 124});
+	food_obst_2.push_back( ParticleCore { Coord {1, 2}, '`', 124});
+	food_obst_2.push_back( ParticleCore { Coord {2, 0}, '(', 130});
+	food_obst_2.push_back( ParticleCore { Coord {2, 2}, '"', 130});
+	food_obst_2.push_back( ParticleCore { Coord {3, 0}, '.', 124});
+	food_obst_2.push_back( ParticleCore { Coord {3, 2}, '\'', 124});
+	food_obst_2.push_back( ParticleCore { Coord {4, 1}, ')', 124});
+	OBJECT_VARS2.push_back(food_obst_2);
+
 	OBJ_THEMES.push_back(OBJECT_VARS2);
 
-	OBJECT_VARS3.push_back(DEF_OBST_BP);
-	OBJECT_VARS3.push_back(space_obst_2);
+	/* SPORTS THEMES */
+	/* baseball */
+	vector<ParticleCore> sport_obst_1; 
+	sport_obst_1.push_back( ParticleCore { Coord {3, 6}, 0, 1});
+	sport_obst_1.push_back( ParticleCore { Coord {0, 0}, ',', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {0, 1}, '8', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {0, 2}, '\'', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {1, 0}, '\\', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {1, 2}, '/', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {2, 0}, ':', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {2, 1}, ')', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {2, 2}, ':', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {3, 0}, ':', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {3, 1}, '(', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {3, 2}, ':', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {4, 0}, '/', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {4, 2}, '\\', 88});
+	sport_obst_1.push_back( ParticleCore { Coord {5, 0}, ',', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {5, 1}, '8', 0});
+	sport_obst_1.push_back( ParticleCore { Coord {5, 2}, '\'', 0});
+	OBJECT_VARS3.push_back(sport_obst_1);
+
+	/* football */
+	vector<ParticleCore> sport_obst_2; 
+	sport_obst_2.push_back( ParticleCore { Coord {4, 9}, 0, 1});
+	sport_obst_2.push_back( ParticleCore { Coord {0, 1}, '(', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {1, 0}, '.', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {1, 1}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {1, 2}, '`', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {2, 0}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {2, 1}, '<', 15});
+	sport_obst_2.push_back( ParticleCore { Coord {2, 2}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {3, 0}, '~', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {3, 1}, '|', 15});
+	sport_obst_2.push_back( ParticleCore { Coord {3, 2}, '.', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {4, 0}, '~', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {4, 1}, '|', 15});
+	sport_obst_2.push_back( ParticleCore { Coord {4, 2}, '_', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {5, 0}, '~', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {5, 1}, '|', 15});
+	sport_obst_2.push_back( ParticleCore { Coord {5, 2}, '.', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {6, 0}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {6, 1}, '>', 15});
+	sport_obst_2.push_back( ParticleCore { Coord {6, 2}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {7, 0}, '.', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {7, 1}, '-', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {7, 2}, '\'', 130});
+	sport_obst_2.push_back( ParticleCore { Coord {8, 1}, ')', 130});
+	OBJECT_VARS3.push_back(sport_obst_2);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */

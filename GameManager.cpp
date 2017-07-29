@@ -163,7 +163,7 @@ short GameManager::run() {
 
 		/* create some random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
-			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
+			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, SPORTS, ++obstacleId);
 			testO2.setEnemy(SHIP);
 			placeObstacle(testO2, obstacleId);
 			create_counter = 0;
