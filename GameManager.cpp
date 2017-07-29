@@ -31,33 +31,28 @@ GameManager::GameManager(WINDOW * win) {
 GameManager::~GameManager() {}
 
 short GameManager::run() {
-	std::unordered_map<unsigned long,Obstacle>::iterator obst_it;
-	std::map<unsigned long,Bullet>::iterator bull_it;
-	std::map<unsigned long,Explosion>::iterator exp_it;
-
-	std::unordered_map<unsigned long,Obstacle>::iterator temp_obst_it;
-	std::map<unsigned long,Bullet>::iterator temp_bull_it;
-	std::map<unsigned long,Explosion>::iterator temp_exp_it;
-	unsigned short still_animating;
-	Particle obstStatus;
-	bool moveShip = false;
-	bool makeExplosion = false;
-	short gameStatus = -1;
+	// unsigned short still_animating;
+	// Particle obstStatus;
+	move_ship = false;
+	makeExplosion = false;
+	gameStatus = -1;
 	gameover = false;
-	Coord trajectory;
-	Coord exp_coord;
-	Coord ship_coord;
-	int basequadsize = maxWinXY.y/QUAD_PARTS;
-	int quadsize = basequadsize;
-	int prevquadsize = 0;
-	unsigned short temp_theme; 
-	unsigned int num_theme_loops = 0;
+	// Coord trajectory;
+	// Coord exp_coord;
+	// Coord ship_coord;
+	basequadsize = maxWinXY.y/QUAD_PARTS;
+	quadsize = basequadsize;
+	prevquadsize = 0;
+	// unsigned short temp_theme; 
+	num_theme_loops = 0;
+	num_time_loops = 0;
 	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
 	
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
+
 	/* main loop */
 	do 
 	{
@@ -66,13 +61,18 @@ short GameManager::run() {
 		/* increase difficulty */
 		time_now = time(0);
 		if(time_now >= target_time) {
-			target_time = time_now + DIFF_TIMEOUT;
-			/* increase speed of object creation */
+			target_time = time_now + DIFF_TIMEOUT + num_time_loops;
+			/* increase speed of object refresh rate */
 			if(fr_factor > 0)
 				--fr_factor;
 			/* decrease number of bullets on screen simultaneously */
 			if(max_bullets > MIN_BULLETS)
 				--max_bullets;
+			/* increase speed of object creation */
+			if(num_theme_loops%OBS_CREATE_FACTOR == 0)
+				--create_factor;
+
+			num_time_loops += DIFF_TIME_ADD; 
 		}
 
 		/* change theme whenever number of obstacles destroyed is greater than the theme counter. */
@@ -108,25 +108,25 @@ short GameManager::run() {
 				// mvprintw(0, 24, "pressed up     ");
 				// set the trajectory in the ship
 				trajectory = {0, -1}; 
-				moveShip = true;
+				move_ship = true;
 				break;
 
 			case KEY_DOWN:
 				// mvprintw(0, 24, "pressed down   ");
 				trajectory = {0, 1}; 
-				moveShip = true;
+				move_ship = true;
 				break;
 
 			case KEY_LEFT:
 				// mvprintw(0, 24, "pressed left   ");
 				trajectory = {-1, 0}; 
-				moveShip = true;
+				move_ship = true;
 				break;
 
 			case KEY_RIGHT:
 				// mvprintw(0, 24, "pressed right  ");
 				trajectory = {1, 0};
-				moveShip = true;
+				move_ship = true;
 				break;
 			case 32:
 				// mvprintw(0, 24, "pressed space  ");
@@ -190,7 +190,7 @@ short GameManager::run() {
 		}
 		
 		/* move the ship */
-		if(moveShip) {
+		if(move_ship) {
 			shipStatus = theShip.move(trajectory);
 			if (shipStatus.collided == EDGE) {
 				// mvprintw(0, 48, "hit the edge  ");
@@ -206,7 +206,7 @@ short GameManager::run() {
 			} else {
 				mvprintw(0, 48, "              ");
 			}
-			moveShip = false;
+			move_ship = false;
 
 		}
 
