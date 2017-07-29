@@ -155,6 +155,7 @@ short GameManager::run() {
 	int quadsize = basequadsize;
 	int prevquadsize = 0;
 	unsigned short temp_theme; 
+	unsigned int num_theme_loops = 0;
 	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
@@ -164,15 +165,16 @@ short GameManager::run() {
 	{
 		input = getch();
 
-		/* change theme */
+		/* change theme whenever number of obstacles destroyed is greater than the theme counter. */
 		if(numObstaclesDestroyed >= theme_counter) {
 			temp_theme = curr_theme;
 			(temp_theme >= NUM_THEMES-1) ? temp_theme = 0 : temp_theme++;
 			curr_theme = (ThemeType)temp_theme;
-			theme_counter = numObstaclesDestroyed + DEF_THM_COUNTER;
+			theme_counter = numObstaclesDestroyed + DEF_THM_COUNTER + num_theme_loops;
+			num_theme_loops++;
 		}
 
-		/* create some random obstacles */
+		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
 			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
 				rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
@@ -372,9 +374,9 @@ short GameManager::run() {
 			}
 		}
 
-		refresh(); // for status screen
-		
-		wrefresh(win); // for window
+		wnoutrefresh(stdscr); // for status screen
+		wnoutrefresh(win);    // for window
+		doupdate();
 
 	} while (input != 'q' && !gameover);
 
