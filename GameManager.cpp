@@ -6,85 +6,6 @@
 
 #include "GameManager.hpp"
 
-/* protected */
-void GameManager::initWindow() {
-	// scrollok(win, FALSE);
-	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
-	keypad(win, TRUE);
-}
-
-void GameManager::initGameboard() {
-	/* maxX is going to be the size of the window + a buffer of x pixels. The buffer is for the placement of new obstacles 
-	   maxY is window + buffer on top and bottom */
-	maxGBWinXY.x = maxWinXY.x + (DEF_BUFFER*2);
-	maxGBWinXY.y = maxWinXY.y + (DEF_BUFFER*2);
-	ParticleInfo dummyInfo;
-	dummyInfo.type = NONE;
-	dummyInfo.id = 0;
-	
-	/* create a vector of vectors, v[maxY][maxX] */
-	gameboard = vector< vector<ParticleInfo> > (maxGBWinXY.y, vector<ParticleInfo>(maxGBWinXY.x, dummyInfo));
-}
-
-void GameManager::initColors() {
-	start_color();
-    // printw("This terminal supports %d colors\n", COLORS);
-    for (int i = 0; i < COLORS; i++)
-    {
-        /* code */
-        init_pair(i, i, COLOR_BLACK);
-        // attron(COLOR_PAIR(i));
-        // printw("%d ", i);
-    }
-}
-
-void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
-	// o.draw();
-	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
-	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
-}
-
-void GameManager::placeExplosion(unsigned long &id, Coord start) {
-	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
-											&gameboard, 
-											start - Coord{0,1}, 
-											maxWinXY, EXPLOSION, SPACE, id)));
-	// obst_it->second.draw();
-	// obst_it->second.setTrajectory(Coord{1,0});
-}
-
-void GameManager::placeBullet(unsigned long &id) {
-	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
-	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
-											&gameboard, 
-											theShip.getFront()+Coord{1, 0}, 
-											maxWinXY, BULLET, SPACE, id)));
-	
-	// obst_it->second.draw();
-	obst_it->second.setTrajectory(Coord{1,0});
-}
-
-void GameManager::placeShip() {
-	theShip.draw();
-}
-
-void GameManager::moveShip() {}
-void GameManager::createObstacles() {}
-void GameManager::moveObstacles() {}
-void GameManager::doExplosions() {}
-void GameManager::fireBullet() {}
-void GameManager::moveBullets() {}
-void GameManager::gameOver() {}
-
-void GameManager::setScreenSize() {
-	struct winsize w;
-    ioctl(0, TIOCGWINSZ, &w);
-    maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
-    maxWinXY.x = w.ws_col;
-    // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
-    // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
-}
-
 /* public */
 GameManager::GameManager(WINDOW * win) {
 	Obstacles.reserve(MAX_OBSTACLES);
@@ -95,6 +16,7 @@ GameManager::GameManager(WINDOW * win) {
 	fr_factor = 3;
 	exp_fr_factor = 4;
 	create_factor = 15;
+	max_bullets = MAX_BULLETS;
 	curr_theme = SPACE;
 	theme_counter = DEF_THM_COUNTER;
 	setScreenSize();
@@ -104,32 +26,6 @@ GameManager::GameManager(WINDOW * win) {
 
 	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1);
 	placeShip();
-
-	// testBullet = Bullet(this->win, &gameboard, theShip.getFront()+Coord{1, 0}, maxWinXY, BULLET, SPACE, ++bulletId);
-	// testBullet.setTrajectory(Coord{1,0});
-	// Bullets.insert(Bullets.end(), std::pair<unsigned long,Object>(bulletId,testBullet));
-	// testBullet.draw();
-
-	// testO = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x / 2), (maxWinXY.y / 2)}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
-	// testO.setEnemy(SHIP);
-	// placeObstacle(testO, obstacleId);
-
-	// mvprintw(0, 80, "id=%d", obstacleId);
-
-	// testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 0}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
-	// testO2.setEnemy(SHIP);
-	// placeObstacle(testO2, obstacleId);
-
-	// for (int i = 0; i < 5; i++)
-	// {
-	// 	testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), i*4}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
-	// 	testO2.setEnemy(SHIP);
-	// 	placeObstacle(testO2, obstacleId);
-	// }
-
-	// placeExplosion(++explosionId, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)});
-	// testExplosion = Explosion(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 3)}, maxWinXY, EXPLOSION, SPACE, ++explosionId);
-	// testExplosion.draw();
 }
 
 GameManager::~GameManager() {}
@@ -160,10 +56,24 @@ short GameManager::run() {
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
 	
+	start_time = time_now = time(0);
+	target_time = start_time + DIFF_TIMEOUT;
 	/* main loop */
 	do 
 	{
 		input = getch();
+
+		/* increase difficulty */
+		time_now = time(0);
+		if(time_now >= target_time) {
+			target_time = time_now + DIFF_TIMEOUT;
+			/* increase speed of object creation */
+			if(fr_factor > 0)
+				--fr_factor;
+			/* decrease number of bullets on screen simultaneously */
+			if(max_bullets > MIN_BULLETS)
+				--max_bullets;
+		}
 
 		/* change theme whenever number of obstacles destroyed is greater than the theme counter. */
 		if(numObstaclesDestroyed >= theme_counter) {
@@ -221,7 +131,7 @@ short GameManager::run() {
 			case 32:
 				// mvprintw(0, 24, "pressed space  ");
 				/* create a new bullet and add to Bullets map */
-				if(Bullets.size() < MAX_BULLETS)
+				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
 			default: 
@@ -340,7 +250,7 @@ short GameManager::run() {
 
 		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
 		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d |", numObstaclesDestroyed);
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", MAX_BULLETS-Bullets.size()); // testing	
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", max_bullets-Bullets.size()); // testing	
 
 
 		/* create new explosions */
@@ -413,4 +323,87 @@ short GameManager::run() {
 
 void GameManager::updateSettings(MenuManager &MM){
 	difficulty = MM.difficultyLevel;
+	fr_factor = difficulty;
+	max_bullets += difficulty;
 }
+
+/* protected */
+void GameManager::initWindow() {
+	// scrollok(win, FALSE);
+	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
+	keypad(win, TRUE);
+}
+
+void GameManager::initGameboard() {
+	/* maxX is going to be the size of the window + a buffer of x pixels. The buffer is for the placement of new obstacles 
+	   maxY is window + buffer on top and bottom */
+	maxGBWinXY.x = maxWinXY.x + (DEF_BUFFER*2);
+	maxGBWinXY.y = maxWinXY.y + (DEF_BUFFER*2);
+	ParticleInfo dummyInfo;
+	dummyInfo.type = NONE;
+	dummyInfo.id = 0;
+	
+	/* create a vector of vectors, v[maxY][maxX] */
+	gameboard = vector< vector<ParticleInfo> > (maxGBWinXY.y, vector<ParticleInfo>(maxGBWinXY.x, dummyInfo));
+}
+
+void GameManager::initColors() {
+	start_color();
+    // printw("This terminal supports %d colors\n", COLORS);
+    for (int i = 0; i < COLORS; i++)
+    {
+        /* code */
+        init_pair(i, i, COLOR_BLACK);
+        // attron(COLOR_PAIR(i));
+        // printw("%d ", i);
+    }
+}
+
+void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
+	// o.draw();
+	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
+	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
+}
+
+void GameManager::placeExplosion(unsigned long &id, Coord start) {
+	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
+											&gameboard, 
+											start - Coord{0,1}, 
+											maxWinXY, EXPLOSION, SPACE, id)));
+	// obst_it->second.draw();
+	// obst_it->second.setTrajectory(Coord{1,0});
+}
+
+void GameManager::placeBullet(unsigned long &id) {
+	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
+	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
+											&gameboard, 
+											theShip.getFront()+Coord{1, 0}, 
+											maxWinXY, BULLET, SPACE, id)));
+	
+	// obst_it->second.draw();
+	obst_it->second.setTrajectory(Coord{1,0});
+}
+
+void GameManager::placeShip() {
+	theShip.draw();
+}
+
+void GameManager::moveShip() {}
+void GameManager::createObstacles() {}
+void GameManager::moveObstacles() {}
+void GameManager::doExplosions() {}
+void GameManager::fireBullet() {}
+void GameManager::moveBullets() {}
+void GameManager::gameOver() {}
+
+void GameManager::setScreenSize() {
+	struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+    maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
+    maxWinXY.x = w.ws_col;
+    // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
+    // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
+}
+
+

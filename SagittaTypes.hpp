@@ -13,13 +13,15 @@
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define STATUS_SIZE 2
-#define MAX_BULLETS 5
 #define STAT_ENEMIES 24
 #define STAT_BULLETS 17
 #define QUAD_PARTS 3
+#define MAX_BULLETS 5
+#define MIN_BULLETS 1
 #define MAX_OBSTACLES 100
 #define MAX_EXPLOSIONS 25
 #define DEF_THM_COUNTER 20
+#define DIFF_TIMEOUT 5 // seconds
 
 
 

@@ -39,7 +39,8 @@ protected:
 	unsigned short fr_counter, fr_factor,
 					exp_fr_counter, exp_fr_factor,
 					create_counter, create_factor,
-					theme_counter;
+					theme_counter,
+					max_bullets;
 	ThemeType curr_theme;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
@@ -59,6 +60,12 @@ protected:
 					bulletId,
 					explosionId;
 
+	int difficulty;	
+
+	time_t start_time,
+		   target_time,
+		   time_now;
+
 	void initWindow();
 	void initGameboard();
 	void initColors();
@@ -74,7 +81,6 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
-	int difficulty;	
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
