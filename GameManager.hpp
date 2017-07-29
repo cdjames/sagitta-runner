@@ -10,8 +10,9 @@
 #include <curses.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "MenuManager.hpp"
-#include "SagittaTypes.hpp"
+// #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
 #include "Bullet.hpp" // includes Object
@@ -48,7 +49,7 @@ protected:
 	Particle shipStatus;
 	bool gameover;
 
-	std::map<unsigned long,Obstacle> Obstacles;
+	std::unordered_map<unsigned long,Obstacle> Obstacles;
 	std::map<unsigned long,Bullet> Bullets;
 	std::map<unsigned long,Explosion> Explosions;
 

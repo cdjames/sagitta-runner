@@ -40,7 +40,7 @@ void GameManager::initColors() {
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	// o.draw();
-	std::map<unsigned long,Obstacle>::iterator cntr;
+	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
 	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
@@ -87,6 +87,7 @@ void GameManager::setScreenSize() {
 
 /* public */
 GameManager::GameManager(WINDOW * win) {
+	Obstacles.reserve(MAX_OBSTACLES);
 	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
 	input = ' ';
@@ -132,11 +133,11 @@ GameManager::GameManager(WINDOW * win) {
 GameManager::~GameManager() {}
 
 short GameManager::run() {
-	std::map<unsigned long,Obstacle>::iterator obst_it;
+	std::unordered_map<unsigned long,Obstacle>::iterator obst_it;
 	std::map<unsigned long,Bullet>::iterator bull_it;
 	std::map<unsigned long,Explosion>::iterator exp_it;
 
-	std::map<unsigned long,Obstacle>::iterator temp_obst_it;
+	std::unordered_map<unsigned long,Obstacle>::iterator temp_obst_it;
 	std::map<unsigned long,Bullet>::iterator temp_bull_it;
 	std::map<unsigned long,Explosion>::iterator temp_exp_it;
 	unsigned short still_animating;
@@ -161,7 +162,7 @@ short GameManager::run() {
 		input = getch();
 
 		/* create some random obstacles */
-		if(create_counter >= create_factor) {
+		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
 			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, SPACE, ++obstacleId);
 			testO2.setEnemy(SHIP);
 			placeObstacle(testO2, obstacleId);
