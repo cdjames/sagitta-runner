@@ -19,6 +19,7 @@
 #define QUAD_PARTS 3
 #define MAX_OBSTACLES 100
 #define MAX_EXPLOSIONS 25
+#define DEF_THM_COUNTER 20
 
 
 

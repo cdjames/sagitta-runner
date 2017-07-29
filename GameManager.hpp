@@ -38,7 +38,9 @@ protected:
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor,
 					exp_fr_counter, exp_fr_factor,
-					create_counter, create_factor;
+					create_counter, create_factor,
+					theme_counter;
+	ThemeType curr_theme;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
 	Obstacle testO;

@@ -95,6 +95,8 @@ GameManager::GameManager(WINDOW * win) {
 	fr_factor = 3;
 	exp_fr_factor = 4;
 	create_factor = 15;
+	curr_theme = SPACE;
+	theme_counter = DEF_THM_COUNTER;
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -152,6 +154,7 @@ short GameManager::run() {
 	int basequadsize = maxWinXY.y/QUAD_PARTS;
 	int quadsize = basequadsize;
 	int prevquadsize = 0;
+	unsigned short temp_theme; 
 	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
@@ -161,9 +164,18 @@ short GameManager::run() {
 	{
 		input = getch();
 
+		/* change theme */
+		if(numObstaclesDestroyed >= theme_counter) {
+			temp_theme = curr_theme;
+			(temp_theme >= NUM_THEMES-1) ? temp_theme = 0 : temp_theme++;
+			curr_theme = (ThemeType)temp_theme;
+			theme_counter = numObstaclesDestroyed + DEF_THM_COUNTER;
+		}
+
 		/* create some random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
-			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, SPORTS, ++obstacleId);
+			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
+				rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
 			testO2.setEnemy(SHIP);
 			placeObstacle(testO2, obstacleId);
 			create_counter = 0;
