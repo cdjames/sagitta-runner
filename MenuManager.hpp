@@ -27,10 +27,13 @@ public:
 	int difficultyScreen();
 	int showScores();
 	int difficultyLevel;
-	int playerNameScreen();
+	int playerNameScreen(int);
 	void clearScreen();
 	char playerName[16];
 	int gameOver();
+	int hsScreen();
+	int score = 10;			//change me
+	int fileExists;
 };
 
 #endif
