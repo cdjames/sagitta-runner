@@ -58,6 +58,8 @@ void Object::initParticles() {
 	numParticles = blueprint.size()-1;
 	height = blueprint[0].coords.x;
 	width = blueprint[0].coords.y;
+	points = MAX_OBS_POINTS - (width+height);
+	penalty = height;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;

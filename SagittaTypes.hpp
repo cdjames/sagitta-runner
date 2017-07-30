@@ -13,8 +13,9 @@
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define STATUS_SIZE 2
-#define STAT_ENEMIES 24
-#define STAT_BULLETS 17
+#define STAT_ENEMIES 18
+#define STAT_BULLETS 16
+#define STAT_SCORE 17
 #define QUAD_PARTS 3
 #define MAX_BULLETS 5
 #define MIN_BULLETS 1
@@ -24,6 +25,7 @@
 #define DIFF_TIMEOUT 10 // seconds
 #define DIFF_TIME_ADD 2 // seconds
 #define OBS_CREATE_FACTOR 5
+#define MAX_OBS_POINTS 20
 
 
 

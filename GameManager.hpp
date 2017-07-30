@@ -86,6 +86,8 @@ protected:
 	time_t start_time,
 		   target_time,
 		   time_now;
+	// int max_obs_points;
+	int score;
 
 	void initWindow();
 	void initGameboard();
@@ -105,7 +107,7 @@ protected:
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
-	short run();
+	short run(int * final_score);
 	void updateSettings(MenuManager &MM);
 };
 

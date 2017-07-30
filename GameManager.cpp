@@ -17,8 +17,9 @@ GameManager::GameManager(WINDOW * win) {
 	exp_fr_factor = 4;
 	create_factor = 15;
 	max_bullets = MAX_BULLETS;
-	curr_theme = SPACE;
+	curr_theme = FOOD;
 	theme_counter = DEF_THM_COUNTER;
+	score = 0;
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -30,7 +31,7 @@ GameManager::GameManager(WINDOW * win) {
 
 GameManager::~GameManager() {}
 
-short GameManager::run() {
+short GameManager::run(int * final_score) {
 	// unsigned short still_animating;
 	// Particle obstStatus;
 	move_ship = false;
@@ -48,7 +49,7 @@ short GameManager::run() {
 	num_time_loops = 0;
 	// int randY = rand()%(quadsize) + prevquadsize;
 
-	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
+	mvprintw(0,0,"Press 'q' to quit.  ");	// instructions at top of screen
 	
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
@@ -156,6 +157,8 @@ short GameManager::run() {
 					obst_it = Obstacles.find(obstStatus.info.id);
 					temp_obst_it = obst_it;
 					++obst_it;
+					/* add to score */
+					score += temp_obst_it->second.points;
 					temp_obst_it->second.erase();
 					Obstacles.erase(temp_obst_it);
 					
@@ -231,6 +234,9 @@ short GameManager::run() {
 						gameover = true;
 					} else if (obstStatus.collided == DESTROY) {
 						++obst_it;
+						score -= temp_obst_it->second.penalty;
+						if(score < 0 && difficulty > 2)
+							score = 0;
 						temp_obst_it->second.erase();
 						Obstacles.erase(temp_obst_it); // remove from the map
 					} 
@@ -249,8 +255,9 @@ short GameManager::run() {
 		}
 
 		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d |", numObstaclesDestroyed);
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d ", numObstaclesDestroyed);
 		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", max_bullets-Bullets.size()); // testing	
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " score: %d ", score); // testing	
 
 
 		/* create new explosions */
@@ -294,7 +301,7 @@ short GameManager::run() {
 	if(input == 'q') // if user quit
 		gameStatus = 0;
 	else if (gameover) { // if user died
-		mvprintw(0, 0, "GAMEOVER - press 'q' to quit  ");
+		mvprintw(0, 0, "GAMEOVER - press 'q'");
 		gameStatus = 1;
 		/* erase the ship */
 		theShip.erase();
@@ -318,6 +325,7 @@ short GameManager::run() {
 		} while (input != 'q');
 	}
 
+	*final_score = score;
 	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
@@ -379,7 +387,7 @@ void GameManager::placeBullet(unsigned long &id) {
 	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
-											maxWinXY, BULLET, SPACE, id)));
+											maxWinXY, BULLET, curr_theme, id)));
 	
 	// obst_it->second.draw();
 	obst_it->second.setTrajectory(Coord{1,0});
