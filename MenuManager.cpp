@@ -7,7 +7,7 @@
 #include <math.h>
 
 MenuManager::MenuManager() {
-	strcpy(playerName, "player         ");
+	strcpy(playerName, "Default Player ");
 	xCoord = 13;
 	yCoord = 10;
 	titleXCoord = 8;
@@ -216,22 +216,39 @@ int MenuManager::playerNameScreen(int endScreen) {
 				refresh();
 				char inputName[16];
 				char ch;
-				for (int j = 0; j < 15; j++) {
+				int j = 0;
+				while (j < 15) {
 					ch = fgetc(stdin);
-					playerName[j] = ch;
-					char *tempString = inputName;
-					mvprintw(titleYCoord + 2, titleXCoord + 2 + j, &playerName[j]);
-					mvprintw(titleYCoord + 2, titleXCoord + 3 + j, "                       ");
-					refresh();
-					//ch = getch(); --> This doesn't wait for input so I had to use fgetc. 
-					// I also tried gets()
-					if (ch == 13) {
-						while (j < 14) {
-							playerName[j] = ' ';
-							j++;
+					//Backspace
+					if ((ch == 127 || ch == 8) && j > 0) {
+						j--;
+						playerName[j] = ' ';
+						mvprintw(titleYCoord + 2, titleXCoord + 2 + j, "                 ");
+						refresh();
+					}
+					//Enter a character
+
+					else if ((ch == 127 || ch == 8) && j == 0)
+						;
+					
+					else {
+						playerName[j] = ch;
+						char *tempString = inputName;
+						mvprintw(titleYCoord + 2, titleXCoord + 2 + j, &playerName[j]);
+						mvprintw(titleYCoord + 2, titleXCoord + 3 + j, "                       ");
+						refresh();
+						//ch = getch(); --> This doesn't wait for input so I had to use fgetc. 
+						// I also tried gets()
+
+						if (ch == 13) {
+							while (j < 14) {
+								playerName[j] = ' ';
+								j++;
+							}
+							playerName[j] = '\0';
+							break;
 						}
-						playerName[j] = '\0';
-						break;
+						j++;
 					}
 				}
 				//strcpy(playerName, inputName);
