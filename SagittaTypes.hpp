@@ -22,7 +22,7 @@
 #define MAX_OBSTACLES 100
 #define MAX_EXPLOSIONS 25
 #define DEF_THM_COUNTER 20
-#define DIFF_TIMEOUT 10 // seconds
+#define DIFF_TIMEOUT 5 // seconds
 #define DIFF_TIME_ADD 2 // seconds
 #define OBS_CREATE_FACTOR 5
 #define MAX_OBS_POINTS 20
