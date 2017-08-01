@@ -165,7 +165,12 @@ void createObstacleBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS3;
 
 	/* create for theme 0 */
-	/* small ship */
+	/* small ship 
+
+	      / 
+         <=[
+          \
+     */
 	DEF_OBST_BP.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
 	DEF_OBST_BP.push_back( ParticleCore { Coord {0, 1}, '<', 5} ); // then x, y, symbol, color
 	DEF_OBST_BP.push_back( ParticleCore { Coord {1, 0}, '/', 14} ); // then x, y, symbol, color
@@ -176,6 +181,16 @@ void createObstacleBlueprints() {
 	/* add to themes array */
 	OBJECT_VARS.push_back(DEF_OBST_BP);
 	// push more variations if necessary
+
+	/* big ship 
+
+	/     \
+    | /^\ |            
+    |=|O|=|            
+    | \_/ |            
+    \     /
+
+	*/
 	vector<ParticleCore> space_obst_2; // big ship
 	space_obst_2.push_back( ParticleCore { Coord {7, 5}, 0, 3} );
 	space_obst_2.push_back( ParticleCore { Coord {0, 0}, '/', 7} );
@@ -200,6 +215,35 @@ void createObstacleBlueprints() {
 	space_obst_2.push_back( ParticleCore { Coord {6, 3}, '|', 7} );
 	space_obst_2.push_back( ParticleCore { Coord {6, 4}, '/', 7} );
 	OBJECT_VARS.push_back(space_obst_2);
+
+	/* stealth ship
+	      ,,,,/*  
+		<(^_^(**
+		  ````\*
+	*/
+	vector<ParticleCore> space_obst_3;
+	space_obst_3.push_back( ParticleCore { Coord {3, 8}, 0, 1} );
+	space_obst_3.push_back( ParticleCore { Coord {0, 1}, '<', 234} );
+	space_obst_3.push_back( ParticleCore { Coord {1, 1}, '(', 235} );
+	space_obst_3.push_back( ParticleCore { Coord {2, 1}, '^', 232} );
+	space_obst_3.push_back( ParticleCore { Coord {3, 1}, '_', 232} );
+	space_obst_3.push_back( ParticleCore { Coord {4, 1}, '^', 232} );
+	space_obst_3.push_back( ParticleCore { Coord {5, 1}, '(', 235} );
+	space_obst_3.push_back( ParticleCore { Coord {6, 1}, '*', 196} );
+	space_obst_3.push_back( ParticleCore { Coord {7, 1}, '*', 202} );
+	space_obst_3.push_back( ParticleCore { Coord {2, 0}, ',', 232} );
+	space_obst_3.push_back( ParticleCore { Coord {3, 0}, ',', 233} );
+	space_obst_3.push_back( ParticleCore { Coord {4, 0}, ',', 234} );
+	space_obst_3.push_back( ParticleCore { Coord {5, 0}, ',', 235} );
+	space_obst_3.push_back( ParticleCore { Coord {6, 0}, '/', 236} );
+	space_obst_3.push_back( ParticleCore { Coord {7, 0}, '*', 178} );
+	space_obst_3.push_back( ParticleCore { Coord {2, 2}, '`', 232} );
+	space_obst_3.push_back( ParticleCore { Coord {3, 2}, '`', 233} );
+	space_obst_3.push_back( ParticleCore { Coord {4, 2}, '`', 234} );
+	space_obst_3.push_back( ParticleCore { Coord {5, 2}, '`', 235} );
+	space_obst_3.push_back( ParticleCore { Coord {6, 2}, '\\', 236} );
+	space_obst_3.push_back( ParticleCore { Coord {7, 2}, '*', 178} );
+	OBJECT_VARS.push_back(space_obst_3);
 	/* when done, push themes onto the main blueprints array */
 	OBJ_THEMES.push_back(OBJECT_VARS);
 
@@ -372,6 +416,62 @@ void createObstacleBlueprints() {
 	sport_obst_2.push_back( ParticleCore { Coord {7, 2}, '\'', 130});
 	sport_obst_2.push_back( ParticleCore { Coord {8, 1}, ')', 130});
 	OBJECT_VARS3.push_back(sport_obst_2);
+
+	/* dart - http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/sports.html
+	    ____                            ___ 
+        \___\_.:::::::.___  ___.:::::._/__/
+   jgs  /___/ ':::::::'        ':::::' \__\
+
+	*/
+   	vector<ParticleCore> sport_obst_3;  // !!!!! causes core dump
+	sport_obst_3.push_back( ParticleCore { Coord {3, 15}, 0, 1});
+	sport_obst_3.push_back( ParticleCore { Coord {0, 1}, '_', 15});
+	sport_obst_3.push_back( ParticleCore { Coord {1, 1}, '_', 15});
+	sport_obst_3.push_back( ParticleCore { Coord {2, 1}, '_', 15});
+	sport_obst_3.push_back( ParticleCore { Coord {3, 1}, '.', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {4, 1}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {5, 1}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {6, 1}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {7, 1}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {8, 1}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {9, 1}, '.', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {10, 1}, '_', 15});
+	sport_obst_3.push_back( ParticleCore { Coord {11, 1}, '/', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {12, 1}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {13, 1}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {14, 1}, '/', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {3, 2}, '\'', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {4, 2}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {5, 2}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {6, 2}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {7, 2}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {8, 2}, ':', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {9, 2}, '\'', 21});
+	sport_obst_3.push_back( ParticleCore { Coord {11, 2}, '\\', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {12, 2}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {13, 2}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {14, 2}, '\\', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {12, 0}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {13, 0}, '_', 9});
+	sport_obst_3.push_back( ParticleCore { Coord {14, 0}, '_', 9});
+	OBJECT_VARS3.push_back(sport_obst_3);
+
+	/* arrow - http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/sports.html
+		<--------<<<< jgs
+	*/
+	vector<ParticleCore> sport_obst_4; 
+	sport_obst_4.push_back( ParticleCore { Coord {1, 8}, 0, 1});
+	sport_obst_4.push_back( ParticleCore { Coord {0, 0}, '<', 250});
+	sport_obst_4.push_back( ParticleCore { Coord {1, 0}, '-', 94});
+	sport_obst_4.push_back( ParticleCore { Coord {2, 0}, '-', 94});
+	sport_obst_4.push_back( ParticleCore { Coord {3, 0}, '-', 94});
+	sport_obst_4.push_back( ParticleCore { Coord {4, 0}, '-', 94});
+	sport_obst_4.push_back( ParticleCore { Coord {5, 0}, '<', 15});
+	sport_obst_4.push_back( ParticleCore { Coord {6, 0}, '<', 34});
+	sport_obst_4.push_back( ParticleCore { Coord {7, 0}, '<', 15});
+	OBJECT_VARS3.push_back(sport_obst_4);
+
+
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
 	/* Finally, append to the master blueprint */
