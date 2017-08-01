@@ -5,6 +5,7 @@
 *********************************************************************/
 
 #include "GameManager.hpp"
+#include "NetworkManager.hpp"
 
 /* protected */
 void GameManager::initWindow() {
@@ -151,6 +152,9 @@ short GameManager::run() {
 	int basequadsize = maxWinXY.y/QUAD_PARTS;
 	int quadsize = basequadsize;
 	int prevquadsize = 0;
+	NetworkManager NM = NetworkManager(); // Create instance of NetworkManager Class.
+	// NM.getPlayerNumber();
+	printf("Player %d Connected.\n", NM.getPlayerNumber());
 	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
@@ -178,6 +182,8 @@ short GameManager::run() {
 		}
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
+		NM.sendCoord(input);
+		
 		switch (input){
 			case KEY_UP:
 				// mvprintw(0, 24, "pressed up     ");

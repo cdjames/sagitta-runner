@@ -7,6 +7,7 @@
 #include <iostream>
 #include "GameManager.hpp"
 #include "MenuManager.hpp"
+#include "NetworkManager.hpp"
 
 void initScreen();
 void exitCurses(WINDOW * win);
@@ -19,7 +20,10 @@ int main()
 	WINDOW * win;
 	initScreen();
 	short playerdied = -1;
-	MenuManager MM = MenuManager(); 
+	MenuManager MM = MenuManager();
+	// NetworkManager NM = NetworkManager(); // Create instance of NetworkManager Class.
+	// NM.getPlayerNumber();
+	// printf("Player %d Connected.\n", NM.getPlayerNumber());
 	int play = MM.mainMenu();
 	while (play == 1){
 		GameManager GM = GameManager(win);

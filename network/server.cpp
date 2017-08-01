@@ -17,7 +17,7 @@
 int main(int argc , char *argv[])  
 {  
     int opt = TRUE;  
-    int master_socket , addrlen , new_socket , client_socket[30], max_clients = 30 , activity, i , valread , sd;  
+    int master_socket , addrlen , new_socket , client_socket[2], max_clients = 2 , activity, i , valread , sd;  
     int max_sd;  
     struct sockaddr_in address;  
     int num = 0;
@@ -124,7 +124,10 @@ int main(int argc , char *argv[])
 
             if(numPlayers == 2) {
                 break;
-            }  
+            } 
+            else {
+                printf("Waiting for one more connection...\n");
+            } 
         }    
     }  
     printf("We have 2 players now.\n");
