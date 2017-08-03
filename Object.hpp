@@ -61,6 +61,9 @@ protected:
 	bool _inBounds(Coord nc);
 	
 public:
+	int points, // points earned for destroying
+		penalty; // points lost for letting pass
+
 	/*********************************************************************
 	** Description: Object constructor
 	** Inherit win and gameboard from creating class. Passed a start coord 

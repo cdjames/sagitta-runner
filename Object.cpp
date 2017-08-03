@@ -58,6 +58,8 @@ void Object::initParticles() {
 	numParticles = blueprint.size()-1;
 	height = blueprint[0].coords.x;
 	width = blueprint[0].coords.y;
+	points = MAX_OBS_POINTS - (width+height);
+	penalty = height;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
@@ -167,7 +169,7 @@ Particle Object::move(Coord tr) {
 
 				/* draw new one 
 					If none are drawn during the whole loop, onScreen flag will be zero */
-				particles[i].core.coords += trajectory;
+				particles[i].core.coords = new_coords;
 				_drawParticle(particles[i], info);
 
 				// set collided type
@@ -210,31 +212,31 @@ Particle Object::dftMove() {
 }
 
 void Object::_drawParticle(Particle &p, ParticleInfo pi) {
-	int x, y, c;
-	// p->coords += this->trajectory;
-	x = p.core.coords.x;
-	y = p.core.coords.y;
-	c = p.core.color;
+	int y_and_buffer = p.core.coords.y+DEF_BUFFER, 
+		x_and_buffer = p.core.coords.x+DEF_BUFFER;
+	
 	// change color
-	wattron(win, COLOR_PAIR(c));
+	wattron(win, COLOR_PAIR(p.core.color));
 	// add character
-	mvwaddch(win, y, x, p.core.symbol);
+	mvwaddch(win, p.core.coords.y, p.core.coords.x, p.core.symbol);
 	// turn color off
-	wattroff(win, COLOR_PAIR(c));
-	// update gameboard
-	(*gameboard)[y+DEF_BUFFER][x+DEF_BUFFER] = pi;
+	wattroff(win, COLOR_PAIR(p.core.color));
+	// update gameboard, checking for valid indexes first (was getting segfaults)
+	if(y_and_buffer >= 0 && y_and_buffer < gbMax.y && x_and_buffer >= 0 && x_and_buffer < gbMax.x)
+		(*gameboard)[y_and_buffer][x_and_buffer] = pi;
 }
 
 /*********************************************************************
-** Description: _checkBounds()
-** Look at 
+** Description: _inBounds()
+** Is the particle still on the screen?
 *********************************************************************/
 bool Object::_inBounds(Coord nc) {
 	if(nc.y >= 0 &&
 		nc.y < max.y &&
 		nc.x >= 0 &&
-		nc.x < max.x)
-		return true;
+		nc.x < max.x) {
+			return true;
+	}
 	else
 		return false;
 }

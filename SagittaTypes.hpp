@@ -7,14 +7,27 @@
 #ifndef SAGITTATYPES_HPP
 #define SAGITTATYPES_HPP
 
+#include <mutex>
+
 #define DEF_TIMEOUT 30
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define STATUS_SIZE 2
-#define MAX_BULLETS 5
-#define STAT_ENEMIES 24
-#define STAT_BULLETS 17
+#define STAT_ENEMIES 18
+#define STAT_BULLETS 16
+#define STAT_SCORE 17
 #define QUAD_PARTS 3
+#define MAX_BULLETS 5
+#define MIN_BULLETS 1
+#define MAX_OBSTACLES 100
+#define MAX_EXPLOSIONS 25
+#define DEF_THM_COUNTER 20
+#define DIFF_TIMEOUT 5 // seconds
+#define DIFF_TIME_ADD 2 // seconds
+#define OBS_CREATE_FACTOR 5
+#define MAX_OBS_POINTS 20
+
+
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };

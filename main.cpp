@@ -20,24 +20,25 @@ int main()
 	initScreen();
 	short playerdied = -1;
 	MenuManager MM = MenuManager(); 
-	int play = MM.mainMenu();
+	int play = MM.mainMenu(),
+		score = 0;
 	while (play == 1){
 		GameManager GM = GameManager(win);
-		// mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
 		GM.updateSettings(MM);	
-		playerdied = GM.run(); // runs until user presses q
+		playerdied = GM.run(&score); // runs until user presses q
 		play = MM.gameOver();
 		MM.clearScreen();
 	}
 	
 	exitCurses(win);
 
-	if(playerdied == 1)
-		std::cout << "player hit an obstacle" << std::endl;
-	else if (!playerdied) // i.e. 0
-		std::cout << "player pressed q to quit" << std::endl;
-	else // i.e. -1
-		std::cout << "something strange happened in run()" << std::endl;
+	std::cout << "final score is " << score << std::endl;
+	// if(playerdied == 1)
+	// 	std::cout << "player hit an obstacle" << std::endl;
+	// else if (!playerdied) // i.e. 0
+	// 	std::cout << "player pressed q to quit" << std::endl;
+	// else // i.e. -1
+	// 	std::cout << "something strange happened in run()" << std::endl;
 	return 0;
 }
 

@@ -10,8 +10,9 @@
 #include <curses.h>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "MenuManager.hpp"
-#include "SagittaTypes.hpp"
+// #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
 #include "Bullet.hpp" // includes Object
@@ -31,30 +32,62 @@ protected:
 
 	Coord maxWinXY,
 		  maxGBWinXY;
+	Obstacle testO;
+	Obstacle testO2;
+	Bullet testBullet;
+	Explosion testExplosion;
+
+	std::unordered_map<unsigned long,Obstacle> Obstacles;
+	std::map<unsigned long,Bullet> Bullets;
+	std::map<unsigned long,Explosion> Explosions;
+
+	std::unordered_map<unsigned long,Obstacle>::iterator obst_it;
+	std::map<unsigned long,Bullet>::iterator bull_it;
+	std::map<unsigned long,Explosion>::iterator exp_it;
+
+	std::unordered_map<unsigned long,Obstacle>::iterator temp_obst_it;
+	std::map<unsigned long,Bullet>::iterator temp_bull_it;
+	std::map<unsigned long,Explosion>::iterator temp_exp_it;
+
+	/* used in run() */
 	short 	baseRefresh,
 			obstacleRefreshCounter,
 			obstacleRefreshFactor,
 			numObstaclesCreateOnPass;
 	unsigned short fr_counter, fr_factor,
 					exp_fr_counter, exp_fr_factor,
-					create_counter, create_factor;
+					create_counter, create_factor,
+					theme_counter,
+					max_bullets;
+	ThemeType curr_theme;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
-	Obstacle testO;
-	Obstacle testO2;
-	Bullet testBullet;
-	Explosion testExplosion;
 	int input;
 	Particle shipStatus;
 	bool gameover;
-
-	std::map<unsigned long,Obstacle> Obstacles;
-	std::map<unsigned long,Bullet> Bullets;
-	std::map<unsigned long,Explosion> Explosions;
-
+	unsigned short still_animating;
+	Particle obstStatus;
+	bool move_ship;
+	bool makeExplosion;
+	short gameStatus;
+	Coord trajectory;
+	Coord exp_coord;
+	Coord ship_coord;
+	int basequadsize;
+	int quadsize;
+	int prevquadsize;
+	unsigned short temp_theme; 
+	unsigned int num_theme_loops;
+	unsigned int num_time_loops;
 	unsigned long obstacleId,
 					bulletId,
 					explosionId;
+	int difficulty;	
+	time_t start_time,
+		   target_time,
+		   time_now;
+	// int max_obs_points;
+	int score;
 
 	void initWindow();
 	void initGameboard();
@@ -71,11 +104,10 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
-	int difficulty;	
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
-	short run();
+	short run(int * final_score);
 	void updateSettings(MenuManager &MM);
 };
 
