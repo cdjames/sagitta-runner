@@ -1,4 +1,5 @@
 #include "MenuManager.hpp"
+//#include "GameManager.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -381,6 +382,7 @@ int MenuManager::hsScreen() {
 }
 
 int MenuManager::gameOver(){
+//	score = GM.score;
 	clearScreen();
 	mvprintw(yCoord, xCoord, ">");
 	mvprintw(yCoord, xCoord + 2, "Play again");

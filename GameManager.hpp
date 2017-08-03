@@ -23,7 +23,7 @@
 #include <ctime> // for seeding rand
 
 using std::vector;
-
+class MenuManager;
 class GameManager
 {
 protected:
