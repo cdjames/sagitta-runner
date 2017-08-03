@@ -26,6 +26,7 @@ int main()
 		GameManager GM = GameManager(win);
 		GM.updateSettings(MM);	
 		playerdied = GM.run(&score); // runs until user presses q
+		MM.updateSettings(GM);
 		play = MM.gameOver();
 		MM.clearScreen();
 	}

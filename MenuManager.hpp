@@ -33,7 +33,8 @@ public:
 	void clearScreen();
 	int gameOver();
 	int hsScreen();	
-	int play;	
+	int play;
+	void updateSettings(GameManager);	
 };
 
 #endif

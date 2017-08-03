@@ -105,6 +105,7 @@ protected:
 	void gameOver();
 	void setScreenSize();
 public:
+	friend MenuManager;
 	GameManager(WINDOW * win);
 	~GameManager();
 	short run(int * final_score);

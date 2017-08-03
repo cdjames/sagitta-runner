@@ -14,6 +14,7 @@ MenuManager::MenuManager() {
 	titleXCoord = 8;
 	titleYCoord = 6;
 	difficultyLevel = 5;
+	score = 0;
 }
 
 
@@ -382,7 +383,6 @@ int MenuManager::hsScreen() {
 }
 
 int MenuManager::gameOver(){
-//	score = GM.score;
 	clearScreen();
 	mvprintw(yCoord, xCoord, ">");
 	mvprintw(yCoord, xCoord + 2, "Play again");
@@ -431,4 +431,8 @@ int MenuManager::gameOver(){
 		}	
 	} while (i != 10);
 	return -1;
+}
+
+void MenuManager::updateSettings(GameManager GM){
+	score = GM.score;
 }
