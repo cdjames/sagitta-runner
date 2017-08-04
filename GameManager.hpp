@@ -104,6 +104,7 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
+	void _gameLoop(vector<int> * timing_info);
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
