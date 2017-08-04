@@ -9,6 +9,7 @@
 #include <sys/time.h> 
 #include <iostream>
 #include "SagittaTypes.hpp"
+
     
 #define TRUE   1 
 #define FALSE  0 
@@ -18,37 +19,67 @@
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
 // int connectPlayers(int*, int[], int*, int*, struct sockaddr_in *);
 
-int acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[]) {
+struct gameState {
+    struct Coord shipCoord;
+    int score;
+    int bullets;
+    int difficulty;
+};
+
+
+
+void initGameState(struct gameState &state) {
+    state.shipCoord.x = 0;
+    state.shipCoord.y = 0;
+    state.score = 0;
+    state.bullets = 5;
+    state.difficulty = 1;
+}
+
+// void acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[], struct gameState &state) {
+void acceptRequests(int client_socket[], struct gameState &state) {
     int valread, sd;
     int buffer;
     int i;
     fd_set readfds;
+    char command[512] = {0};
+    char confirmation[512] = "recived";
+    struct Coord recvCoord;
 
-    for(int i =0; i< 2; i++) {
-        sd = client_socket[i];
-        recv(sd, &buffer, sizeof(buffer), 0);
-        int command = ntohl(buffer);   
-        if(command > 0 && command != 113) {
-            printf("input from client = %d at sd = %d\n", command, sd); 
-        }
-        else if (command == 113) {
-            printf("Quitting Game from sd = %d\n", sd);
-            command = -1;
-            return 1;
-        }
+    // for(int i =0; i< 2; i++) {
+    //     sd = client_socket[i];
+    //     recv(sd, &buffer, sizeof(buffer), 0);
+    //     int command = ntohl(buffer);   
+    //     if(command > 0 && command != 113) {
+    //         printf("input from client = %d at sd = %d\n", command, sd); 
+    //     }
+    //     else if (command == 113) {
+    //         printf("Quitting Game from sd = %d\n", sd);
+    //         command = -1;
+    //         return 1;
+    //     }
+    // }
+
+    valread = recv(client_socket[0], &command, sizeof(command), 0);
+
+    printf("command @ server = %s\n", command);
+
+    if(strcmp(command, "sendCoord") == 0) {
+        // handle sendCoord function
+        send(client_socket, &confirmation, sizeof(confirmation), 0);
+        valread = recv(client_socket, recvCoord, sizeof(recvCoord), 0);
     }
+    if(strcmp(command, "getPosition") == 0) {
+        // handle getCoord
+        struct Coord c = state.shipCoord;
+        send(client_socket[0], &c, sizeof(c), 0);
+    }
+    if(strcmp(command, "getCoord") == 0) {
+        struct Coord c = state.shipCoord;
+        send(client_socket[0], &c, sizeof(c), 0);
+    }
+    memset(&command, '0', sizeof(command));
 
-    // sd = client_socket[1];
-    // recv(sd, &buffer, sizeof(buffer), 0);
-    // command = ntohl(buffer);   
-    // if(command > 0 && command != 113) {
-    //     printf("input from client = %d at sd = %d\n", command, sd); 
-    // }
-    // else if (command == 113) {
-    //     printf("Quitting Game from sd = %d\n", sd);
-    //     command = -1;
-    //     return 1;
-    // }
 }
 
 void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
@@ -106,6 +137,10 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
     char buffer[1024] = {0};
     int valread;
     int acceptReqBool = 0;
+
+    // Game state variables
+    struct gameState state;
+
 	//set of socket descriptors 
     fd_set readfds;  
 
@@ -119,7 +154,6 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
            
         //wait for an activity on one of the sockets
         activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);  
-      	printf("activity = %d\n", activity);
         if ((activity < 0) && (errno!=EINTR))  
         {  
             printf("select error");  
@@ -134,6 +168,7 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
                 exit(EXIT_FAILURE);  
             }  
             client_socket[numPlayers] = new_socket;
+
             //inform user of socket number - used in send and receive commands
             clientReady = recv(new_socket, &clientReady, sizeof(clientReady), 0);
             numPlayers++; 
@@ -146,10 +181,9 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
         }    
     }  
     printf("We have 2 players now.\n");
+    initGameState(state);
     while(1) {
-        while(acceptReqBool == 0) {
-            acceptReqBool = acceptRequests(master_socket, addrlen, address, client_socket);
-        }
+        acceptRequests(client_socket, state);
     }
     return 0;
 }
@@ -167,8 +201,5 @@ int main(int argc , char *argv[]) {
 	//Connects 2 players. Once two players connected, exits function.
 	connectPlayers(master_socket, addrlen, address, client_socket);
 
-    // Accept requests.
-    // acceptRequests(master_socket, addrlen, address, client_socket);
-    // printf("socket 1 %d\n", client_socket[0]);
-    // printf("socket 2 %d\n", client_socket[1]);
+    return 0;
 }  

@@ -1,4 +1,5 @@
 #include "NetworkManager.hpp"
+#include "SagittaTypes.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -63,16 +64,41 @@ int NetworkManager::getPlayerNumber() {
 	return player;
 }
 
-// Coord getCoord::NetworkManager(short type) {
-// 	// Returns the "master" coordinates for type ship or bullet.
-// }
-
-void NetworkManager::sendCoord(int command) {
+void NetworkManager::sendCoord() {
 	// Send the key stroke from client to server.
 	// Server takes the keystroke and changes "master" value.
 	// Returns True if success, False is not success.
 
-	int converted_number = htonl(command);
-    send(client_socket, &converted_number, sizeof(int), 0);
+	// int converted_number = htonl(command);
+ //    send(client_socket, &converted_number, sizeof(int), 0);
 	// send(client_socket, &command, sizeof(command), 0);
+	char msg[512] = "sendCoord";
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+
 }
+
+Coord NetworkManager::getCoord(short type) {
+	// Returns the "master" coordinates for type ship or bullet.
+	char msg[512] = "getCoord";
+	int valread;
+	struct Coord shipCoord;
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
+
+	return shipCoord;
+}
+
+Coord NetworkManager::getPosition() {
+	// Returns the "master" coordinates for type ship or bullet.
+	char msg[512] = "getPosition";
+	int valread;
+	struct Coord shipCoord;
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
+
+	return shipCoord;
+}
+

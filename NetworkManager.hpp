@@ -21,9 +21,9 @@ public:
 	NetworkManager();
 	int connectPlayer();
 	int getPlayerNumber();
-	int sendCoord(int);
-	// Coord getCoord(short type);
-	// Coord getPosition(short ship_or_bullet);
+	void sendCoord();
+	Coord getCoord();
+	Coord getPosition();
 	// vector<Coord> syncPositions();
 	// bool sendScore(int score);
 	// int getScore();

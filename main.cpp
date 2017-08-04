@@ -21,9 +21,9 @@ int main()
 	initScreen();
 	short playerdied = -1;
 	MenuManager MM = MenuManager();
-	// NetworkManager NM = NetworkManager(); // Create instance of NetworkManager Class.
-	// NM.getPlayerNumber();
-	// printf("Player %d Connected.\n", NM.getPlayerNumber());
+	NetworkManager NM = NetworkManager();
+	NM.sendCoord();
+	NM.getCoord();
 	int play = MM.mainMenu();
 	while (play == 1){
 		GameManager GM = GameManager(win);
