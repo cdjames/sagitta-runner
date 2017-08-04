@@ -105,6 +105,8 @@ protected:
 	void gameOver();
 	void setScreenSize();
 	void _gameLoop(vector<int> * timing_info);
+	short _gameOver(int * final_score);
+
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
