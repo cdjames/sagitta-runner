@@ -12,6 +12,7 @@
 #include <map>
 #include <unordered_map>
 #include <limits>
+#include <chrono>
 #include "MenuManager.hpp"
 // #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
@@ -25,6 +26,7 @@
 #include <cmath>
 
 using std::vector;
+// using std::chrono;
 
 class GameManager
 {
@@ -106,13 +108,13 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
-	void _gameLoop(vector<int> * timing_info);
+	void _gameLoop(vector<double> * timing_info);
 	short _gameOver(int * final_score);
 
 public:
 	GameManager(WINDOW * win);
 	~GameManager();
-	short run(int * final_score);
+	short run(int * final_score, vector<double> * timing_info);
 	void updateSettings(MenuManager &MM);
 };
 

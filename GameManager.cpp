@@ -31,7 +31,7 @@ GameManager::GameManager(WINDOW * win) {
 
 GameManager::~GameManager() {}
 
-short GameManager::run(int * final_score) {
+short GameManager::run(int * final_score, vector<double> * timing_info) {
 	// unsigned short still_animating;
 	// Particle obstStatus;
 	move_ship = false;
@@ -55,7 +55,7 @@ short GameManager::run(int * final_score) {
 	target_time = start_time + DIFF_TIMEOUT;
 
 	/* main loop */
-	_gameLoop(NULL);
+	_gameLoop(timing_info);
 
 	/* handle game over scenario, storing the final score in the pointer  */
 	return _gameOver(final_score); // 0 if quit, 1 if died, or -1 if some strange error occurred
@@ -94,10 +94,12 @@ short GameManager::_gameOver(int * final_score) {
 	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
-void GameManager::_gameLoop(vector<int> * timing_info) {
-	int loop_avg_t = 0,
-		loop_max_t = 0,
-		loop_min_t = std::numeric_limits<int>::max(),
+void GameManager::_gameLoop(vector<double> * timing_info) {
+	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
+	*/
+	double loop_avg_t = 0,
+		loop_max_t = 0.0,
+		loop_min_t = std::numeric_limits<double>::max(),
 		loop_start_t = 0,
 		loop_end_t = 0,
 		loops = 0,
@@ -107,7 +109,8 @@ void GameManager::_gameLoop(vector<int> * timing_info) {
 	do 
 	{
 		time_now = time(0);
-		loop_start_t = time_now;
+		loop_start_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		// time_now = (int) loop_start_t *1000;
 
 		input = getch();
 
@@ -347,18 +350,20 @@ void GameManager::_gameLoop(vector<int> * timing_info) {
 		doupdate();
 
 		if(timing_info != NULL){
-			loop_end_t = time(0);
+			loop_end_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 			loop_t = loop_end_t - loop_start_t;
 			if(loop_t > loop_max_t) { loop_max_t = loop_t; }
-			else if(loop_t < loop_min_t) { loop_min_t = loop_t; }
+			if(loop_t < loop_min_t && loop_t > 1) { loop_min_t = loop_t; }
 			loop_total_t += loop_t;
 			loops++;
 		}
 
 	} while (input != 'q' && !gameover);
 
-	loop_avg_t = (int)ceil((double)loop_total_t/(double)loops);
+	loop_avg_t = loop_total_t/loops;
 	if(timing_info != NULL){
+		// timing_info->push_back(loop_total_t);
+		// timing_info->push_back(loops);
 		timing_info->push_back(loop_avg_t);
 		timing_info->push_back(loop_max_t);
 		timing_info->push_back(loop_min_t);

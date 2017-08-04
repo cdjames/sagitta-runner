@@ -9,7 +9,7 @@
 
 #include <mutex>
 
-#define DEF_TIMEOUT 30
+#define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define STATUS_SIZE 2

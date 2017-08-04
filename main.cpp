@@ -22,16 +22,21 @@ int main()
 	MenuManager MM = MenuManager(); 
 	int play = MM.mainMenu(),
 		score = 0;
+	vector<double> timing_info;
 	while (play == 1){
 		GameManager GM = GameManager(win);
 		GM.updateSettings(MM);	
-		playerdied = GM.run(&score); // runs until user presses q
+		playerdied = GM.run(&score, &timing_info); // runs until user presses q
 		play = MM.gameOver();
 		MM.clearScreen();
 	}
 	
 	exitCurses(win);
 
+	if(timing_info.size() == 3) {
+		std::cout << "avg,max,min" << std::endl;
+		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
+	}
 	std::cout << "final score is " << score << std::endl;
 	// if(playerdied == 1)
 	// 	std::cout << "player hit an obstacle" << std::endl;
