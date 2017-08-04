@@ -95,13 +95,23 @@ short GameManager::_gameOver(int * final_score) {
 }
 
 void GameManager::_gameLoop(vector<int> * timing_info) {
+	int loop_avg_t = 0,
+		loop_max_t = 0,
+		loop_min_t = std::numeric_limits<int>::max(),
+		loop_start_t = 0,
+		loop_end_t = 0,
+		loops = 0,
+		loop_total_t = 0,
+		loop_t = 0;
 	/* main loop */
 	do 
 	{
+		time_now = time(0);
+		loop_start_t = time_now;
+
 		input = getch();
 
 		/* increase difficulty */
-		time_now = time(0);
 		if(time_now >= target_time) {
 			target_time = time_now + DIFF_TIMEOUT + num_time_loops;
 			/* increase speed of object refresh rate */
@@ -336,7 +346,23 @@ void GameManager::_gameLoop(vector<int> * timing_info) {
 		wnoutrefresh(win);    // for window
 		doupdate();
 
+		if(timing_info != NULL){
+			loop_end_t = time(0);
+			loop_t = loop_end_t - loop_start_t;
+			if(loop_t > loop_max_t) { loop_max_t = loop_t; }
+			else if(loop_t < loop_min_t) { loop_min_t = loop_t; }
+			loop_total_t += loop_t;
+			loops++;
+		}
+
 	} while (input != 'q' && !gameover);
+
+	loop_avg_t = (int)ceil((double)loop_total_t/(double)loops);
+	if(timing_info != NULL){
+		timing_info->push_back(loop_avg_t);
+		timing_info->push_back(loop_max_t);
+		timing_info->push_back(loop_min_t);
+	}
 }
 
 void GameManager::updateSettings(MenuManager &MM){

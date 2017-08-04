@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <limits>
 #include "MenuManager.hpp"
 // #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
@@ -21,6 +22,7 @@
 #include <iostream>
 #include <cstdlib> // rand
 #include <ctime> // for seeding rand
+#include <cmath>
 
 using std::vector;
 
