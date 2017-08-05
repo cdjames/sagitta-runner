@@ -24,9 +24,8 @@ struct gameState {
     int score;
     int bullets;
     int difficulty;
+    int numPlayers;
 };
-
-
 
 void initGameState(struct gameState &state) {
     state.shipCoord.x = 0;
@@ -37,49 +36,70 @@ void initGameState(struct gameState &state) {
 }
 
 // void acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[], struct gameState &state) {
-void acceptRequests(int client_socket[], struct gameState &state) {
+int acceptRequests(int client_socket[], struct gameState &state) {
     int valread, sd;
     int buffer;
     int i;
     fd_set readfds;
     char command[512] = {0};
-    char confirmation[512] = "recived";
     struct Coord recvCoord;
 
-    // for(int i =0; i< 2; i++) {
-    //     sd = client_socket[i];
-    //     recv(sd, &buffer, sizeof(buffer), 0);
-    //     int command = ntohl(buffer);   
-    //     if(command > 0 && command != 113) {
-    //         printf("input from client = %d at sd = %d\n", command, sd); 
-    //     }
-    //     else if (command == 113) {
-    //         printf("Quitting Game from sd = %d\n", sd);
-    //         command = -1;
-    //         return 1;
-    //     }
-    // }
+    for(int i = 0; i < 2; i++) {
+        valread = recv(client_socket[i], &command, sizeof(command), 0);
 
-    valread = recv(client_socket[0], &command, sizeof(command), 0);
+        if(strcmp(command, "getNumPlayers") == 0) {
+            int currentNumPlayers = state.numPlayers;
+            int converted_number = htonl(currentNumPlayers);
+            send(client_socket[i], &converted_number, sizeof(int), 0);
+        }
 
-    printf("command @ server = %s\n", command);
+        if(strcmp(command, "sendCoord") == 0) {
+            // handle sendCoord function
+            char confirmation[512] = "confirmed";
+            struct Coord recvCoord;
+            int readval;
+            int type;
+            send(client_socket[i], &confirmation, sizeof(confirmation), 0);
+            valread = recv(client_socket[i], &recvCoord, sizeof(recvCoord), 0);
+            //Here, recvCoord is the coordinates recived from client.
+            send(client_socket[i], &confirmation, sizeof(confirmation), 0);
+            //This confirm is that we got the coords from client, now expecting type.
+            readval = recv(client_socket[i], &type, sizeof(type), 0);
+            type = ntohl(type);
+            printf("server: type = %d\n", type);
+            printf("server: coords = %d %d\n", recvCoord.x, recvCoord.y);
 
-    if(strcmp(command, "sendCoord") == 0) {
-        // handle sendCoord function
-        send(client_socket, &confirmation, sizeof(confirmation), 0);
-        valread = recv(client_socket, recvCoord, sizeof(recvCoord), 0);
+        }
+        if(strcmp(command, "getPosition") == 0) {
+            // handle getCoord
+            struct Coord c = state.shipCoord;
+            send(client_socket[i], &c, sizeof(c), 0);
+        }
+
+        if(strcmp(command, "getScore") == 0) {
+            int converted_number;
+            converted_number = htonl(state.score);
+            send(client_socket[i], &converted_number, sizeof(converted_number), 0);
+        }
+
+        if(strcmp(command, "setScore") == 0) {
+            char confirmation[512] = "confirmed";
+            int score, readval;
+            send(client_socket[i], &confirmation, sizeof(confirmation), 0);
+            readval = recv(client_socket[i], &score, sizeof(score), 0);
+            score = ntohl(score);
+            state.score = score;
+        }
+        if(strcmp(command, "gameOver") == 0) {
+            printf("The game is over.\n");
+            printf("Disconnecting both clients.\n");
+            close(client_socket[0]);
+            close(client_socket[1]);
+            return 1;
+        }
+        memset(&command, '0', sizeof(command));
     }
-    if(strcmp(command, "getPosition") == 0) {
-        // handle getCoord
-        struct Coord c = state.shipCoord;
-        send(client_socket[0], &c, sizeof(c), 0);
-    }
-    if(strcmp(command, "getCoord") == 0) {
-        struct Coord c = state.shipCoord;
-        send(client_socket[0], &c, sizeof(c), 0);
-    }
-    memset(&command, '0', sizeof(command));
-
+    return 0;
 }
 
 void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
@@ -125,17 +145,8 @@ void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) 
 }
 
 int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[]) {
-	int num = 0;
     int numPlayers = 0;
-    int max_sd; 
-    int activity;
-    int sd;
-    int new_socket;
-    // int client_socket[2];
-    int clientReady;
-    int i;
-    char buffer[1024] = {0};
-    int valread;
+    int max_sd, activity, new_socket, clientReady;
     int acceptReqBool = 0;
 
     // Game state variables
@@ -172,6 +183,7 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
             //inform user of socket number - used in send and receive commands
             clientReady = recv(new_socket, &clientReady, sizeof(clientReady), 0);
             numPlayers++; 
+            state.numPlayers = numPlayers;
         	int converted_number = htonl(numPlayers);
         	send(new_socket, &converted_number, sizeof(int), 0);
 
@@ -182,13 +194,11 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
     }  
     printf("We have 2 players now.\n");
     initGameState(state);
-    while(1) {
-        acceptRequests(client_socket, state);
+    while(acceptReqBool == 0) {
+        acceptReqBool = acceptRequests(client_socket, state);
     }
     return 0;
 }
-
-
 
 int main(int argc , char *argv[]) {  
 	int master_socket;
@@ -199,7 +209,9 @@ int main(int argc , char *argv[]) {
     // Sets up socket/server connections.
 	setUpServer(master_socket, addrlen, address);
 	//Connects 2 players. Once two players connected, exits function.
-	connectPlayers(master_socket, addrlen, address, client_socket);
+	while(1) {
+        connectPlayers(master_socket, addrlen, address, client_socket);
+    }
 
     return 0;
 }  

@@ -64,21 +64,36 @@ int NetworkManager::getPlayerNumber() {
 	return player;
 }
 
-void NetworkManager::sendCoord() {
-	// Send the key stroke from client to server.
-	// Server takes the keystroke and changes "master" value.
-	// Returns True if success, False is not success.
-
-	// int converted_number = htonl(command);
- //    send(client_socket, &converted_number, sizeof(int), 0);
-	// send(client_socket, &command, sizeof(command), 0);
-	char msg[512] = "sendCoord";
-	//First send str to indicate to server what to return.
+int NetworkManager::getNumberOfPlayers() {
+	char msg[512] = "getNumPlayers";
+	int readval, num;
 	send(client_socket, &msg, sizeof(msg), 0);
-
+	readval = recv(client_socket, &num, sizeof(num), 0);
+	num = ntohl(num);
+	return num;
 }
 
-Coord NetworkManager::getCoord(short type) {
+void NetworkManager::sendCoord(Coord coord, int type) {
+
+	char msg[512] = "sendCoord";
+	int readval;
+	int converted_number;
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	memset(&msg, '0', sizeof(msg));
+	readval = recv(client_socket, msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		send(client_socket, &coord, sizeof(coord), 0);
+		memset(&msg, '0', sizeof(msg));
+		readval = recv(client_socket, msg, sizeof(msg), 0);
+		if(strcmp(msg, "confirmed") == 0) {
+			converted_number = htonl(type);
+            send(client_socket, &converted_number, sizeof(int), 0);
+		}
+	}
+}
+
+Coord NetworkManager::getCoord() {
 	// Returns the "master" coordinates for type ship or bullet.
 	char msg[512] = "getCoord";
 	int valread;
@@ -100,5 +115,33 @@ Coord NetworkManager::getPosition() {
 	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
 
 	return shipCoord;
+}
+
+int NetworkManager::getScore() {
+	int readval, score;
+	char msg[512] = "getScore";
+	send(client_socket, &msg, sizeof(msg), 0);
+	readval = recv(client_socket, &score, sizeof(score), 0);
+	score = ntohl(score);
+
+	return score;
+}
+
+void NetworkManager::setScore(int score) {
+	char msg[512] = "setScore";
+	int valread, converted_number;
+	send(client_socket, &msg, sizeof(msg), 0);
+	memset(&msg, '0', sizeof(msg));
+	valread = recv(client_socket, &msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(score);
+        send(client_socket, &converted_number, sizeof(int), 0);
+	}
+}
+
+void NetworkManager::gameOver(int score) {
+	char msg[512] = "gameOver";
+	send(client_socket, &msg, sizeof(msg), 0);
+
 }
 

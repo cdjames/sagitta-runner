@@ -4,6 +4,7 @@
 #include <curses.h>
 #include <iostream>
 #include <string>
+#include "SagittaTypes.hpp"
 
 using std::string;
 
@@ -21,12 +22,16 @@ public:
 	NetworkManager();
 	int connectPlayer();
 	int getPlayerNumber();
-	void sendCoord();
+	int getNumberOfPlayers();
+	void sendCoord(Coord, int);
 	Coord getCoord();
 	Coord getPosition();
+	int getScore();
+	void setScore(int);
+	void gameOver(int);
 	// vector<Coord> syncPositions();
 	// bool sendScore(int score);
-	// int getScore();
+	
 	// int gameOver(int score);
 };
 
