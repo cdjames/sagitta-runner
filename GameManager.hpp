@@ -36,10 +36,7 @@ protected:
 
 	Coord maxWinXY,
 		  maxGBWinXY;
-	Obstacle testO;
-	Obstacle testO2;
-	Bullet testBullet;
-	Explosion testExplosion;
+	Obstacle rand_obstacle;
 
 	std::unordered_map<unsigned long,Obstacle> Obstacles;
 	std::map<unsigned long,Bullet> Bullets;

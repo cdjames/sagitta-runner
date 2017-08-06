@@ -141,10 +141,9 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
-			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
+			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
 				rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
-			testO2.setEnemy(SHIP);
-			placeObstacle(testO2, obstacleId);
+			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
 			quadsize += basequadsize;
@@ -410,8 +409,10 @@ void GameManager::initColors() {
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	// o.draw();
-	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
-	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
+	// std::unordered_map<unsigned long,Obstacle>::iterator cntr;
+	// cntr = 
+	o.setEnemy(SHIP);
+	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
 void GameManager::placeExplosion(unsigned long &id, Coord start) {
@@ -425,13 +426,14 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 
 void GameManager::placeBullet(unsigned long &id) {
 	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
-	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
+	// std::map<unsigned long,Bullet>::iterator obst_it = 
+	Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
 											maxWinXY, BULLET, curr_theme, id)));
 	
 	// obst_it->second.draw();
-	obst_it->second.setTrajectory(Coord{1,0});
+	// obst_it->second.setTrajectory(Coord{1,0});
 }
 
 void GameManager::placeShip() {

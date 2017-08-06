@@ -14,6 +14,7 @@ Bullet::Bullet(WINDOW * win,
 				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
 	info = {type, id};
+	setTrajectory(Coord{1,0});
 }
 
 Bullet::Bullet() {}
