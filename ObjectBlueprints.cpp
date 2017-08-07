@@ -492,7 +492,7 @@ void createObstacleBlueprints() {
 
 
 	/*
-            .--'
+            .--
          __(__
        /`  |  `\
        |___O___|
@@ -517,29 +517,106 @@ void createObstacleBlueprints() {
 	comp_obst_mouse.push_back( ParticleCore { Coord {3, 1}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {3, 3}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {3, 6}, '_', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {4, 1}, '(', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 1}, '(', 239});
 	comp_obst_mouse.push_back( ParticleCore { Coord {4, 2}, '|', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {4, 3}, 'O', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 3}, 'O', 242});
 	comp_obst_mouse.push_back( ParticleCore { Coord {4, 6}, '_', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {5, 0}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 0}, '.', 239});
 	comp_obst_mouse.push_back( ParticleCore { Coord {5, 1}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {5, 3}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {5, 6}, '_', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {6, 0}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 0}, '-', 239});
 	comp_obst_mouse.push_back( ParticleCore { Coord {6, 1}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {6, 3}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {6, 6}, '.', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {7, 0}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 0}, '-', 239});
 	comp_obst_mouse.push_back( ParticleCore { Coord {7, 2}, '`', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {7, 3}, '_', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {7, 6}, '\'', 180});
-	comp_obst_mouse.push_back( ParticleCore { Coord {8, 0}, '\'', 180});
+	// comp_obst_mouse.push_back( ParticleCore { Coord {8, 0}, '\'', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {8, 2}, '\\', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {8, 3}, '|', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {8, 4}, '|', 180});
 	comp_obst_mouse.push_back( ParticleCore { Coord {8, 5}, '|', 180});
 	OBJECT_VARS_COMP.push_back(comp_obst_mouse);
 
+	/* 			http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/computer.html      
+       _______
+     .`   |__|`.
+     |         |
+     | .-----. | 
+     | |stuff| |
+ jgs |_:_____:_|
+	*/
+
+ 	vector<ParticleCore> comp_obst_floppy; 
+	comp_obst_floppy.push_back( ParticleCore { Coord {11, 6}, 0, 1});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 1}, '.', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 2}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 3}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 4}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 5}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {1, 1}, '`', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {1, 5}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 3}, '.', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 4}, '|', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 5}, ':', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 4}, 's', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 4}, 't', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 1}, '|', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 4}, 'u', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 0}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 1}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 4}, 'f', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 0}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 1}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 4}, 'f', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 1}, '|', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 3}, '.', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 4}, '|', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 5}, ':', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {9, 1}, '`', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {9, 5}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 1}, '.', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 2}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 3}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 4}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 5}, '|', 130});
+	OBJECT_VARS_COMP.push_back(comp_obst_floppy);
+
+
+/* little mouse
+    _
+     )
+    /T\
+    \_/
+*/
+    vector<ParticleCore> comp_obst_lil_mouse; 
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {3, 4}, 0, 2});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 0}, '_', 239});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 1}, ')', 239});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 2}, '/', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 2}, 'T', 39});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {2, 2}, '\\', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 3}, '\\', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 3}, '_', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {2, 3}, '/', 33});
+	OBJECT_VARS_COMP.push_back(comp_obst_lil_mouse);
 
 	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
 	/* Finally, append to the master blueprint */
