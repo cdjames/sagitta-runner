@@ -7,6 +7,7 @@
 #include <iostream>
 #include "GameManager.hpp"
 #include "MenuManager.hpp"
+#include "NetworkManager.hpp"
 
 void initScreen();
 void exitCurses(WINDOW * win);
@@ -23,6 +24,9 @@ int main()
 	int play = MM.mainMenu(),
 		score = 0;
 	vector<double> timing_info;
+	NetworkManager NM = NetworkManager();
+	NM.sendCoord();
+	NM.getCoord();
 	while (play == 1){
 		GameManager GM = GameManager(win);
 		GM.updateSettings(MM);	

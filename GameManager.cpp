@@ -157,6 +157,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		}
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
+		
 		switch (input){
 			case KEY_UP:
 				// mvprintw(0, 24, "pressed up     ");
