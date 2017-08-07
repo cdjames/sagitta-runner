@@ -17,7 +17,7 @@ GameManager::GameManager(WINDOW * win) {
 	exp_fr_factor = 4;
 	create_factor = 15;
 	max_bullets = MAX_BULLETS;
-	curr_theme = SPACE;
+	curr_theme = COMPUTERS;
 	theme_counter = DEF_THM_COUNTER;
 	score = 0;
 	setScreenSize();

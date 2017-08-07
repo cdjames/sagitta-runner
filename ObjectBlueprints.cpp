@@ -17,6 +17,7 @@ void createShipBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	DEF_SHIP_BP.push_back( ParticleCore { Coord {3, 5} , 0, 6} ); // first line is the height, width, value, and index of the "front" of the object
@@ -48,6 +49,8 @@ void createShipBlueprints() {
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 	// std::cout << "ship, space, first symbol=" << OBJ_THEMES[0][0][1].symbol << std::endl;
 
+	OBJECT_VARS_COMP.push_back(DEF_SHIP_BP);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 	// std::cout << "ship, space, first symbol=" << OBJ_BLPRNTS[0][0][0][1].symbol << std::endl;
@@ -62,6 +65,7 @@ void createBulletBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for SPACE theme */
 	DEF_BULLET_BP.push_back( ParticleCore { Coord {1, 1} , 0, 0} ); // first line is the height and width
@@ -87,6 +91,12 @@ void createBulletBlueprints() {
 	OBJECT_VARS3.push_back(sport_bullet_1);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+	vector<ParticleCore> comp_bullet_1;
+	comp_bullet_1.push_back( ParticleCore { Coord {1, 1} , 0, 0} ); // first line is the height and width
+	comp_bullet_1.push_back( ParticleCore { Coord {0, 0}, '#', 196} ); // then x, y, symbol, color
+	OBJECT_VARS_COMP.push_back(comp_bullet_1);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
+
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
@@ -97,6 +107,7 @@ void createExplosionBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	DEF_EXP_BP.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
@@ -153,6 +164,10 @@ void createExplosionBlueprints() {
 	OBJECT_VARS3.push_back(exp_2);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+	OBJECT_VARS_COMP.push_back(DEF_EXP_BP);
+	OBJECT_VARS_COMP.push_back(exp_2);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
+
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
@@ -163,6 +178,7 @@ void createObstacleBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	/* small ship 
@@ -474,6 +490,58 @@ void createObstacleBlueprints() {
 
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+
+	/*
+            .--'
+         __(__
+       /`  |  `\
+       |___O___|
+       |       |
+       |       |
+   jgs  '.___.'
+   http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/computer.html
+	*/
+
+	vector<ParticleCore> comp_obst_mouse; 
+	comp_obst_mouse.push_back( ParticleCore { Coord {9, 7}, 0, 2});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 2}, '/', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 3}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 4}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 5}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 2}, '`', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 6}, '\'', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 6}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 1}, '(', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 2}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 3}, 'O', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 0}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 0}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 6}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 0}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 2}, '`', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 6}, '\'', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 0}, '\'', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 2}, '\\', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 3}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 4}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 5}, '|', 180});
+	OBJECT_VARS_COMP.push_back(comp_obst_mouse);
+
+
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
