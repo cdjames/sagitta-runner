@@ -24,7 +24,7 @@ public:
 	int getPlayerNumber();
 	int getNumberOfPlayers();
 	void sendCoord(int, int);
-	Coord getCoord();
+	int getCoord(int);
 	Coord getPosition();
 	int getScore();
 	void setScore(int);

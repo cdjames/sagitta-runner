@@ -98,16 +98,24 @@ void NetworkManager::sendCoord(int command, int player) {
 //if player 1, return last input from player 2.
 //if player 2, return last input from player 1.
 //int NetworkManager::getCoord(playerNum) {
-Coord NetworkManager::getCoord() {
+int NetworkManager::getCoord(int playerNum) {
 	// Returns the "master" coordinates for type ship or bullet.
 	char msg[512] = "getCoord";
 	int valread;
 	struct Coord shipCoord;
+	int converted_number;
+	int move; //
 	//First send str to indicate to server what to return.
 	send(client_socket, &msg, sizeof(msg), 0);
-	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
-
-	return shipCoord;
+	memset(&msg, '0', sizeof(msg));
+	valread = recv(client_socket, &msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(playerNum);
+		send(client_socket, &converted_number, sizeof(converted_number), 0); 
+		valread = recv(client_socket, &move, sizeof(move), 0);
+		move = ntohl(move);
+	}
+	return move;
 }
 
 Coord NetworkManager::getPosition() {

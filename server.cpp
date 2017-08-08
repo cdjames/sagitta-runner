@@ -25,6 +25,8 @@ struct gameState {
     int bullets;
     int difficulty;
     int numPlayers;
+    int player1command;
+    int player2command;
 };
 
 void initGameState(struct gameState &state) {
@@ -33,6 +35,8 @@ void initGameState(struct gameState &state) {
     state.score = 0;
     state.bullets = 5;
     state.difficulty = 1;
+    state.player1command = 0;
+    state.player2command = 0;
 }
 
 // void acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[], struct gameState &state) {
@@ -65,6 +69,21 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             valread = recv(client_socket[i], &playernum, sizeof(playernum), 0);
             playernum = ntohl(playernum);
             printf("move recived from client: %d from player: %d\n", move, playernum);
+        }
+        if(strcmp(command, "getCoord") == 0) {
+            char confirmation[512] = "confirmed";
+            int player, move;
+            send(client_socket[i], &confirmation, sizeof(confirmation), 0);
+            valread = recv(client_socket[i], &player, sizeof(player), 0);
+            player = ntohl(player);
+            if(player == 1) {
+                move = htonl(state.player2command);
+                send(client_socket[i], &move, sizeof(move), 0);
+            }
+            if(player == 2) {
+                move = htonl(state.player1command);
+                send(client_socket[i], &move, sizeof(move), 0);
+            }
         }
         if(strcmp(command, "getPosition") == 0) {
             // handle getCoord
