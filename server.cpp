@@ -52,23 +52,19 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             int converted_number = htonl(currentNumPlayers);
             send(client_socket[i], &converted_number, sizeof(int), 0);
         }
-
         if(strcmp(command, "sendCoord") == 0) {
-            // handle sendCoord function
             char confirmation[512] = "confirmed";
-            struct Coord recvCoord;
+            int move; // either up, down, left, right, space.
             int readval;
             int type;
+            int playernum;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
-            valread = recv(client_socket[i], &recvCoord, sizeof(recvCoord), 0);
-            //Here, recvCoord is the coordinates recived from client.
+            valread = recv(client_socket[i], &type, sizeof(type), 0);
+            move = ntohl(type);
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
-            //This confirm is that we got the coords from client, now expecting type.
-            readval = recv(client_socket[i], &type, sizeof(type), 0);
-            type = ntohl(type);
-            printf("server: type = %d\n", type);
-            printf("server: coords = %d %d\n", recvCoord.x, recvCoord.y);
-
+            valread = recv(client_socket[i], &playernum, sizeof(playernum), 0);
+            playernum = ntohl(playernum);
+            printf("move recived from client: %d from player: %d\n", move, playernum);
         }
         if(strcmp(command, "getPosition") == 0) {
             // handle getCoord
@@ -188,7 +184,7 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
         	send(new_socket, &converted_number, sizeof(int), 0);
 
             if(numPlayers == 2) {
-            	break;
+                break;
             }
         }    
     }  
