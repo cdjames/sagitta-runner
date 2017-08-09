@@ -96,6 +96,19 @@ short GameManager::_gameOver(int * final_score) {
 	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
+void GameManager::_serverComm() {
+	if(playerNum == 1) { 
+		if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
+			input = ERR; 
+	} else {
+		if( input != KEY_UP && input != KEY_DOWN )
+			input = ERR;
+	}
+				
+	NM->sendCoord(input, playerNum);
+	op_input = NM->getCoord(playerNum);
+}
+
 void GameManager::_gameLoop(vector<double> * timing_info) {
 	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
 	*/
@@ -107,7 +120,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loops = 0,
 		loop_total_t = 0,
 		loop_t = 0;
-
+	std::thread server_comm_thread;
 	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
 	/* main loop */
 	do 
@@ -116,6 +129,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loop_start_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 		// time_now = (int) loop_start_t *1000;
 
+		/* get input */
 		input = getch();
 		if(playerNum == 1) { 
 			if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
@@ -127,6 +141,8 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 					
 		NM->sendCoord(input, playerNum);
 		op_input = NM->getCoord(playerNum);
+		/* send input to server in another thread */
+		// server_comm_thread = std::thread(&GameManager::_serverComm, this);
 
 		/* increase difficulty */
 		if(time_now >= target_time) {
@@ -169,88 +185,74 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		} else {
 			create_counter++;
 		}
-		/* the idea here is to update the user_coords variable, "move" the ship there,
-			then draw a blank where it used to be, finally refreshing the window */
-		
-		// if(playerNum == 1) {
-			switch (input){
-				case KEY_LEFT:
-					// mvprintw(0, 24, "pressed left   ");
-					trajectory = {-1, 0}; 
-					move_ship = true;
-					break;
 
-				case KEY_RIGHT:
-					// mvprintw(0, 24, "pressed right  ");
-					trajectory = {1, 0};
-					move_ship = true;
-					break;
-				case KEY_SPACE:
-					// mvprintw(0, 24, "pressed space  ");
-					/* create a new bullet and add to Bullets map */
-					if(Bullets.size() < max_bullets)
-						placeBullet(++bulletId);
-					break;
-				// default: 
-				// 	trajectory = {0, 0};
-				// 	break;
-		// 	}
-		// } else {
-		// 	switch (input){
-				case KEY_UP:
-					// mvprintw(0, 24, "pressed up     ");
-					// set the trajectory in the ship
-					trajectory = {0, -1}; 
-					move_ship = true;
-					break;
+		/* handle user input at the local computer. See _serverComm()
+		   for what to expect for each player */
+		// server_comm_thread.join(); // make sure you have the input you need
+		switch (input) {
+			/* player 1 */
+			case KEY_LEFT:
+				trajectory = {-1, 0}; 
+				move_ship = true;
+				break;
 
-				case KEY_DOWN:
-					// mvprintw(0, 24, "pressed down   ");
-					trajectory = {0, 1}; 
-					move_ship = true;
-					break;
-				
-				default: 
-					trajectory = {0, 0};
-					break;
+			case KEY_RIGHT:
+				trajectory = {1, 0};
+				move_ship = true;
+				break;
+
+			case KEY_SPACE:
+				/* create a new bullet and add to Bullets map */
+				if(Bullets.size() < max_bullets)
+					placeBullet(++bulletId);
+				break;
+			/* player 2 */
+			case KEY_UP:
+				trajectory = {0, -1}; 
+				move_ship = true;
+				break;
+
+			case KEY_DOWN:
+				trajectory = {0, 1}; 
+				move_ship = true;
+				break;
+			/* input == ERR (i.e. no input) */
+			default: 
+				trajectory = {0, 0};
+				break;
 			}
-		// }
-
+		/* handle user input from the remote computer. From _serverComm() */
 		switch (op_input){
 			case KEY_UP:
-				// mvprintw(0, 24, "pressed up     ");
-				// set the trajectory in the ship
 				trajectory += {0, -1}; 
 				move_ship = true;
 				break;
 
 			case KEY_DOWN:
-				// mvprintw(0, 24, "pressed down   ");
 				trajectory += {0, 1}; 
 				move_ship = true;
 				break;
 
 			case KEY_LEFT:
-				// mvprintw(0, 24, "pressed left   ");
 				trajectory += {-1, 0}; 
 				move_ship = true;
 				break;
 
 			case KEY_RIGHT:
-				// mvprintw(0, 24, "pressed right  ");
 				trajectory += {1, 0};
 				move_ship = true;
 				break;
+
 			case KEY_SPACE:
-				// mvprintw(0, 24, "pressed space  ");
 				/* create a new bullet and add to Bullets map */
 				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
+			/* in case clients are out of sync, look out for game over code */
 			case GM_GAMEOVER:
 				gameover = true;
 				
-			default: 
+			default: // trajectory stays {0, 0}
 				break;
 		}
 

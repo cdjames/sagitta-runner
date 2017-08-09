@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <limits>
 #include <chrono>
+#include <thread>
 #include "MenuManager.hpp"
 #include "NetworkManager.hpp"
 // #include "SagittaTypes.hpp"
@@ -111,6 +112,7 @@ protected:
 	void setScreenSize();
 	void _gameLoop(vector<double> * timing_info);
 	short _gameOver(int * final_score);
+	void _serverComm();
 
 public:
 	GameManager(WINDOW * win, NetworkManager * NM);

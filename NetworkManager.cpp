@@ -12,7 +12,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 8888
+#define PORT 48000
 
 NetworkManager::NetworkManager() {
 	client_socket = 0;

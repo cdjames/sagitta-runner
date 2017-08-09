@@ -8,6 +8,7 @@ OPS += -ggdb
 OPS += -Wall 
 
 OPS_NC = -lncurses
+# OPS_NC += -lpthread
 OPS_NC += ${OPS}
 
 CXX = main.cpp
