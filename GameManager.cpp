@@ -156,7 +156,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
 			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
-				rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
+				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
 			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
@@ -510,8 +510,10 @@ void GameManager::gameOver() {}
 void GameManager::setScreenSize() {
 	struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
-    maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
-    maxWinXY.x = w.ws_col;
+    // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
+    // maxWinXY.x = w.ws_col;
+    maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
+    maxWinXY.x = MAX_X;
     // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
     // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
 }

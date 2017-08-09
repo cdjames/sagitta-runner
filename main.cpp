@@ -14,7 +14,8 @@ void exitCurses(WINDOW * win);
 
 int main()
 {
-	srand(2);
+	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
+	cj_srand(300);
 	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;

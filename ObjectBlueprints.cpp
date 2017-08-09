@@ -1,5 +1,6 @@
 #include "ObjectBlueprints.hpp"
 #include <iostream>
+#include <fstream>
 
 vector<ParticleCore> DEF_SHIP_BP;
 vector<ParticleCore> DEF_BULLET_BP;
@@ -11,6 +12,30 @@ vector< 			// x object types
 		vector<		// z blueprints
 			vector<ParticleCore> // a single blueprint
 			> > > OBJ_BLPRNTS;
+
+vector<int> RAND_NUM_LIST;
+int CJ_RAND_SEED;
+
+void readFromRandFile(const char * fname, std::vector<int> * v) { // help here https://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c#14517130
+	std::fstream f(fname, std::ios_base::in);
+	int val;
+	while(f >> val)
+		v->push_back(val);
+	// std::cout << (*v)[v->size()-1] << std::endl;
+}
+
+void cj_srand(int seed) {
+	CJ_RAND_SEED = seed;
+}
+
+int cj_rand() {
+	int num = RAND_NUM_LIST[CJ_RAND_SEED];
+	if(CJ_RAND_SEED < CJ_RAND_MAX)
+		CJ_RAND_SEED++;
+	else
+		CJ_RAND_SEED = 0;
+	return num;
+}
 
 void createShipBlueprints() {
 	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
