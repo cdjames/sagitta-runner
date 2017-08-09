@@ -417,6 +417,9 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		}
 
 	} while (input != 'q' && !gameover);
+	/* send game over */
+	if(playerNum == 1)
+		NM->gameOver(score);
 
 	loop_avg_t = loop_total_t/loops;
 	if(timing_info != NULL){
