@@ -14,7 +14,7 @@ void exitCurses(WINDOW * win);
 
 int main()
 {
-	srand(std::time(0));
+	srand(2);
 	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;
@@ -28,13 +28,13 @@ int main()
 	while(NM.getNumberOfPlayers() < 2) {
 		continue; // wait
 	}
-	// while (play == 1){
-	// 	GameManager GM = GameManager(win, &NM);
-	// 	GM.updateSettings(MM);	
-	// 	playerdied = GM.run(&score, &timing_info); // runs until user presses q
-	// 	play = MM.gameOver();
-	// 	MM.clearScreen();
-	// }
+	while (play == 1){
+		GameManager GM = GameManager(win, &NM);
+		GM.updateSettings(MM);	
+		playerdied = GM.run(&score, &timing_info); // runs until user presses q
+		play = MM.gameOver();
+		MM.clearScreen();
+	}
 	
 	exitCurses(win);
 

@@ -16,6 +16,7 @@
 #define STAT_ENEMIES 18
 #define STAT_BULLETS 16
 #define STAT_SCORE 17
+#define STAT_PLAYER 6
 #define QUAD_PARTS 3
 #define MAX_BULLETS 5
 #define MIN_BULLETS 1
