@@ -14,8 +14,9 @@ void exitCurses(WINDOW * win);
 
 int main()
 {
+	/* prepare pseudo-random sequence */
 	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
-	cj_srand(300);
+	cj_srand(300); // number must be <= CJ_RAND_MAX; modulo that value in case of using times for example
 	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;
