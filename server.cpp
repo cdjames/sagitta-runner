@@ -69,6 +69,12 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             valread = recv(client_socket[i], &playernum, sizeof(playernum), 0);
             playernum = ntohl(playernum);
             printf("move recived from client: %d from player: %d\n", move, playernum);
+            if(playernum == 1) {
+                state.player1command = move;
+            }
+            if(playernum == 2) {
+                state.player2command = move;
+            }
         }
         if(strcmp(command, "getCoord") == 0) {
             char confirmation[512] = "confirmed";

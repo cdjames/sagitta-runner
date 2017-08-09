@@ -101,10 +101,7 @@ void NetworkManager::sendCoord(int command, int player) {
 int NetworkManager::getCoord(int playerNum) {
 	// Returns the "master" coordinates for type ship or bullet.
 	char msg[512] = "getCoord";
-	int valread;
-	struct Coord shipCoord;
-	int converted_number;
-	int move; //
+	int valread, converted_number, move; //
 	//First send str to indicate to server what to return.
 	send(client_socket, &msg, sizeof(msg), 0);
 	memset(&msg, '0', sizeof(msg));
