@@ -247,6 +247,9 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
+			case GM_GAMEOVER:
+				gameover = true;
+				
 			default: 
 				break;
 		}
@@ -418,6 +421,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 	} while (input != 'q' && !gameover);
 	/* send game over */
+	NM->sendCoord(GM_GAMEOVER, playerNum);
 	if(playerNum == 1)
 		NM->gameOver(score);
 

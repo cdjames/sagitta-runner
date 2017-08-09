@@ -30,7 +30,7 @@
 #define MAX_OBS_POINTS 20
 #define MAX_Y 24
 #define MAX_X 80
-#define NM_GAMEOVER -2
+#define GM_GAMEOVER -2
 
 
 /* some enumerations of types that will be used throughout the game */
