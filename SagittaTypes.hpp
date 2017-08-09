@@ -12,6 +12,7 @@
 #define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
+#define KEY_SPACE 32
 #define STATUS_SIZE 2
 #define STAT_ENEMIES 18
 #define STAT_BULLETS 16
