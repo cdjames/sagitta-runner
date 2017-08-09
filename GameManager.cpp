@@ -117,6 +117,16 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		// time_now = (int) loop_start_t *1000;
 
 		input = getch();
+		if(playerNum == 1) { 
+			if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
+				input = ERR; 
+		} else {
+			if( input != KEY_UP && input != KEY_DOWN )
+				input = ERR;
+		}
+					
+		NM->sendCoord(input, playerNum);
+		op_input = NM->getCoord(playerNum);
 
 		/* increase difficulty */
 		if(time_now >= target_time) {
@@ -162,32 +172,76 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		/* the idea here is to update the user_coords variable, "move" the ship there,
 			then draw a blank where it used to be, finally refreshing the window */
 		
-		switch (input){
+		// if(playerNum == 1) {
+			switch (input){
+				case KEY_LEFT:
+					// mvprintw(0, 24, "pressed left   ");
+					trajectory = {-1, 0}; 
+					move_ship = true;
+					break;
+
+				case KEY_RIGHT:
+					// mvprintw(0, 24, "pressed right  ");
+					trajectory = {1, 0};
+					move_ship = true;
+					break;
+				case KEY_SPACE:
+					// mvprintw(0, 24, "pressed space  ");
+					/* create a new bullet and add to Bullets map */
+					if(Bullets.size() < max_bullets)
+						placeBullet(++bulletId);
+					break;
+				// default: 
+				// 	trajectory = {0, 0};
+				// 	break;
+		// 	}
+		// } else {
+		// 	switch (input){
+				case KEY_UP:
+					// mvprintw(0, 24, "pressed up     ");
+					// set the trajectory in the ship
+					trajectory = {0, -1}; 
+					move_ship = true;
+					break;
+
+				case KEY_DOWN:
+					// mvprintw(0, 24, "pressed down   ");
+					trajectory = {0, 1}; 
+					move_ship = true;
+					break;
+				
+				default: 
+					trajectory = {0, 0};
+					break;
+			}
+		// }
+
+		switch (op_input){
 			case KEY_UP:
 				// mvprintw(0, 24, "pressed up     ");
 				// set the trajectory in the ship
-				trajectory = {0, -1}; 
+				trajectory += {0, -1}; 
 				move_ship = true;
 				break;
 
 			case KEY_DOWN:
 				// mvprintw(0, 24, "pressed down   ");
-				trajectory = {0, 1}; 
+				trajectory += {0, 1}; 
 				move_ship = true;
 				break;
 
 			case KEY_LEFT:
 				// mvprintw(0, 24, "pressed left   ");
-				trajectory = {-1, 0}; 
+				trajectory += {-1, 0}; 
 				move_ship = true;
 				break;
 
 			case KEY_RIGHT:
 				// mvprintw(0, 24, "pressed right  ");
-				trajectory = {1, 0};
+				trajectory += {1, 0};
 				move_ship = true;
 				break;
-			case 32:
+			case KEY_SPACE:
 				// mvprintw(0, 24, "pressed space  ");
 				/* create a new bullet and add to Bullets map */
 				if(Bullets.size() < max_bullets)

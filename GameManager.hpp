@@ -65,7 +65,8 @@ protected:
 	ThemeType curr_theme;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
-	int input;
+	int input,
+		op_input;
 	Particle shipStatus;
 	bool gameover;
 	unsigned short still_animating;
