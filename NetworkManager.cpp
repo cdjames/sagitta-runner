@@ -73,8 +73,8 @@ int NetworkManager::getNumberOfPlayers() {
 	return num;
 }
 
-void NetworkManager::sendCoord(Coord coord, int type) {
-
+void NetworkManager::sendCoord(int command, int player) {
+	//Command here is some int value for a direction or space.
 	char msg[512] = "sendCoord";
 	int readval;
 	int converted_number;
@@ -83,26 +83,36 @@ void NetworkManager::sendCoord(Coord coord, int type) {
 	memset(&msg, '0', sizeof(msg));
 	readval = recv(client_socket, msg, sizeof(msg), 0);
 	if(strcmp(msg, "confirmed") == 0) {
-		send(client_socket, &coord, sizeof(coord), 0);
+		converted_number = htonl(command);
+		send(client_socket, &converted_number, sizeof(converted_number), 0);
 		memset(&msg, '0', sizeof(msg));
 		readval = recv(client_socket, msg, sizeof(msg), 0);
 		if(strcmp(msg, "confirmed") == 0) {
-			converted_number = htonl(type);
-            send(client_socket, &converted_number, sizeof(int), 0);
+			converted_number = htonl(player);
+			send(client_socket, &converted_number, sizeof(converted_number), 0);
 		}
 	}
 }
 
-Coord NetworkManager::getCoord() {
+//Add player number parameter
+//if player 1, return last input from player 2.
+//if player 2, return last input from player 1.
+//int NetworkManager::getCoord(playerNum) {
+int NetworkManager::getCoord(int playerNum) {
 	// Returns the "master" coordinates for type ship or bullet.
 	char msg[512] = "getCoord";
-	int valread;
-	struct Coord shipCoord;
+	int valread, converted_number, move; //
 	//First send str to indicate to server what to return.
 	send(client_socket, &msg, sizeof(msg), 0);
-	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
-
-	return shipCoord;
+	memset(&msg, '0', sizeof(msg));
+	valread = recv(client_socket, &msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(playerNum);
+		send(client_socket, &converted_number, sizeof(converted_number), 0); 
+		valread = recv(client_socket, &move, sizeof(move), 0);
+		move = ntohl(move);
+	}
+	return move;
 }
 
 Coord NetworkManager::getPosition() {
@@ -142,6 +152,5 @@ void NetworkManager::setScore(int score) {
 void NetworkManager::gameOver(int score) {
 	char msg[512] = "gameOver";
 	send(client_socket, &msg, sizeof(msg), 0);
-
 }
 

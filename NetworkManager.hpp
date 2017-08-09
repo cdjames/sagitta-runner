@@ -23,16 +23,12 @@ public:
 	int connectPlayer();
 	int getPlayerNumber();
 	int getNumberOfPlayers();
-	void sendCoord(Coord, int);
-	Coord getCoord();
+	void sendCoord(int, int);
+	int getCoord(int);
 	Coord getPosition();
 	int getScore();
 	void setScore(int);
 	void gameOver(int);
-	// vector<Coord> syncPositions();
-	// bool sendScore(int score);
-	
-	// int gameOver(int score);
 };
 
 #endif
