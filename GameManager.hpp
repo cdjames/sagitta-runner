@@ -14,6 +14,7 @@
 #include <limits>
 #include <chrono>
 #include "MenuManager.hpp"
+#include "NetworkManager.hpp"
 // #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
@@ -32,6 +33,7 @@ class GameManager
 {
 protected:
 	WINDOW * win;
+	NetworkManager * NM;
 	vector< vector<ParticleInfo> > gameboard;
 
 	Coord maxWinXY,
@@ -88,7 +90,8 @@ protected:
 		   target_time,
 		   time_now;
 	// int max_obs_points;
-	int score;
+	int score,
+		playerNum;
 
 	void initWindow();
 	void initGameboard();
@@ -109,7 +112,7 @@ protected:
 	short _gameOver(int * final_score);
 
 public:
-	GameManager(WINDOW * win);
+	GameManager(WINDOW * win, NetworkManager * NM);
 	~GameManager();
 	short run(int * final_score, vector<double> * timing_info);
 	void updateSettings(MenuManager &MM);

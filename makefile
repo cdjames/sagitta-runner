@@ -44,6 +44,9 @@ MenuManager.o:
 NetworkManager.o:
 	g++ -c NetworkManager.cpp ${OPS_NC}
 
+server:
+	g++ server.cpp -o server ${OPS}
+
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
 

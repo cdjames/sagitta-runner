@@ -7,7 +7,7 @@
 #include "GameManager.hpp"
 
 /* public */
-GameManager::GameManager(WINDOW * win) {
+GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	Obstacles.reserve(MAX_OBSTACLES);
 	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
@@ -20,6 +20,8 @@ GameManager::GameManager(WINDOW * win) {
 	curr_theme = SPACE;
 	theme_counter = DEF_THM_COUNTER;
 	score = 0;
+	this->NM = NM;
+	playerNum = this->NM->getPlayerNumber();
 	setScreenSize();
 	initGameboard();
 	initWindow();

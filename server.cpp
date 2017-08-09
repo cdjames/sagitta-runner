@@ -2,6 +2,7 @@
 #include <stdlib.h> 
 #include <errno.h> 
 #include <unistd.h>
+#include <sys/select.h> // for Cygwin
 #include <arpa/inet.h>
 #include <sys/types.h> 
 #include <sys/socket.h> 

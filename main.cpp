@@ -25,15 +25,16 @@ int main()
 		score = 0;
 	vector<double> timing_info;
 	NetworkManager NM = NetworkManager();
-	NM.sendCoord();
-	NM.getCoord();
-	while (play == 1){
-		GameManager GM = GameManager(win);
-		GM.updateSettings(MM);	
-		playerdied = GM.run(&score, &timing_info); // runs until user presses q
-		play = MM.gameOver();
-		MM.clearScreen();
+	while(NM.getNumberOfPlayers() < 2) {
+		continue; // wait
 	}
+	// while (play == 1){
+	// 	GameManager GM = GameManager(win, &NM);
+	// 	GM.updateSettings(MM);	
+	// 	playerdied = GM.run(&score, &timing_info); // runs until user presses q
+	// 	play = MM.gameOver();
+	// 	MM.clearScreen();
+	// }
 	
 	exitCurses(win);
 

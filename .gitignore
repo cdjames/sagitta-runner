@@ -7,3 +7,4 @@ runnerdemo
 *.o
 runner.dSYM
 *.exe
+server
