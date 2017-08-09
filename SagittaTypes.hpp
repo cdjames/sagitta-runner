@@ -35,7 +35,7 @@
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
 enum CollisionType { FRIENDLY = NONE + 1, GAMEOVER, HIT, NOHIT, EDGE, DESTROY, ALIVE };
-enum ThemeType { SPACE = 0, FOOD, SPORTS };
+enum ThemeType { SPACE = 0, FOOD, SPORTS, COMPUTERS};
 
 /* simple coordinate structure */
 typedef struct Coord {
