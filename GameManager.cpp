@@ -120,7 +120,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loops = 0,
 		loop_total_t = 0,
 		loop_t = 0;
-	std::thread server_comm_thread;
+	// std::thread server_comm_thread;
 	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
 	/* main loop */
 	do 
