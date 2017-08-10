@@ -57,7 +57,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             send(client_socket[i], &converted_number, sizeof(int), 0);
         }
         if(strcmp(command, "sendCoord") == 0) {
-            char confirmation[512] = "confirmed";
+            char confirmation[16] = "confirmed";
             int move; // either up, down, left, right, space.
             int readval;
             int type;
@@ -77,7 +77,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             }
         }
         if(strcmp(command, "getCoord") == 0) {
-            char confirmation[512] = "confirmed";
+            char confirmation[16] = "confirmed";
             int player, move;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             valread = recv(client_socket[i], &player, sizeof(player), 0);
@@ -104,7 +104,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         }
 
         if(strcmp(command, "setScore") == 0) {
-            char confirmation[512] = "confirmed";
+            char confirmation[16] = "confirmed";
             int score, readval;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             readval = recv(client_socket[i], &score, sizeof(score), 0);
