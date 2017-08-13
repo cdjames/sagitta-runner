@@ -8,7 +8,7 @@
 #include "NetworkManager.hpp"
 
 /* public */
-GameManager::GameManager(WINDOW * win) {
+GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	Obstacles.reserve(MAX_OBSTACLES);
 	obstacleId = bulletId = explosionId = numObstaclesDestroyed= 0;
 	this->win = win;
@@ -18,9 +18,11 @@ GameManager::GameManager(WINDOW * win) {
 	exp_fr_factor = 4;
 	create_factor = 15;
 	max_bullets = MAX_BULLETS;
-	curr_theme = SPACE;
+	curr_theme = COMPUTERS;
 	theme_counter = DEF_THM_COUNTER;
 	score = 0;
+	this->NM = NM;
+	playerNum = this->NM->getPlayerNumber();
 	setScreenSize();
 	initGameboard();
 	initWindow();
@@ -32,7 +34,7 @@ GameManager::GameManager(WINDOW * win) {
 
 GameManager::~GameManager() {}
 
-short GameManager::run(int * final_score) {
+short GameManager::run(int * final_score, vector<double> * timing_info) {
 	// unsigned short still_animating;
 	// Particle obstStatus;
 	move_ship = false;
@@ -56,12 +58,94 @@ short GameManager::run(int * final_score) {
 	target_time = start_time + DIFF_TIMEOUT;
 
 	/* main loop */
+	_gameLoop(timing_info);
+
+	/* handle game over scenario, storing the final score in the pointer  */
+	return _gameOver(final_score); // 0 if quit, 1 if died, or -1 if some strange error occurred
+}
+
+short GameManager::_gameOver(int * final_score) {
+	/* handle game over scenario */
+	if(input == 'q') // if user quit
+		gameStatus = 0;
+	else if (gameover) { // if user died
+		mvprintw(0, 0, "GAMEOVER - press 'q'");
+		gameStatus = 1;
+		/* erase the ship */
+		theShip.erase();
+		// wrefresh(win); // for window
+		/* add an explosion where the ship was */
+		// mvprintw(4, 30,"ship_coord=%d,%d", ship_coord.x, ship_coord.y);
+		Explosion shipExplosion(this->win, 
+								&gameboard, 
+								ship_coord - Coord{1,1}, 
+								maxWinXY, EXPLOSION, FOOD, 1);
+		do 
+		{
+			if(exp_fr_counter == exp_fr_factor) {
+				shipExplosion.animate();
+				exp_fr_counter = 0; 
+			} else {
+				exp_fr_counter++;
+			}
+			wrefresh(win); // for window
+			input = getch();
+		} while (input != 'q');
+	}
+
+	*final_score = score;
+	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
+}
+
+void GameManager::_serverComm() {
+	if(playerNum == 1) { 
+		if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
+			input = ERR; 
+	} else {
+		if( input != KEY_UP && input != KEY_DOWN )
+			input = ERR;
+	}
+				
+	NM->sendCoord(input, playerNum);
+	op_input = NM->getCoord(playerNum);
+}
+
+void GameManager::_gameLoop(vector<double> * timing_info) {
+	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
+	*/
+	double loop_avg_t = 0,
+		loop_max_t = 0.0,
+		loop_min_t = std::numeric_limits<double>::max(),
+		loop_start_t = 0,
+		loop_end_t = 0,
+		loops = 0,
+		loop_total_t = 0,
+		loop_t = 0;
+	// std::thread server_comm_thread;
+	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
+	/* main loop */
 	do 
 	{
+		time_now = time(0);
+		loop_start_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		// time_now = (int) loop_start_t *1000;
+
+		/* get input */
 		input = getch();
+		if(playerNum == 1) { 
+			if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
+				input = ERR; 
+		} else {
+			if( input != KEY_UP && input != KEY_DOWN )
+				input = ERR;
+		}
+					
+		NM->sendCoord(input, playerNum);
+		op_input = NM->getCoord(playerNum);
+		/* send input to server in another thread */
+		// server_comm_thread = std::thread(&GameManager::_serverComm, this);
 
 		/* increase difficulty */
-		time_now = time(0);
 		if(time_now >= target_time) {
 			target_time = time_now + DIFF_TIMEOUT + num_time_loops;
 			/* increase speed of object refresh rate */
@@ -88,10 +172,9 @@ short GameManager::run(int * final_score) {
 
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
-			testO2 = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
-				rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
-			testO2.setEnemy(SHIP);
-			placeObstacle(testO2, obstacleId);
+			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
+				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
+			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
 			quadsize += basequadsize;
@@ -103,40 +186,74 @@ short GameManager::run(int * final_score) {
 		} else {
 			create_counter++;
 		}
-		/* the idea here is to update the user_coords variable, "move" the ship there,
-			then draw a blank where it used to be, finally refreshing the window */
-		switch (input){
-			case KEY_UP:
-				// mvprintw(0, 24, "pressed up     ");
-				// set the trajectory in the ship
-				trajectory = {0, -1}; 
-				move_ship = true;
-				break;
 
-			case KEY_DOWN:
-				// mvprintw(0, 24, "pressed down   ");
-				trajectory = {0, 1}; 
-				move_ship = true;
-				break;
-
+		/* handle user input at the local computer. See _serverComm()
+		   for what to expect for each player */
+		// server_comm_thread.join(); // make sure you have the input you need
+		switch (input) {
+			/* player 1 */
 			case KEY_LEFT:
-				// mvprintw(0, 24, "pressed left   ");
 				trajectory = {-1, 0}; 
 				move_ship = true;
 				break;
 
 			case KEY_RIGHT:
-				// mvprintw(0, 24, "pressed right  ");
 				trajectory = {1, 0};
 				move_ship = true;
 				break;
-			case 32:
-				// mvprintw(0, 24, "pressed space  ");
+
+			case KEY_SPACE:
 				/* create a new bullet and add to Bullets map */
 				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
+			/* player 2 */
+			case KEY_UP:
+				trajectory = {0, -1}; 
+				move_ship = true;
+				break;
+
+			case KEY_DOWN:
+				trajectory = {0, 1}; 
+				move_ship = true;
+				break;
+			/* input == ERR (i.e. no input) */
 			default: 
+				trajectory = {0, 0};
+				break;
+			}
+		/* handle user input from the remote computer. From _serverComm() */
+		switch (op_input){
+			case KEY_UP:
+				trajectory += {0, -1}; 
+				move_ship = true;
+				break;
+
+			case KEY_DOWN:
+				trajectory += {0, 1}; 
+				move_ship = true;
+				break;
+
+			case KEY_LEFT:
+				trajectory += {-1, 0}; 
+				move_ship = true;
+				break;
+
+			case KEY_RIGHT:
+				trajectory += {1, 0};
+				move_ship = true;
+				break;
+
+			case KEY_SPACE:
+				/* create a new bullet and add to Bullets map */
+				if(Bullets.size() < max_bullets)
+					placeBullet(++bulletId);
+				break;
+			/* in case clients are out of sync, look out for game over code */
+			case GM_GAMEOVER:
+				gameover = true;
+				
+			default: // trajectory stays {0, 0}
 				break;
 		}
 
@@ -296,38 +413,29 @@ short GameManager::run(int * final_score) {
 		wnoutrefresh(win);    // for window
 		doupdate();
 
+		if(timing_info != NULL){
+			loop_end_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+			loop_t = loop_end_t - loop_start_t;
+			if(loop_t > loop_max_t) { loop_max_t = loop_t; }
+			if(loop_t < loop_min_t && loop_t > 1) { loop_min_t = loop_t; }
+			loop_total_t += loop_t;
+			loops++;
+		}
+
 	} while (input != 'q' && !gameover);
+	/* send game over */
+	NM->sendCoord(GM_GAMEOVER, playerNum);
+	if(playerNum == 1)
+		NM->gameOver(score);
 
-	/* handle game over scenario */
-	if(input == 'q') // if user quit
-		gameStatus = 0;
-	else if (gameover) { // if user died
-		mvprintw(0, 0, "GAMEOVER - press 'q'");
-		gameStatus = 1;
-		/* erase the ship */
-		theShip.erase();
-		// wrefresh(win); // for window
-		/* add an explosion where the ship was */
-		// mvprintw(4, 30,"ship_coord=%d,%d", ship_coord.x, ship_coord.y);
-		Explosion shipExplosion(this->win, 
-								&gameboard, 
-								ship_coord - Coord{1,1}, 
-								maxWinXY, EXPLOSION, FOOD, 1);
-		do 
-		{
-			if(exp_fr_counter == exp_fr_factor) {
-				shipExplosion.animate();
-				exp_fr_counter = 0; 
-			} else {
-				exp_fr_counter++;
-			}
-			wrefresh(win); // for window
-			input = getch();
-		} while (input != 'q');
+	loop_avg_t = loop_total_t/loops;
+	if(timing_info != NULL){
+		// timing_info->push_back(loop_total_t);
+		// timing_info->push_back(loops);
+		timing_info->push_back(loop_avg_t);
+		timing_info->push_back(loop_max_t);
+		timing_info->push_back(loop_min_t);
 	}
-
-	*final_score = score;
-	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
 void GameManager::updateSettings(MenuManager &MM){
@@ -370,8 +478,10 @@ void GameManager::initColors() {
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	// o.draw();
-	std::unordered_map<unsigned long,Obstacle>::iterator cntr;
-	cntr = Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
+	// std::unordered_map<unsigned long,Obstacle>::iterator cntr;
+	// cntr = 
+	o.setEnemy(SHIP);
+	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
 void GameManager::placeExplosion(unsigned long &id, Coord start) {
@@ -385,13 +495,14 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 
 void GameManager::placeBullet(unsigned long &id) {
 	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
-	std::map<unsigned long,Bullet>::iterator obst_it = Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
+	// std::map<unsigned long,Bullet>::iterator obst_it = 
+	Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
 											maxWinXY, BULLET, curr_theme, id)));
 	
 	// obst_it->second.draw();
-	obst_it->second.setTrajectory(Coord{1,0});
+	// obst_it->second.setTrajectory(Coord{1,0});
 }
 
 void GameManager::placeShip() {
@@ -409,8 +520,10 @@ void GameManager::gameOver() {}
 void GameManager::setScreenSize() {
 	struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
-    maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
-    maxWinXY.x = w.ws_col;
+    // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
+    // maxWinXY.x = w.ws_col;
+    maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
+    maxWinXY.x = MAX_X;
     // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
     // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
 }

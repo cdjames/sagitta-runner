@@ -9,13 +9,15 @@
 
 #include <mutex>
 
-#define DEF_TIMEOUT 30
+#define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
+#define KEY_SPACE 32
 #define STATUS_SIZE 2
 #define STAT_ENEMIES 18
 #define STAT_BULLETS 16
 #define STAT_SCORE 17
+#define STAT_PLAYER 6
 #define QUAD_PARTS 3
 #define MAX_BULLETS 5
 #define MIN_BULLETS 1
@@ -26,13 +28,15 @@
 #define DIFF_TIME_ADD 2 // seconds
 #define OBS_CREATE_FACTOR 5
 #define MAX_OBS_POINTS 20
-
+#define MAX_Y 24
+#define MAX_X 80
+#define GM_GAMEOVER -2
 
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
 enum CollisionType { FRIENDLY = NONE + 1, GAMEOVER, HIT, NOHIT, EDGE, DESTROY, ALIVE };
-enum ThemeType { SPACE = 0, FOOD, SPORTS };
+enum ThemeType { SPACE = 0, FOOD, SPORTS, COMPUTERS};
 
 /* simple coordinate structure */
 typedef struct Coord {

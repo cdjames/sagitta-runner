@@ -1,5 +1,6 @@
 #include "ObjectBlueprints.hpp"
 #include <iostream>
+#include <fstream>
 
 vector<ParticleCore> DEF_SHIP_BP;
 vector<ParticleCore> DEF_BULLET_BP;
@@ -12,11 +13,36 @@ vector< 			// x object types
 			vector<ParticleCore> // a single blueprint
 			> > > OBJ_BLPRNTS;
 
+vector<int> RAND_NUM_LIST;
+int CJ_RAND_SEED;
+
+void readFromRandFile(const char * fname, std::vector<int> * v) { // help here https://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c#14517130
+	std::fstream f(fname, std::ios_base::in);
+	int val;
+	while(f >> val)
+		v->push_back(val);
+	// std::cout << (*v)[v->size()-1] << std::endl;
+}
+
+void cj_srand(int seed) {
+	CJ_RAND_SEED = seed;
+}
+
+int cj_rand() {
+	int num = RAND_NUM_LIST[CJ_RAND_SEED];
+	if(CJ_RAND_SEED < CJ_RAND_MAX)
+		CJ_RAND_SEED++;
+	else
+		CJ_RAND_SEED = 0;
+	return num;
+}
+
 void createShipBlueprints() {
 	vector< vector< vector<ParticleCore> > > OBJ_THEMES;
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	DEF_SHIP_BP.push_back( ParticleCore { Coord {3, 5} , 0, 6} ); // first line is the height, width, value, and index of the "front" of the object
@@ -48,6 +74,8 @@ void createShipBlueprints() {
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 	// std::cout << "ship, space, first symbol=" << OBJ_THEMES[0][0][1].symbol << std::endl;
 
+	OBJECT_VARS_COMP.push_back(DEF_SHIP_BP);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 	// std::cout << "ship, space, first symbol=" << OBJ_BLPRNTS[0][0][0][1].symbol << std::endl;
@@ -62,6 +90,7 @@ void createBulletBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for SPACE theme */
 	DEF_BULLET_BP.push_back( ParticleCore { Coord {1, 1} , 0, 0} ); // first line is the height and width
@@ -87,6 +116,12 @@ void createBulletBlueprints() {
 	OBJECT_VARS3.push_back(sport_bullet_1);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+	vector<ParticleCore> comp_bullet_1;
+	comp_bullet_1.push_back( ParticleCore { Coord {1, 1} , 0, 0} ); // first line is the height and width
+	comp_bullet_1.push_back( ParticleCore { Coord {0, 0}, '#', 196} ); // then x, y, symbol, color
+	OBJECT_VARS_COMP.push_back(comp_bullet_1);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
+
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
@@ -97,6 +132,7 @@ void createExplosionBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	DEF_EXP_BP.push_back( ParticleCore { Coord {3, 3}, 0, 0} ); // first line is the height and width
@@ -153,6 +189,10 @@ void createExplosionBlueprints() {
 	OBJECT_VARS3.push_back(exp_2);
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+	OBJECT_VARS_COMP.push_back(DEF_EXP_BP);
+	OBJECT_VARS_COMP.push_back(exp_2);
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
+
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 
@@ -163,6 +203,7 @@ void createObstacleBlueprints() {
 	vector< vector<ParticleCore> > OBJECT_VARS;
 	vector< vector<ParticleCore> > OBJECT_VARS2;
 	vector< vector<ParticleCore> > OBJECT_VARS3;
+	vector< vector<ParticleCore> > OBJECT_VARS_COMP;
 
 	/* create for theme 0 */
 	/* small ship 
@@ -474,6 +515,135 @@ void createObstacleBlueprints() {
 
 	OBJ_THEMES.push_back(OBJECT_VARS3);
 
+
+	/*
+            .--
+         __(__
+       /`  |  `\
+       |___O___|
+       |       |
+       |       |
+   jgs  '.___.'
+   http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/computer.html
+	*/
+
+	vector<ParticleCore> comp_obst_mouse; 
+	comp_obst_mouse.push_back( ParticleCore { Coord {9, 7}, 0, 2});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 2}, '/', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 3}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 4}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {0, 5}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 2}, '`', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {1, 6}, '\'', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {2, 6}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {3, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 1}, '(', 239});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 2}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 3}, 'O', 242});
+	comp_obst_mouse.push_back( ParticleCore { Coord {4, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 0}, '.', 239});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {5, 6}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 0}, '-', 239});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 1}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {6, 6}, '.', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 0}, '-', 239});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 2}, '`', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 3}, '_', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {7, 6}, '\'', 180});
+	// comp_obst_mouse.push_back( ParticleCore { Coord {8, 0}, '\'', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 2}, '\\', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 3}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 4}, '|', 180});
+	comp_obst_mouse.push_back( ParticleCore { Coord {8, 5}, '|', 180});
+	OBJECT_VARS_COMP.push_back(comp_obst_mouse);
+
+	/* 			http://www.chris.com/ascii/joan/www.geocities.com/SoHo/7373/computer.html      
+       _______
+     .`   |__|`.
+     |         |
+     | .-----. | 
+     | |stuff| |
+ jgs |_:_____:_|
+	*/
+
+ 	vector<ParticleCore> comp_obst_floppy; 
+	comp_obst_floppy.push_back( ParticleCore { Coord {11, 6}, 0, 1});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 1}, '.', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 2}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 3}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 4}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {0, 5}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {1, 1}, '`', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {1, 5}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 3}, '.', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 4}, '|', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {2, 5}, ':', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 4}, 's', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {3, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 4}, 't', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {4, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 1}, '|', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 4}, 'u', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {5, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 0}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 1}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 4}, 'f', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {6, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 0}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 1}, '_', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 3}, '-', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 4}, 'f', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {7, 5}, '_', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 0}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 1}, '|', 240});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 3}, '.', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 4}, '|', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {8, 5}, ':', 15});
+	comp_obst_floppy.push_back( ParticleCore { Coord {9, 1}, '`', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {9, 5}, '_', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 1}, '.', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 2}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 3}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 4}, '|', 130});
+	comp_obst_floppy.push_back( ParticleCore { Coord {10, 5}, '|', 130});
+	OBJECT_VARS_COMP.push_back(comp_obst_floppy);
+
+
+/* little mouse
+    _
+     )
+    /T\
+    \_/
+*/
+    vector<ParticleCore> comp_obst_lil_mouse; 
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {3, 4}, 0, 2});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 0}, '_', 239});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 1}, ')', 239});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 2}, '/', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 2}, 'T', 39});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {2, 2}, '\\', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {0, 3}, '\\', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {1, 3}, '_', 33});
+	comp_obst_lil_mouse.push_back( ParticleCore { Coord {2, 3}, '/', 33});
+	OBJECT_VARS_COMP.push_back(comp_obst_lil_mouse);
+
+	OBJ_THEMES.push_back(OBJECT_VARS_COMP);
 	/* Finally, append to the master blueprint */
 	OBJ_BLPRNTS.push_back(OBJ_THEMES);
 

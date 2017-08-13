@@ -7,13 +7,16 @@
 #include <iostream>
 #include "GameManager.hpp"
 #include "MenuManager.hpp"
+#include "NetworkManager.hpp"
 
 void initScreen();
 void exitCurses(WINDOW * win);
 
 int main()
 {
-	srand(std::time(0));
+	/* prepare pseudo-random sequence */
+	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
+	cj_srand(300); // number must be <= CJ_RAND_MAX; modulo that value in case of using times for example
 	/* create the blueprints for the objects (might take a second, should only be run once) */
 	createAllBlueprints();
 	WINDOW * win;
@@ -22,17 +25,30 @@ int main()
 	MenuManager MM = MenuManager(); 
 	int play = MM.mainMenu(),
 		score = 0;
+	vector<double> timing_info;
+	NetworkManager NM = NetworkManager();
+	while(NM.getNumberOfPlayers() < 2) {
+		continue; // wait
+	}
 	while (play == 1){
-		GameManager GM = GameManager(win);
+		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(MM);	
+<<<<<<< HEAD
 		playerdied = GM.run(&score); // runs until user presses q
 		MM.updateSettings(GM);
+=======
+		playerdied = GM.run(&score, &timing_info); // runs until user presses q
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 		play = MM.gameOver();
 		MM.clearScreen();
 	}
 	
 	exitCurses(win);
 
+	if(timing_info.size() == 3) {
+		std::cout << "avg,max,min" << std::endl;
+		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
+	}
 	std::cout << "final score is " << score << std::endl;
 	// if(playerdied == 1)
 	// 	std::cout << "player hit an obstacle" << std::endl;

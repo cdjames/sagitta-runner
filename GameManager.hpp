@@ -11,7 +11,11 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <limits>
+#include <chrono>
+#include <thread>
 #include "MenuManager.hpp"
+#include "NetworkManager.hpp"
 // #include "SagittaTypes.hpp"
 #include "Ship.hpp" // includes Object
 #include "Obstacle.hpp" // includes Object
@@ -21,21 +25,25 @@
 #include <iostream>
 #include <cstdlib> // rand
 #include <ctime> // for seeding rand
+#include <cmath>
 
 using std::vector;
+<<<<<<< HEAD
 class MenuManager;
+=======
+// using std::chrono;
+
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 class GameManager
 {
 protected:
 	WINDOW * win;
+	NetworkManager * NM;
 	vector< vector<ParticleInfo> > gameboard;
 
 	Coord maxWinXY,
 		  maxGBWinXY;
-	Obstacle testO;
-	Obstacle testO2;
-	Bullet testBullet;
-	Explosion testExplosion;
+	Obstacle rand_obstacle;
 
 	std::unordered_map<unsigned long,Obstacle> Obstacles;
 	std::map<unsigned long,Bullet> Bullets;
@@ -62,7 +70,8 @@ protected:
 	ThemeType curr_theme;
 	unsigned long numObstaclesDestroyed;
 	Ship theShip;
-	int input;
+	int input,
+		op_input;
 	Particle shipStatus;
 	bool gameover;
 	unsigned short still_animating;
@@ -87,7 +96,8 @@ protected:
 		   target_time,
 		   time_now;
 	// int max_obs_points;
-	int score;
+	int score,
+		playerNum;
 
 	void initWindow();
 	void initGameboard();
@@ -104,11 +114,19 @@ protected:
 	void moveBullets();
 	void gameOver();
 	void setScreenSize();
+	void _gameLoop(vector<double> * timing_info);
+	short _gameOver(int * final_score);
+	void _serverComm();
+
 public:
+<<<<<<< HEAD
 	friend MenuManager;
 	GameManager(WINDOW * win);
+=======
+	GameManager(WINDOW * win, NetworkManager * NM);
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 	~GameManager();
-	short run(int * final_score);
+	short run(int * final_score, vector<double> * timing_info);
 	void updateSettings(MenuManager &MM);
 };
 

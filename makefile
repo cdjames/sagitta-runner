@@ -8,6 +8,7 @@ OPS += -ggdb
 OPS += -Wall 
 
 OPS_NC = -lncurses
+# OPS_NC += -lpthread
 OPS_NC += ${OPS}
 
 CXX = main.cpp
@@ -41,12 +42,23 @@ GameManager.o:
 MenuManager.o:
 	g++ -c MenuManager.cpp ${OPS_NC}
 
+<<<<<<< HEAD
 
 NetworkManager.o:
 	g++ -c NetworkManager.cpp ${OPS_NC}
 
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
 	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o NetworkManager.o -o ${PROG1} ${OPS_NC}
+=======
+NetworkManager.o:
+	g++ -c NetworkManager.cpp ${OPS_NC}
+
+server:
+	g++ server.cpp -o server ${OPS}
+
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
+	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 
 testing: clean runner
 

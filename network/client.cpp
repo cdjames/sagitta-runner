@@ -10,11 +10,13 @@
   
 int main(int argc, char const *argv[])
 {
-    int sock = 0;
+    struct sockaddr_in address;
+    int sock = 0, valread;
     struct sockaddr_in serv_addr;
-    int clientReady = 1; // Send to server to indicate client ready.
-    int num, playerNumber; // Returned from server to indicate player number. 1 or 2.
     char buffer[1024] = {0};
+    char end[1024] = {0};
+    std::string response;
+    int num, numPlayers;
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -39,22 +41,25 @@ int main(int argc, char const *argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    send(sock, &clientReady, sizeof(clientReady), 0);
-    playerNumber = recv(sock, &num, sizeof(num), 0);
-    int player = ntohl(num);
 
-    printf("This client is player %d\n", player);
-
-    char input[512] = {0};
-    while(1) {
-        printf("Enter: ");
-        scanf("%s", input);
-        send(sock, &input, sizeof(input), 0);
+    //Return from server the number of players connected to game.
+    numPlayers = recv(sock, &num, sizeof(num), 0);
+    if(num == 2) {
+        printf("Sorry, two players already in game.\n");
     }
-    
+    else {
+        printf("Play game? Type Y.");
+        getline (std::cin, response);
+        if(response.compare("Y") == 0) {
+            send(sock, response.c_str(), strlen(response.c_str()), 0);
+        }
+        else {
+            printf("User typed N, closing socket connection.\n");
+            //CLOSE SOCKET CONNECTION?
+        }
+
+    }
+    numPlayers = recv(sock, &num, sizeof(num), 0);
+    printf("numPlayers = %d\n", num); 
     return 0;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7

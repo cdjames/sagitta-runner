@@ -1,4 +1,8 @@
 #include "NetworkManager.hpp"
+<<<<<<< HEAD
+=======
+#include "SagittaTypes.hpp"
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -11,7 +15,11 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+<<<<<<< HEAD
 #define PORT 8888
+=======
+#define PORT 48000
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 
 NetworkManager::NetworkManager() {
 	client_socket = 0;
@@ -63,6 +71,7 @@ int NetworkManager::getPlayerNumber() {
 	return player;
 }
 
+<<<<<<< HEAD
 // Coord getCoord::NetworkManager(short type) {
 // 	// Returns the "master" coordinates for type ship or bullet.
 // }
@@ -77,3 +86,95 @@ int NetworkManager::sendCoord(int command) {
 	// send(client_socket, &command, sizeof(command), 0);
 	return 0;
 }
+=======
+int NetworkManager::getNumberOfPlayers() {
+	char msg[512] = "getNumPlayers";
+	int readval, num;
+	send(client_socket, &msg, sizeof(msg), 0);
+	readval = recv(client_socket, &num, sizeof(num), 0);
+	num = ntohl(num);
+	return num;
+}
+
+void NetworkManager::sendCoord(int command, int player) {
+	//Command here is some int value for a direction or space.
+	char msg[512] = "sendCoord";
+	int readval;
+	int converted_number;
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	memset(&msg, '0', sizeof(msg));
+	readval = recv(client_socket, msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(command);
+		send(client_socket, &converted_number, sizeof(converted_number), 0);
+		memset(&msg, '0', sizeof(msg));
+		readval = recv(client_socket, msg, sizeof(msg), 0);
+		if(strcmp(msg, "confirmed") == 0) {
+			converted_number = htonl(player);
+			send(client_socket, &converted_number, sizeof(converted_number), 0);
+		}
+	}
+}
+
+//Add player number parameter
+//if player 1, return last input from player 2.
+//if player 2, return last input from player 1.
+//int NetworkManager::getCoord(playerNum) {
+int NetworkManager::getCoord(int playerNum) {
+	// Returns the "master" coordinates for type ship or bullet.
+	char msg[512] = "getCoord";
+	int valread, converted_number, move; //
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	memset(&msg, '0', sizeof(msg));
+	valread = recv(client_socket, &msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(playerNum);
+		send(client_socket, &converted_number, sizeof(converted_number), 0); 
+		valread = recv(client_socket, &move, sizeof(move), 0);
+		move = ntohl(move);
+	}
+	return move;
+}
+
+Coord NetworkManager::getPosition() {
+	// Returns the "master" coordinates for type ship or bullet.
+	char msg[512] = "getPosition";
+	int valread;
+	struct Coord shipCoord;
+	//First send str to indicate to server what to return.
+	send(client_socket, &msg, sizeof(msg), 0);
+	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
+
+	return shipCoord;
+}
+
+int NetworkManager::getScore() {
+	int readval, score;
+	char msg[512] = "getScore";
+	send(client_socket, &msg, sizeof(msg), 0);
+	readval = recv(client_socket, &score, sizeof(score), 0);
+	score = ntohl(score);
+
+	return score;
+}
+
+void NetworkManager::setScore(int score) {
+	char msg[512] = "setScore";
+	int valread, converted_number;
+	send(client_socket, &msg, sizeof(msg), 0);
+	memset(&msg, '0', sizeof(msg));
+	valread = recv(client_socket, &msg, sizeof(msg), 0);
+	if(strcmp(msg, "confirmed") == 0) {
+		converted_number = htonl(score);
+        send(client_socket, &converted_number, sizeof(int), 0);
+	}
+}
+
+void NetworkManager::gameOver(int score) {
+	char msg[512] = "gameOver";
+	send(client_socket, &msg, sizeof(msg), 0);
+}
+
+>>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
