@@ -5,6 +5,7 @@
 *********************************************************************/
 
 #include "GameManager.hpp"
+#include "NetworkManager.hpp"
 
 /* public */
 GameManager::GameManager(WINDOW * win) {

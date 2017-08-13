@@ -41,8 +41,12 @@ GameManager.o:
 MenuManager.o:
 	g++ -c MenuManager.cpp ${OPS_NC}
 
-runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o
-	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+
+NetworkManager.o:
+	g++ -c NetworkManager.cpp ${OPS_NC}
+
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
+	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o NetworkManager.o -o ${PROG1} ${OPS_NC}
 
 testing: clean runner
 

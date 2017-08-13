@@ -22,8 +22,8 @@ MenuManager::MenuManager() {
 void MenuManager::clearScreen() {
 	int i;
 	int j;
-	for (i = 0; i < 24; i++) {
-		for (j = 0; j < 80; j++) {
+	for (i = 0; i < 80; i++) {
+		for (j = 0; j < 240; j++) {
 			mvprintw(i, j, " ");
 		}
 	}
