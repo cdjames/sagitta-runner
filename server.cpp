@@ -51,13 +51,15 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     for(int i = 0; i < 2; i++) {
         valread = recv(client_socket[i], &command, sizeof(command), 0);
 
-        if(strcmp(command, "getNumPlayers") == 0) {
+        // if(strcmp(command, "getNumPlayers") == 0) {
+        if(strcmp(command, "GNP") == 0) {
             int currentNumPlayers = state.numPlayers;
             int converted_number = htonl(currentNumPlayers);
             send(client_socket[i], &converted_number, sizeof(int), 0);
         }
-        if(strcmp(command, "sendCoord") == 0) {
-            char confirmation[16] = "confirmed";
+        // if(strcmp(command, "sendCoord") == 0) {
+        if(strcmp(command, "SC") == 0) {
+            char confirmation[4] = "con";
             int move; // either up, down, left, right, space.
             int readval;
             int type;
@@ -76,8 +78,9 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 state.player2command = move;
             }
         }
-        if(strcmp(command, "getCoord") == 0) {
-            char confirmation[16] = "confirmed";
+        // if(strcmp(command, "getCoord") == 0) {
+        if(strcmp(command, "GC") == 0) {
+            char confirmation[4] = "con";
             int player, move;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             valread = recv(client_socket[i], &player, sizeof(player), 0);
@@ -91,27 +94,29 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 send(client_socket[i], &move, sizeof(move), 0);
             }
         }
-        if(strcmp(command, "getPosition") == 0) {
+        if(strcmp(command, "GP") == 0) {
+        // if(strcmp(command, "getPosition") == 0) {
             // handle getCoord
             struct Coord c = state.shipCoord;
             send(client_socket[i], &c, sizeof(c), 0);
         }
-
-        if(strcmp(command, "getScore") == 0) {
+        // if(strcmp(command, "getScore") == 0) {
+        if(strcmp(command, "GS") == 0) {
             int converted_number;
             converted_number = htonl(state.score);
             send(client_socket[i], &converted_number, sizeof(converted_number), 0);
         }
-
-        if(strcmp(command, "setScore") == 0) {
-            char confirmation[16] = "confirmed";
+        // if(strcmp(command, "setScore") == 0) {
+        if(strcmp(command, "SS") == 0) {
+            char confirmation[4] = "con";
             int score, readval;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             readval = recv(client_socket[i], &score, sizeof(score), 0);
             score = ntohl(score);
             state.score = score;
         }
-        if(strcmp(command, "gameOver") == 0) {
+        // if(strcmp(command, "gameOver") == 0) {
+        if(strcmp(command, "GO") == 0) {
             printf("The game is over.\n");
             printf("Disconnecting both clients.\n");
             close(client_socket[0]);
