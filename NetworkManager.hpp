@@ -19,10 +19,11 @@ private:
 	int client_socket;
 
 public:
-	NetworkManager();
-	int connectPlayer();
-	int getPlayerNumber();
-	int getNumberOfPlayers();
+	void setPlayer();
+	NetworkManager(); //
+	int connectPlayer(); //
+	int getPlayerNumber(); //
+	int getNumberOfPlayers(); //
 	void sendCoord(int, int);
 	int getCoord(int);
 	Coord getPosition();

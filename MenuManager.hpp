@@ -24,9 +24,9 @@ protected:
 	NetworkManager *NM;
 public:
 	friend class GameManager;
-	MenuManager(NetworkManager *NM);
+	MenuManager(NetworkManager*);
 	void findGame();
-	void connect();
+	void quitScreen();
 	int mainMenu();
 	int settingsMenu();
 	int difficultyScreen();

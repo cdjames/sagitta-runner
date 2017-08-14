@@ -69,9 +69,10 @@ void MenuManager::findGame() {
 }
 
 //Connects the two players
-void MenuManager::connect() {
+void MenuManager::quitScreen() {
 	clearScreen();
-	mvprintw(yCoord, xCoord, "Attempting to connect players...");
+	mvprintw(yCoord, xCoord, "Thanks for playing");
+	refresh();
 	//if success return 1 --> start the game
 	//else return 0 
 }

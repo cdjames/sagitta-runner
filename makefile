@@ -44,7 +44,7 @@ MenuManager.o:
 NetworkManager.o:
 	g++ -c NetworkManager.cpp ${OPS_NC}
 
-server:
+server: cleanServer 
 	g++ server.cpp -o server ${OPS}
 
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
@@ -54,3 +54,6 @@ testing: clean runner
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}
+
+cleanServer:
+	rm -f server
