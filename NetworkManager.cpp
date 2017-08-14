@@ -66,36 +66,22 @@ int NetworkManager::getPlayerNumber() {
 
 //GNP
 int NetworkManager::getNumberOfPlayers() {
-	// char msg[16] = "getNumPlayers";
-	char msg[4] = "GNP";
-	int readval, num;
-	send(client_socket, &msg, sizeof(msg), 0);
-	readval = recv(client_socket, &num, sizeof(num), 0);
-	num = ntohl(num);
-	return num;
+	// memset(&commStruct, '\0', sizeof(commStruct));
+	int readval;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GNP");
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
+	return commStruct.numPlayers;
 }
 
 //SC
 void NetworkManager::sendCoord(int command, int player) {
-	//Command here is some int value for a direction or space.
-	// char msg[16] = "sendCoord";
-	char msg[4] = "SC";
-	int readval;
-	int converted_number;
-	//First send str to indicate to server what to return.
-	send(client_socket, &msg, sizeof(msg), 0);
-	memset(&msg, '\0', sizeof(msg));
-	readval = recv(client_socket, &msg, sizeof(msg), 0);
-	if(strcmp(msg, "con") == 0) {
-		converted_number = htonl(command);
-		send(client_socket, &converted_number, sizeof(converted_number), 0);
-		memset(&msg, '\0', sizeof(msg));
-		readval = recv(client_socket, &msg, sizeof(msg), 0);
-		if(strcmp(msg, "con") == 0) {
-			converted_number = htonl(player);
-			send(client_socket, &converted_number, sizeof(converted_number), 0);
-		}
-	}
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "SC");
+	commStruct.move = command;
+	commStruct.player = player;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
 }
 
 //Add player number parameter
@@ -105,64 +91,57 @@ void NetworkManager::sendCoord(int command, int player) {
 
 //GC
 int NetworkManager::getCoord(int playerNum) {
-	// Returns the "master" coordinates for type ship or bullet.
-	// char msg[16] = "getCoord";
-	char msg[4] = "GC";
-	int valread, converted_number, move; //
-	//First send str to indicate to server what to return.
-	send(client_socket, &msg, sizeof(msg), 0);
-	memset(&msg, '0', sizeof(msg));
-	valread = recv(client_socket, &msg, sizeof(msg), 0);
-	if(strcmp(msg, "con") == 0) {
-		converted_number = htonl(playerNum);
-		send(client_socket, &converted_number, sizeof(converted_number), 0); 
-		valread = recv(client_socket, &move, sizeof(move), 0);
-		move = ntohl(move);
-	}
-	return move;
+	int readval;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GC");
+	commStruct.player = playerNum;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
+	return commStruct.move;
 }
 //GP
 Coord NetworkManager::getPosition() {
 	// Returns the "master" coordinates for type ship or bullet.
 	// char msg[16] = "getPosition";
-	char msg[3] = "GP";
-	int valread;
+	int readval;
 	struct Coord shipCoord;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GP");
+	
 	//First send str to indicate to server what to return.
-	send(client_socket, &msg, sizeof(msg), 0);
-	valread = recv(client_socket, &shipCoord, sizeof(shipCoord), 0);
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
 
-	return shipCoord;
+	return commStruct.shipCoord;
 }
 //GS
 int NetworkManager::getScore() {
 	int readval, score;
-	// char msg[16] = "getScore";
-	char msg[3] = "GS";
-	send(client_socket, &msg, sizeof(msg), 0);
-	readval = recv(client_socket, &score, sizeof(score), 0);
-	score = ntohl(score);
-
-	return score;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GS");
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
+	return commStruct.score;
 }
 
 //SS
 void NetworkManager::setScore(int score) {
 	// char msg[16] = "setScore";
-	char msg[4] = "SS";
-	int valread, converted_number;
-	send(client_socket, &msg, sizeof(msg), 0);
-	memset(&msg, '0', sizeof(msg));
-	valread = recv(client_socket, &msg, sizeof(msg), 0);
-	if(strcmp(msg, "con") == 0) {
-		converted_number = htonl(score);
-        send(client_socket, &converted_number, sizeof(int), 0);
-	}
+	// char msg[4] = "SS";
+	// int valread, converted_number;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "SS");
+	
+	commStruct.score = score;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
 }
-//GO
+
+//gameOver
 void NetworkManager::gameOver(int score) {
 	// char msg[16] = "gameOver";
-	char msg[3] = "GO";
-	send(client_socket, &msg, sizeof(msg), 0);
+	// memset(&commStruct, '\0', sizeof(commStruct));
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GO");
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
 }
 

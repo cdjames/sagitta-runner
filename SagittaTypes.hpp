@@ -70,6 +70,14 @@ typedef struct Coord {
 	// }
 } Coord;
 
+typedef struct CommStruct {
+	char cmd[5];
+	int move;
+	int player;
+	struct Coord shipCoord;
+	int score;
+	int numPlayers;
+} CommStruct;
 // Coord operator+(const Coord& right, const Coord& left) {
 // 	Coord res = right;
 // 	res += left;
