@@ -2,7 +2,6 @@
 #include <stdlib.h> 
 #include <errno.h> 
 #include <unistd.h>
-#include <sys/select.h> // for Cygwin
 #include <arpa/inet.h>
 #include <sys/types.h> 
 #include <sys/socket.h> 
@@ -14,7 +13,7 @@
     
 #define TRUE   1 
 #define FALSE  0 
-#define PORT 48000 
+#define PORT 8888 
 #define MAX_CLIENTS 2
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
@@ -52,13 +51,15 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     for(int i = 0; i < 2; i++) {
         valread = recv(client_socket[i], &command, sizeof(command), 0);
 
-        if(strcmp(command, "getNumPlayers") == 0) {
+        // if(strcmp(command, "getNumPlayers") == 0) {
+        if(strcmp(command, "GNP") == 0) {
             int currentNumPlayers = state.numPlayers;
             int converted_number = htonl(currentNumPlayers);
             send(client_socket[i], &converted_number, sizeof(int), 0);
         }
-        if(strcmp(command, "sendCoord") == 0) {
-            char confirmation[512] = "confirmed";
+        // if(strcmp(command, "sendCoord") == 0) {
+        if(strcmp(command, "SC") == 0) {
+            char confirmation[4] = "con";
             int move; // either up, down, left, right, space.
             int readval;
             int type;
@@ -77,8 +78,9 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 state.player2command = move;
             }
         }
-        if(strcmp(command, "getCoord") == 0) {
-            char confirmation[512] = "confirmed";
+        // if(strcmp(command, "getCoord") == 0) {
+        if(strcmp(command, "GC") == 0) {
+            char confirmation[4] = "con";
             int player, move;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             valread = recv(client_socket[i], &player, sizeof(player), 0);
@@ -92,27 +94,29 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 send(client_socket[i], &move, sizeof(move), 0);
             }
         }
-        if(strcmp(command, "getPosition") == 0) {
+        if(strcmp(command, "GP") == 0) {
+        // if(strcmp(command, "getPosition") == 0) {
             // handle getCoord
             struct Coord c = state.shipCoord;
             send(client_socket[i], &c, sizeof(c), 0);
         }
-
-        if(strcmp(command, "getScore") == 0) {
+        // if(strcmp(command, "getScore") == 0) {
+        if(strcmp(command, "GS") == 0) {
             int converted_number;
             converted_number = htonl(state.score);
             send(client_socket[i], &converted_number, sizeof(converted_number), 0);
         }
-
-        if(strcmp(command, "setScore") == 0) {
-            char confirmation[512] = "confirmed";
+        // if(strcmp(command, "setScore") == 0) {
+        if(strcmp(command, "SS") == 0) {
+            char confirmation[4] = "con";
             int score, readval;
             send(client_socket[i], &confirmation, sizeof(confirmation), 0);
             readval = recv(client_socket[i], &score, sizeof(score), 0);
             score = ntohl(score);
             state.score = score;
         }
-        if(strcmp(command, "gameOver") == 0) {
+        // if(strcmp(command, "gameOver") == 0) {
+        if(strcmp(command, "GO") == 0) {
             printf("The game is over.\n");
             printf("Disconnecting both clients.\n");
             close(client_socket[0]);
@@ -125,7 +129,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
 }
 
 void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
-	int opt = TRUE;
+    int opt = TRUE;
 
     //master socket 
     if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)  
@@ -174,13 +178,13 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
     // Game state variables
     struct gameState state;
 
-	//set of socket descriptors 
+    //set of socket descriptors 
     fd_set readfds;  
 
-	while(TRUE)  
-	{  
+    while(TRUE)  
+    {  
         //clear the socket set 
-		FD_ZERO(&readfds);  
+        FD_ZERO(&readfds);  
         //add master socket to set 
         FD_SET(master_socket, &readfds);  
         max_sd = master_socket;  
@@ -206,8 +210,8 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
             clientReady = recv(new_socket, &clientReady, sizeof(clientReady), 0);
             numPlayers++; 
             state.numPlayers = numPlayers;
-        	int converted_number = htonl(numPlayers);
-        	send(new_socket, &converted_number, sizeof(int), 0);
+            int converted_number = htonl(numPlayers);
+            send(new_socket, &converted_number, sizeof(int), 0);
 
             if(numPlayers == 2) {
                 break;
@@ -223,15 +227,15 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
 }
 
 int main(int argc , char *argv[]) {  
-	int master_socket;
-	struct sockaddr_in address; 
+    int master_socket;
+    struct sockaddr_in address; 
     int addrlen; 
     int client_socket[2];
 
     // Sets up socket/server connections.
-	setUpServer(master_socket, addrlen, address);
-	//Connects 2 players. Once two players connected, exits function.
-	while(1) {
+    setUpServer(master_socket, addrlen, address);
+    //Connects 2 players. Once two players connected, exits function.
+    while(1) {
         connectPlayers(master_socket, addrlen, address, client_socket);
     }
 
