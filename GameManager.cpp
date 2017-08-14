@@ -1,5 +1,5 @@
-/*********************************************************************
-** Author: Collin James
+/*******************************************************************
+Author: Collin James
 ** Date: 7/9/17
 ** Description: Implementation of GameManager 
 *********************************************************************/
@@ -56,7 +56,7 @@ short GameManager::run(int * final_score, vector<double> * timing_info) {
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
 
-	/* main loop */
+	/* main loop */
 	_gameLoop(timing_info);
 
 	/* handle game over scenario, storing the final score in the pointer  */
@@ -70,7 +70,7 @@ short GameManager::_gameOver(int * final_score) {
 	else if (gameover) { // if user died
 		mvprintw(0, 0, "GAMEOVER - press 'q'");
 		gameStatus = 1;
-		/* erase the ship */
+		/* erase the ship */
 		theShip.erase();
 		// wrefresh(win); // for window
 		/* add an explosion where the ship was */
@@ -122,7 +122,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loop_t = 0;
 	// std::thread server_comm_thread;
 	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
-	/* main loop */
+	/* main loop */
 	do 
 	{
 		time_now = time(0);
@@ -141,7 +141,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 					
 		NM->sendCoord(input, playerNum);
 		op_input = NM->getCoord(playerNum);
-		/* send input to server in another thread */
+		/* send input to server in another thread */
 		// server_comm_thread = std::thread(&GameManager::_serverComm, this);
 
 		/* increase difficulty */
@@ -190,7 +190,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		   for what to expect for each player */
 		// server_comm_thread.join(); // make sure you have the input you need
 		switch (input) {
-			/* player 1 */
+			/* player 1 */
 			case KEY_LEFT:
 				trajectory = {-1, 0}; 
 				move_ship = true;
@@ -202,7 +202,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				break;
 
 			case KEY_SPACE:
-				/* create a new bullet and add to Bullets map */
+				/* create a new bullet and add to Bullets map */
 				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
@@ -216,7 +216,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				trajectory = {0, 1}; 
 				move_ship = true;
 				break;
-			/* input == ERR (i.e. no input) */
+			/* input == ERR (i.e. no input) */
 			default: 
 				trajectory = {0, 0};
 				break;
@@ -244,7 +244,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				break;
 
 			case KEY_SPACE:
-				/* create a new bullet and add to Bullets map */
+				/* create a new bullet and add to Bullets map */
 				if(Bullets.size() < max_bullets)
 					placeBullet(++bulletId);
 				break;
@@ -257,7 +257,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		}
 
 
-		/* move the bullets */
+		/* move the bullets */
 		if(Bullets.size()){
 			// if(exp_fr_counter == exp_fr_factor) {
 			// move the objects
@@ -270,7 +270,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				if (obstStatus.collided == GAMEOVER) {
 					// mvprintw(maxWinXY.y-1, 50, "gameover object");
 					
-					/* find the Obstacle it hit and remove it */
+					/* find the Obstacle it hit and remove it */
 					obst_it = Obstacles.find(obstStatus.info.id);
 					temp_obst_it = obst_it;
 					++obst_it;
@@ -315,7 +315,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			if (shipStatus.collided == EDGE) {
 				// mvprintw(0, 48, "hit the edge  ");
 			} else if(shipStatus.collided == GAMEOVER) {
-				/* find the Obstacle it hit and remove it */
+				/* find the Obstacle it hit and remove it */
 				obst_it = Obstacles.find(shipStatus.info.id);
 				temp_obst_it = obst_it;
 				++obst_it;
@@ -377,7 +377,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " score: %d ", score); // testing	
 
 
-		/* create new explosions */
+		/* create new explosions */
 		if(makeExplosion && !gameover) {
 			// mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
 
@@ -443,7 +443,7 @@ void GameManager::updateSettings(MenuManager &MM){
 	max_bullets += difficulty;
 }
 
-/* protected */
+/* protected */
 void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window

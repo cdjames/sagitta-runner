@@ -20,6 +20,14 @@ int main()
 	cj_srand(300);
 	createAllBlueprints();
         initScreen();
+//        short playerdied = -1;
+//        NetworkManager NM = NetworkManager();
+//        MenuManager MM = MenuManager(&NM);
+//	int play = MM.mainMenu(), score = 0;
+//	vector<double> timing_info;
+//        while(NM.getNumberOfPlayers() < 2) {
+//	        continue; // wait
+//        }
 	int play = 1;
 	while (play == 1){
 		play = runGame(win);
@@ -28,13 +36,20 @@ int main()
 	return 0;
 }
 int runGame(WINDOW *win){
+	/* prepare pseudo-random sequence */
+//	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
+//	cj_srand(300); // number must be <= CJ_RAND_MAX; modulo that value in case of using times for example
+	/* create the blueprints for the objects (might take a second, should only be run once) */
+//	createAllBlueprints();
+//	WINDOW * win;
+//	initScreen();
 	short playerdied = -1;
-	NetworkManager NM = NetworkManager();
-	MenuManager MM = MenuManager(&NM); 
-	vector<double> timing_info;
+//	NetworkManager NM = NetworkManager();
+	MenuManager MM = MenuManager(); 
 	int play = MM.mainMenu(), score = 0;
 	if (play == 1){
-		NM.setPlayer();
+		NetworkManager NM = NetworkManager();
+		vector<double> timing_info;
 		while(NM.getNumberOfPlayers() < 2) {
 			continue; // wait
 		}
@@ -44,9 +59,22 @@ int runGame(WINDOW *win){
 		MM.updateSettings(GM);
 		playerdied = GM.run(&score, &timing_info); // runs until user presses q
 		play = MM.gameOver();
-
 	}
 
+//	exitCurses(win);
+/*
+	if(timing_info.size() == 3) {
+		std::cout << "avg,max,min" << std::endl;
+		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
+	}
+	std::cout << "final score is " << score << std::endl;
+	// if(playerdied == 1)
+	// 	std::cout << "player hit an obstacle" << std::endl;
+	// else if (!playerdied) // i.e. 0
+	// 	std::cout << "player pressed q to quit" << std::endl;
+	// else // i.e. -1
+	// 	std::cout << "something strange happened in run()" << std::endl;
+*/
 	return play;
 }
 

@@ -1,5 +1,5 @@
-/*********************************************************************
-** Author: Collin James
+/*
+Author: Collin James
 ** Date: 7/9/17
 ** Description: The managing class of the infinite runner
 *********************************************************************/
@@ -29,7 +29,7 @@
 
 using std::vector;
 // using std::chrono;
-
+class MenuManager;
 class GameManager
 {
 protected:
@@ -115,6 +115,7 @@ protected:
 	void _serverComm();
 
 public:
+	friend class MenuManager;
 	GameManager(WINDOW * win, NetworkManager * NM);
 	~GameManager();
 	short run(int * final_score, vector<double> * timing_info);

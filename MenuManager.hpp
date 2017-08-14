@@ -3,34 +3,40 @@
 ** the user. */
 #ifndef MENUMANAGER_HPP
 #define MENUMANAGER_HPP
+#include "GameManager.hpp"
 #include <curses.h>
+#include "NetworkManager.hpp"
 #include <iostream>
 #include <string>
-
 using std::string;
-
+class GameManager;
 class MenuManager {
-private:
+protected:
 	int input;
 	int yCoord;
 	int xCoord;
 	int titleYCoord;
 	int titleXCoord;
-	int play;
-
+	int difficultyLevel;
+	char playerName[16];
+	int score;
+	int fileExists;
+	NetworkManager *NM;
 public:
-	MenuManager();
-	int findGame();
-	void connect();
+	friend class GameManager;
+	MenuManager(NetworkManager*);
+	void findGame();
+	void quitScreen();
 	int mainMenu();
 	int settingsMenu();
 	int difficultyScreen();
 	int showScores();
-	int difficultyLevel;
-	int playerNameScreen();
+	int playerNameScreen(int);
 	void clearScreen();
-	char playerName[16];
 	int gameOver();
+	int hsScreen();	
+	int play;
+	void updateSettings(GameManager);	
 };
 
 #endif

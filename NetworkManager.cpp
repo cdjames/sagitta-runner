@@ -12,12 +12,16 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 8888
+#define PORT 30123
 
 NetworkManager::NetworkManager() {
 	client_socket = 0;
 
-	player = connectPlayer(); // Connects player to the server. Assigns player #.
+//	player = connectPlayer(); // Connects player to the server. Assigns player #.
+}
+
+void NetworkManager::setPlayer(){
+	player = connectPlayer();
 }
 
 int NetworkManager::connectPlayer() {

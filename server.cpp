@@ -14,7 +14,7 @@
     
 #define TRUE   1 
 #define FALSE  0 
-#define PORT 8888 
+#define PORT 30123 
 #define MAX_CLIENTS 2
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
@@ -234,4 +234,4 @@ int main(int argc , char *argv[]) {
     }
 
     return 0;
-}  
+} 

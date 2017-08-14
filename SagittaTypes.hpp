@@ -1,5 +1,5 @@
-/*********************************************************************
-** Author: Collin James
+/*
+Author: Collin James
 ** Date: 7/9/17
 ** Description: Supporting data structures used for infinite runner 
 *********************************************************************/
@@ -78,6 +78,7 @@ typedef struct CommStruct {
 	int score;
 	int numPlayers;
 } CommStruct;
+
 // Coord operator+(const Coord& right, const Coord& left) {
 // 	Coord res = right;
 // 	res += left;

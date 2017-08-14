@@ -19,6 +19,7 @@ private:
 	int client_socket;
 
 public:
+	void setPlayer();
 	NetworkManager(); //
 	int connectPlayer(); //
 	int getPlayerNumber(); //
