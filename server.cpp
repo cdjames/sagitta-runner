@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h> 
 #include <sys/socket.h> 
+#include <sys/select.h> 
 #include <netinet/in.h> 
 #include <sys/time.h> 
 #include <iostream>
@@ -55,7 +56,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         printf("%s\n", commStruct.cmd);
 
         if(strcmp(commStruct.cmd, "GNP") == 0){
-            valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             commStruct.numPlayers  = state.numPlayers;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
@@ -63,7 +64,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         if(strcmp(commStruct.cmd, "SC") == 0) {
             int playernum;
             int move;
-            valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             playernum = commStruct.player;
             move = commStruct.move;
             printf("move recived from client: %d from player: %d\n", move, playernum);
@@ -105,7 +106,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         //ss
         if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
         }
         //gameOver

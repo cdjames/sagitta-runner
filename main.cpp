@@ -27,9 +27,13 @@ int main()
 		score = 0;
 	vector<double> timing_info;
 	NetworkManager NM = NetworkManager();
+	// def_prog_mode(); // get out of curses mode
+	// endwin();
+	std::cout << "waiting for another player..." << std::endl;
 	while(NM.getNumberOfPlayers() < 2) {
 		continue; // wait
 	}
+	// reset_prog_mode(); // re-enter curses mode
 	while (play == 1){
 		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(MM);	
