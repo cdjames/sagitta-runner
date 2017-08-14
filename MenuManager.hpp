@@ -5,6 +5,7 @@
 #define MENUMANAGER_HPP
 #include "GameManager.hpp"
 #include <curses.h>
+#include "NetworkManager.hpp"
 #include <iostream>
 #include <string>
 using std::string;
@@ -20,10 +21,11 @@ protected:
 	char playerName[16];
 	int score;
 	int fileExists;
+	NetworkManager *NM;
 public:
 	friend class GameManager;
-	MenuManager();
-	int findGame();
+	MenuManager(NetworkManager *NM);
+	void findGame();
 	void connect();
 	int mainMenu();
 	int settingsMenu();

@@ -22,23 +22,21 @@ int main()
 	WINDOW * win;
 	initScreen();
 	short playerdied = -1;
-	MenuManager MM = MenuManager(); 
+	NetworkManager NM = NetworkManager();
+	MenuManager MM = MenuManager(&NM); 
 	int play = MM.mainMenu(),
 		score = 0;
 	vector<double> timing_info;
-	NetworkManager NM = NetworkManager();
+	//NetworkManager NM = NetworkManager();
+	//MenuManager MM = NetworkManager(&NM);
 	while(NM.getNumberOfPlayers() < 2) {
 		continue; // wait
 	}
-	while (play == 1){
+	while (play){
 		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(MM);	
-<<<<<<< HEAD
-		playerdied = GM.run(&score); // runs until user presses q
 		MM.updateSettings(GM);
-=======
 		playerdied = GM.run(&score, &timing_info); // runs until user presses q
->>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 		play = MM.gameOver();
 		MM.clearScreen();
 	}

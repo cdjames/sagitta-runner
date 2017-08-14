@@ -1,4 +1,3 @@
-
 # on unix-y systems, type 'make'.
 # if that doesn't work, 'make -f makefile' might be useful.
 
@@ -42,14 +41,6 @@ GameManager.o:
 MenuManager.o:
 	g++ -c MenuManager.cpp ${OPS_NC}
 
-<<<<<<< HEAD
-
-NetworkManager.o:
-	g++ -c NetworkManager.cpp ${OPS_NC}
-
-runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
-	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o NetworkManager.o -o ${PROG1} ${OPS_NC}
-=======
 NetworkManager.o:
 	g++ -c NetworkManager.cpp ${OPS_NC}
 
@@ -58,7 +49,6 @@ server:
 
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
->>>>>>> b1ecfa4d4b10b1dce51239783a80b57981d6cab7
 
 testing: clean runner
 

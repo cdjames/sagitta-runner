@@ -7,7 +7,7 @@
 #include <cstring>
 #include <math.h>
 
-MenuManager::MenuManager() {
+MenuManager::MenuManager(NetworkManager *NM) {
 	strcpy(playerName, "Default Player ");
 	xCoord = 13;
 	yCoord = 10;
@@ -15,6 +15,7 @@ MenuManager::MenuManager() {
 	titleYCoord = 6;
 	difficultyLevel = 5;
 	score = 0;
+	NM = NM;
 }
 
 
@@ -55,9 +56,10 @@ int MenuManager::showScores() {
 }
 
 //Attempts to connect the player with a teammate
-int MenuManager::findGame() {
+void MenuManager::findGame() {
 	clearScreen();
 	mvprintw(yCoord, xCoord, "Searching for another player...");
+	refresh();
 	// start 30 second timer
 	// press q to quit and return to menu
 	// if player found
@@ -108,7 +110,7 @@ int MenuManager::mainMenu() {
 
 		case 10:	// Enter key: "KEY_ENTER" doesn't work. 
 			if (yMovement == 10) {
-				//play = findGame(); //play the game
+				findGame(); //play the game
 				return 1;	// temp until we are able to connect players 
 			}
 
