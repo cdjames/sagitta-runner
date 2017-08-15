@@ -34,6 +34,10 @@ protected:
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
 	ObjectType enemy;
+	int y_and_buffer,
+		x_and_buffer,
+		color;
+	bool no_color;
 
 	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 

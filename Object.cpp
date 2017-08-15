@@ -26,6 +26,10 @@ Object::Object(WINDOW * win,
 	enemy = OBSTACLE;
 	initParticles();
 	setTrajectory(Coord {-1, 0}); // by default move left (for obstacles)
+	/* figure out if we have a supported color mode */
+	if(COLORS < 256)
+		no_color = true;
+	color = 0;
 }
 
 Object::Object() {}
@@ -212,15 +216,17 @@ Particle Object::dftMove() {
 }
 
 void Object::_drawParticle(Particle &p, ParticleInfo pi) {
-	int y_and_buffer = p.core.coords.y+DEF_BUFFER, 
-		x_and_buffer = p.core.coords.x+DEF_BUFFER;
+	y_and_buffer = p.core.coords.y+DEF_BUFFER; 
+	x_and_buffer = p.core.coords.x+DEF_BUFFER;
+	if (!no_color) 
+		color = p.core.color;
 	
 	// change color
-	wattron(win, COLOR_PAIR(p.core.color));
+	wattron(win, COLOR_PAIR(color));
 	// add character
 	mvwaddch(win, p.core.coords.y, p.core.coords.x, p.core.symbol);
 	// turn color off
-	wattroff(win, COLOR_PAIR(p.core.color));
+	wattroff(win, COLOR_PAIR(color));
 	// update gameboard, checking for valid indexes first (was getting segfaults)
 	if(y_and_buffer >= 0 && y_and_buffer < gbMax.y && x_and_buffer >= 0 && x_and_buffer < gbMax.x)
 		(*gameboard)[y_and_buffer][x_and_buffer] = pi;
