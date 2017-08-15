@@ -474,7 +474,7 @@ void GameManager::updateSettings(int diff){
 		diff == 10;
 	else
 		diff = 10 - diff;
-	
+
 	difficulty = diff;
 	fr_factor = difficulty;
 	max_bullets += difficulty;
