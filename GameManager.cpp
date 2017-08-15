@@ -135,10 +135,10 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		/* get input */
 		input = getch();
 		if(playerNum == 1) { 
-			if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE )
+			if ( input != KEY_LEFT && input != KEY_RIGHT && input != KEY_SPACE && input != 'q')
 				input = ERR; 
 		} else {
-			if( input != KEY_UP && input != KEY_DOWN )
+			if( input != KEY_UP && input != KEY_DOWN && input != 'q' )
 				input = ERR;
 		}
 					
@@ -219,7 +219,11 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 				trajectory = {0, 1}; 
 				move_ship = true;
 				break;
-			/* input == ERR (i.e. no input) */
+			/* both players */
+			case 'q': // user wants to quit
+				gameover = true;
+
+			/* input == ERR (i.e. no valid input) */
 			default: 
 				trajectory = {0, 0};
 				break;
@@ -252,176 +256,185 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 					placeBullet(++bulletId);
 				break;
 			/* in case clients are out of sync, look out for game over code */
+			case 'q':
+				/* other user quit, so print a message and end game (fall through to gameover) */
+				mvprintw(1, 1, "                   ");
+				mvprintw(1, 1, "player %d quit game", (playerNum == 1 ? 2 : 1) );
+
 			case GM_GAMEOVER:
 				gameover = true;
+				break;
 				
 			default: // trajectory stays {0, 0}
 				break;
 		}
 
+		if(!gameover) {
 
-		/* move the bullets */
-		if(Bullets.size()){			
-			bull_it = Bullets.begin();
-			while(bull_it != Bullets.end()) {
-				obstStatus = bull_it->second.dftMove();
-				// mvprintw(0, 60, "id=%d", obstStatus.info.id);
-				temp_bull_it = bull_it;
-				if (obstStatus.collided == GAMEOVER) { // hit an obstacle
-					#ifdef DEBUG
-					mvprintw(1, 1, "        ");
-					mvprintw(2, 1, "bull hit");
-					#endif
-					// mvprintw(maxWinXY.y-1, 50, "gameover object");
-					
-					/* find the Obstacle it hit and remove it */
-					obst_it = Obstacles.find(obstStatus.info.id);
-					temp_obst_it = obst_it;
-					++obst_it;
-					/* add to score */
-					score += temp_obst_it->second.points;
-					temp_obst_it->second.erase();
-					Obstacles.erase(temp_obst_it);
-					
-					/* must erase bullet after obstacle */
-					++bull_it;
-					temp_bull_it->second.erase();
-					Bullets.erase(temp_bull_it);
-
-					/* make an explosion */
-					makeExplosion = true;
-					exp_coord = obstStatus.core.coords;
-					numObstaclesDestroyed++;
-				} else if (obstStatus.collided == DESTROY) {
-					++bull_it;
-					Bullets.erase(temp_bull_it);
-				} else {
-					++bull_it;
-				}
-			}
-		}
-		
-		/* move the ship */
-		if(move_ship) {
-			shipStatus = theShip.move(trajectory);
-			if (shipStatus.collided == EDGE) {
-				continue;
-			} else if(shipStatus.collided == GAMEOVER) {
-				/* find the Obstacle it hit and remove it */
-				obst_it = Obstacles.find(shipStatus.info.id);
-				temp_obst_it = obst_it;
-				++obst_it;
-				temp_obst_it->second.erase();
-				Obstacles.erase(temp_obst_it);
-				ship_coord = shipStatus.core.coords;
-				gameover = true;
-			} 
-
-			move_ship = false;
-		}
-
-		/* after user moves, move objects */
-		/* determine background framerate (fr_factor * timeout) and update obstacles
-			as necessary 
-		*/
-		if(Obstacles.size()){
-			if(fr_counter >= fr_factor && !gameover) {
-				// move the objects
-				obst_it = Obstacles.begin();
-				while(obst_it != Obstacles.end()){
-					obstStatus = obst_it->second.dftMove();
-					temp_obst_it = obst_it;
-					if (obstStatus.collided == GAMEOVER) {
-
-						// mvprintw(90, 48, "object hit ship");
-						++obst_it;
-						ship_coord = obstStatus.core.coords;
-						temp_obst_it->second.erase();
-						Obstacles.erase(temp_obst_it);
-						gameover = true;
-					} else if (obstStatus.collided == DESTROY) {  // moved offscreen
-						++obst_it;
-						score -= temp_obst_it->second.penalty;
-						if(score < 0 && difficulty > 2)
-							score = 0;
-						temp_obst_it->second.erase();
-						Obstacles.erase(temp_obst_it); // remove from the map
-					} 
-					else if (obstStatus.collided == HIT) { // hit by a bullet
+			/* move the bullets */
+			if(Bullets.size()){			
+				bull_it = Bullets.begin();
+				while(bull_it != Bullets.end()) {
+					obstStatus = bull_it->second.dftMove();
+					// mvprintw(0, 60, "id=%d", obstStatus.info.id);
+					temp_bull_it = bull_it;
+					if (obstStatus.collided == GAMEOVER) { // hit an obstacle
 						#ifdef DEBUG
-						mvprintw(1, 1, "hit by");
-						mvprintw(2, 1, "       ");
+						mvprintw(1, 1, "        ");
+						mvprintw(2, 1, "bull hit");
 						#endif
-						/* find the Bullet that hit it and remove it */
-						bull_it = Bullets.find(obstStatus.info.id);
-						temp_bull_it = bull_it;
-						++bull_it;
-						temp_bull_it->second.erase();
-						Bullets.erase(temp_bull_it);
-
-						/* erase obstacle and add to score */
+						// mvprintw(maxWinXY.y-1, 50, "gameover object");
+						
+						/* find the Obstacle it hit and remove it */
+						obst_it = Obstacles.find(obstStatus.info.id);
+						temp_obst_it = obst_it;
 						++obst_it;
+						/* add to score */
 						score += temp_obst_it->second.points;
 						temp_obst_it->second.erase();
 						Obstacles.erase(temp_obst_it);
 						
+						/* must erase bullet after obstacle */
+						++bull_it;
+						temp_bull_it->second.erase();
+						Bullets.erase(temp_bull_it);
+
 						/* make an explosion */
 						makeExplosion = true;
 						exp_coord = obstStatus.core.coords;
 						numObstaclesDestroyed++;
-					}
-					else{
-						++obst_it;
-					}
-				}
-				fr_counter = 0;
-			} else {
-				fr_counter++;
-			}
-		}
-
-		/* update status area */
-		// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d ", numObstaclesDestroyed);
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", max_bullets-Bullets.size()); // testing	
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " score: %d ", score); // testing	
-
-
-		/* create new explosions */
-		if(makeExplosion && !gameover) {
-			// mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
-
-			placeExplosion(++explosionId, exp_coord);
-			// placeExplosion(++explosionId, obstStatus.core.coords);
-			makeExplosion = false;
-		}
-
-		/* animate explosions */
-		if(Explosions.size() && !gameover){	
-			if(exp_fr_counter >= exp_fr_factor) {
-				exp_it = Explosions.begin();
-				while(exp_it != Explosions.end()) {
-				// for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
-					still_animating = exp_it->second.animate();
-					if (!still_animating) {
-						temp_exp_it = exp_it;
-						++exp_it;
-						temp_exp_it->second.erase();
-						Explosions.erase(temp_exp_it);
+					} else if (obstStatus.collided == DESTROY) {
+						++bull_it;
+						Bullets.erase(temp_bull_it);
 					} else {
-						++exp_it;
+						++bull_it;
 					}
 				}
-				exp_fr_counter = 0; 
-			} else {
-				exp_fr_counter++;
 			}
+			
+			/* move the ship */
+			if(move_ship) {
+				shipStatus = theShip.move(trajectory);
+				if (shipStatus.collided == EDGE) {
+					continue;
+				} else if(shipStatus.collided == GAMEOVER) {
+					/* find the Obstacle it hit and remove it */
+					obst_it = Obstacles.find(shipStatus.info.id);
+					temp_obst_it = obst_it;
+					++obst_it;
+					temp_obst_it->second.erase();
+					Obstacles.erase(temp_obst_it);
+					ship_coord = shipStatus.core.coords;
+					gameover = true;
+				} 
+
+				move_ship = false;
+			}
+
+			/* after user moves, move objects */
+			/* determine background framerate (fr_factor * timeout) and update obstacles
+				as necessary 
+			*/
+			if(Obstacles.size()){
+				if(fr_counter >= fr_factor && !gameover) {
+					// move the objects
+					obst_it = Obstacles.begin();
+					while(obst_it != Obstacles.end()){
+						obstStatus = obst_it->second.dftMove();
+						temp_obst_it = obst_it;
+						if (obstStatus.collided == GAMEOVER) {
+
+							// mvprintw(90, 48, "object hit ship");
+							++obst_it;
+							ship_coord = obstStatus.core.coords;
+							temp_obst_it->second.erase();
+							Obstacles.erase(temp_obst_it);
+							gameover = true;
+						} else if (obstStatus.collided == DESTROY) {  // moved offscreen
+							++obst_it;
+							score -= temp_obst_it->second.penalty;
+							if(score < 0 && difficulty > 2)
+								score = 0;
+							temp_obst_it->second.erase();
+							Obstacles.erase(temp_obst_it); // remove from the map
+						} 
+						else if (obstStatus.collided == HIT) { // hit by a bullet
+							#ifdef DEBUG
+							mvprintw(1, 1, "hit by");
+							mvprintw(2, 1, "       ");
+							#endif
+							/* find the Bullet that hit it and remove it */
+							bull_it = Bullets.find(obstStatus.info.id);
+							temp_bull_it = bull_it;
+							++bull_it;
+							temp_bull_it->second.erase();
+							Bullets.erase(temp_bull_it);
+
+							/* erase obstacle and add to score */
+							++obst_it;
+							score += temp_obst_it->second.points;
+							temp_obst_it->second.erase();
+							Obstacles.erase(temp_obst_it);
+							
+							/* make an explosion */
+							makeExplosion = true;
+							exp_coord = obstStatus.core.coords;
+							numObstaclesDestroyed++;
+						}
+						else{
+							++obst_it;
+						}
+					}
+					fr_counter = 0;
+				} else {
+					fr_counter++;
+				}
+			}
+
+			/* update status area */
+			// mvprintw(0, 100, "%d  ", Obstacles.size()); // testing
+			mvprintw(0, maxWinXY.x-STAT_ENEMIES, "| # enemies: %d ", numObstaclesDestroyed);
+			mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS, "| # bullets: %d ", max_bullets-Bullets.size()); // testing	
+			mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " score: %d ", score); // testing	
+
+
+			/* create new explosions */
+			if(makeExplosion && !gameover) {
+				// mvprintw(4, 80,"obstStatus.core.coords=%d,%d", exp_coord.x, exp_coord.y);
+
+				placeExplosion(++explosionId, exp_coord);
+				// placeExplosion(++explosionId, obstStatus.core.coords);
+				makeExplosion = false;
+			}
+
+			/* animate explosions */
+			if(Explosions.size() && !gameover){	
+				if(exp_fr_counter >= exp_fr_factor) {
+					exp_it = Explosions.begin();
+					while(exp_it != Explosions.end()) {
+					// for(std::map<unsigned long,Explosion>::iterator obst_it = Explosions.begin(); obst_it != Explosions.end(); ++obst_it) {
+						still_animating = exp_it->second.animate();
+						if (!still_animating) {
+							temp_exp_it = exp_it;
+							++exp_it;
+							temp_exp_it->second.erase();
+							Explosions.erase(temp_exp_it);
+						} else {
+							++exp_it;
+						}
+					}
+					exp_fr_counter = 0; 
+				} else {
+					exp_fr_counter++;
+				}
+			}
+
+			wnoutrefresh(stdscr); // for status screen
+			wnoutrefresh(win);    // for window
+			doupdate();
+
 		}
-
-		wnoutrefresh(stdscr); // for status screen
-		wnoutrefresh(win);    // for window
-		doupdate();
-
+		#ifdef TIMING
 		if(timing_info != NULL){
 			loop_end_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 			loop_t = loop_end_t - loop_start_t;
@@ -430,6 +443,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			loop_total_t += loop_t;
 			loops++;
 		}
+		#endif
 
 	} while (input != 'q' && !gameover);
 
@@ -439,7 +453,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		NM->gameOver(score);
 
 	/* timing stuff */
-	#ifdef DEBUG
+	#ifdef TIMING
 	loop_avg_t = loop_total_t/loops;
 	if(timing_info != NULL){
 		// timing_info->push_back(loop_total_t);

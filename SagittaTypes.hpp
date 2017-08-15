@@ -32,6 +32,7 @@ Author: Collin James
 #define MAX_X 80
 #define GM_GAMEOVER -2
 #define DEBUG 1 // comment out to turn off debug comments
+#define TIMING 1 // comment out to turn off timing comments
 
 
 /* some enumerations of types that will be used throughout the game */
