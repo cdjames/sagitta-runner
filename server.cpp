@@ -35,7 +35,7 @@ void initGameState(struct gameState &state) {
     state.shipCoord.y = 0;
     state.score = 0;
     state.bullets = 5;
-    state.difficulty = 1;
+    state.difficulty = 0;
     state.player1command = 0;
     state.player2command = 0;
 }
@@ -54,6 +54,17 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
         valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
         printf("%s\n", commStruct.cmd);
+	
+	//receive the difficulty
+	if (strcmp(commStruct.cmd, "UD") == 0){
+		state.difficulty += commStruct.difficulty;		
+	}
+
+	//get the difficulty
+	if (strcmp(commStruct.cmd, "GD") == 0){
+		commStruct.difficulty = state.difficulty;
+		send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+	}
 
         if(strcmp(commStruct.cmd, "GNP") == 0){
             // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);

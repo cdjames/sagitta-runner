@@ -18,6 +18,9 @@ MenuManager::MenuManager(NetworkManager *NM) {
 	NM = NM;
 }
 
+int MenuManager::getDifficulty(){
+	return difficultyLevel;
+}
 
 //Clears the ncurses screen assuming the default terminal size. 
 void MenuManager::clearScreen() {

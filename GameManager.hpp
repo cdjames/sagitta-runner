@@ -124,7 +124,7 @@ public:
 	GameManager(WINDOW * win, NetworkManager * NM);
 	~GameManager();
 	short run(vector<double> * timing_info);
-	void updateSettings(MenuManager &MM);
+	void updateSettings(int);
 	int getFinalScore();
 };
 

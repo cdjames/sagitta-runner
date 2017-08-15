@@ -37,6 +37,7 @@ public:
 	int hsScreen();	
 	int play;
 	void updateSettings(GameManager);	
+	int getDifficulty();	
 };
 
 #endif

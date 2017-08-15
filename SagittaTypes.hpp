@@ -78,6 +78,7 @@ typedef struct CommStruct {
 	int player;
 	struct Coord shipCoord;
 	int score;
+	int difficulty;
 	int numPlayers;
 } CommStruct;
 

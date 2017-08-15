@@ -468,8 +468,14 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 	#endif
 }
 
-void GameManager::updateSettings(MenuManager &MM){
-	difficulty = MM.difficultyLevel;
+void GameManager::updateSettings(int diff){
+	//Our scales were backwards. This mostly fixes it. 
+	if (diff == 1)
+		diff == 10;
+	else
+		diff = 10 - diff;
+	
+	difficulty = diff;
 	fr_factor = difficulty;
 	max_bullets += difficulty;
 }

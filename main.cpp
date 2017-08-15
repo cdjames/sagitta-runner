@@ -3,7 +3,7 @@
 ** Date: 7/9/17
 ** Description: Main routines Team Sagitta's infinite runner game
 *********************************************************************/
-
+#include <unistd.h>
 #include <iostream>
 #include "GameManager.hpp"
 #include "MenuManager.hpp"
@@ -49,12 +49,12 @@ int runGame(WINDOW *win, vector<double> * timing_info){
 	int play = MM.mainMenu(), score = 0;
 	if (play == 1){
 		NM.setPlayer();
+		NM.setDifficulty(MM.getDifficulty());
 		while(NM.getNumberOfPlayers() < 2) {
 			continue; // wait
 		}
-		int repeat = 0;
 		GameManager GM = GameManager(win, &NM);
-		GM.updateSettings(MM);	
+		GM.updateSettings(NM.getDifficulty() / 2);	
 		playerdied = GM.run(timing_info); // runs until user presses q
 		MM.updateSettings(GM);
 		play = MM.gameOver();

@@ -24,6 +24,23 @@ void NetworkManager::setPlayer(){
 	player = connectPlayer();
 }
 
+void NetworkManager::setDifficulty(int diff){
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "UD");
+	commStruct.difficulty = diff;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+}
+		
+int NetworkManager::getDifficulty(){
+	int readval;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GD");
+	commStruct.player = player;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
+	return commStruct.difficulty;
+}
+
 int NetworkManager::connectPlayer() {
 	// Creates clientside socket to connect to game server.
 	// Returns 1 if first player to connect. Returns 2 if second player to connect.

@@ -19,6 +19,8 @@ private:
 	int client_socket;
 
 public:
+	void setDifficulty(int);
+	int getDifficulty();
 	void setPlayer();
 	NetworkManager(); //
 	int connectPlayer(); //
