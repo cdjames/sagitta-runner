@@ -22,14 +22,21 @@ int main()
 	int play = 1;
 	vector<double> timing_info;
 	while (play == 1){
+		#ifdef TIMING
+		timing_info.clear();
 		play = runGame(win, &timing_info);
+		#else
+		play = runGame(win, NULL);
+		#endif
 	}	
 	exitCurses(win);
 
+	#ifdef TIMING
 	if(timing_info.size() == 3) {
 		std::cout << "avg,max,min" << std::endl;
 		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
 	}
+	#endif
 	// std::cout << "final score is " << score << std::endl;
 
 	return 0;

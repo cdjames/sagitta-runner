@@ -34,22 +34,15 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 GameManager::~GameManager() {}
 
 short GameManager::run(vector<double> * timing_info) {
-	// unsigned short still_animating;
-	// Particle obstStatus;
 	move_ship = false;
 	makeExplosion = false;
 	gameStatus = -1;
 	gameover = false;
-	// Coord trajectory;
-	// Coord exp_coord;
-	// Coord ship_coord;
 	basequadsize = maxWinXY.y/QUAD_PARTS;
 	quadsize = basequadsize;
 	prevquadsize = 0;
-	// unsigned short temp_theme; 
 	num_theme_loops = 0;
 	num_time_loops = 0;
-	// int randY = rand()%(quadsize) + prevquadsize;
 
 	mvprintw(0,0,"Press 'q' to quit.  ");	// instructions at top of screen
 	
@@ -122,6 +115,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
 	*/
+	#ifdef TIMING
 	double loop_avg_t = 0,
 		loop_max_t = 0.0,
 		loop_min_t = std::numeric_limits<double>::max(),
@@ -130,6 +124,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loops = 0,
 		loop_total_t = 0,
 		loop_t = 0;
+	#endif
 	// std::thread server_comm_thread;
 	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
 	/* main loop */
@@ -547,7 +542,7 @@ void GameManager::setScreenSize() {
     // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
     // maxWinXY.x = w.ws_col;
 
-    /* fixed screen width (78x40) */
+    /* fixed screen width (78x24) */
     maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
     maxWinXY.x = MAX_X;
 }
