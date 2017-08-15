@@ -145,8 +145,8 @@ Particle Object::move(Coord tr) {
 	{	
 		// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
 		new_coords = particles[i].core.coords + trajectory;
-		if(info.type == BULLET)
-		mvprintw(0, 100, " ");
+		// if(info.type == BULLET)
+		// mvprintw(0, 100, " ");
 		// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
 		
 		/* check to see if we're still on the screen */

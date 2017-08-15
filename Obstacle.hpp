@@ -14,7 +14,7 @@ using std::vector;
 class Obstacle : public Object
 {
 protected:
-	
+	ObjectType enemy2;
 	
 public:
 	/*********************************************************************
@@ -27,7 +27,8 @@ public:
 	Obstacle(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
 	Obstacle(); // unused
 	~Obstacle(); // unused currently
-
+	void setEnemy2(ObjectType enemy2); 
+	bool detectCollision(Particle &p, ParticleInfo &pi);
 };
 
 #endif

@@ -482,7 +482,7 @@ void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 	// o.draw();
 	// std::unordered_map<unsigned long,Obstacle>::iterator cntr;
 	// cntr = 
-	o.setEnemy(SHIP);
+	// o.setEnemy(SHIP);
 	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
