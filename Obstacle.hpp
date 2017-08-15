@@ -28,7 +28,7 @@ public:
 	Obstacle(); // unused
 	~Obstacle(); // unused currently
 	void setEnemy2(ObjectType enemy2); 
-	bool detectCollision(Particle &p, ParticleInfo &pi);
+	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 };
 
 #endif

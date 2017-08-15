@@ -19,3 +19,17 @@ Bullet::Bullet(WINDOW * win,
 
 Bullet::Bullet() {}
 Bullet::~Bullet() {}
+
+// virtual bool Bullet::detectCollision(Particle &p, ParticleInfo &pi) {
+// 	// mvprintw(0, 70, "type=%d", pi.type);
+// 	if(pi.type == enemy) {
+// 		p.info = pi; // send object info back
+// 		p.collided = GAMEOVER; // set collision info and send back
+// 		// std::cout << "detected collision" << std::cout;
+// 		// mvprintw(0, 70, "type=%d", p.info.type);
+// 		return true;
+// 	} else {
+// 		return false;
+// 	}
+		
+// }

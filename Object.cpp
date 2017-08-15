@@ -40,7 +40,7 @@ unsigned long Object::getId() {
 }
 
 bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
-	// mvprintw(0, 70, "type=%d", pi.type);
+	// mvprintw(2, 1, "obj dC");
 	if(pi.type == enemy) {
 		p.info = pi; // send object info back
 		p.collided = GAMEOVER; // set collision info and send back

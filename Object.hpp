@@ -35,7 +35,7 @@ protected:
 	vector<ParticleCore> blueprint;
 	ObjectType enemy;
 
-	bool detectCollision(Particle &p, ParticleInfo &pi);
+	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 
 	/*********************************************************************
 	** Description: initParticles()
