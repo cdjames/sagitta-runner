@@ -16,8 +16,7 @@ Author: Collin James
 #include <thread>
 #include "MenuManager.hpp"
 #include "NetworkManager.hpp"
-// #include "SagittaTypes.hpp"
-#include "Ship.hpp" // includes Object
+#include "Ship.hpp" // includes Object, includes SagittaTypes
 #include "Obstacle.hpp" // includes Object
 #include "Bullet.hpp" // includes Object
 #include "Explosion.hpp" // includes Object
@@ -26,6 +25,13 @@ Author: Collin James
 #include <cstdlib> // rand
 #include <ctime> // for seeding rand
 #include <cmath>
+#include <cstring>
+
+#define QUIT_MSG1 "  _____________________  "
+#define QUIT_MSG2 " |                     | "
+#define QUIT_MSG3 " | player %d quit game  | "
+#define QUIT_MSG4 " |_____________________| "
+
 
 using std::vector;
 // using std::chrono;
@@ -108,7 +114,6 @@ protected:
 	void doExplosions();
 	void fireBullet();
 	void moveBullets();
-	void gameOver();
 	void setScreenSize();
 	void _gameLoop(vector<double> * timing_info);
 	short _gameOver();

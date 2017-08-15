@@ -68,6 +68,12 @@ int GameManager::getFinalScore() {
 }
 
 short GameManager::_gameOver() {
+	/* send game over */
+	NM->sendCoord(GM_GAMEOVER, playerNum);
+	/* stop the server connection (only one call please)*/
+	if(playerNum == 1)
+		NM->gameOver(score);
+
 	/* handle game over scenario */
 	if(input == 'q') // if user quit
 		gameStatus = 0;
@@ -76,9 +82,8 @@ short GameManager::_gameOver() {
 		gameStatus = 1;
 		/* erase the ship */
 		theShip.erase();
-		// wrefresh(win); // for window
+				
 		/* add an explosion where the ship was */
-		// mvprintw(4, 30,"ship_coord=%d,%d", ship_coord.x, ship_coord.y);
 		Explosion shipExplosion(this->win, 
 								&gameboard, 
 								ship_coord - Coord{1,1}, 
@@ -113,6 +118,8 @@ void GameManager::_serverComm() {
 }
 
 void GameManager::_gameLoop(vector<double> * timing_info) {
+	int y, x; // used for quit message
+
 	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
 	*/
 	double loop_avg_t = 0,
@@ -129,8 +136,10 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 	do 
 	{
 		time_now = time(0);
+		#ifdef TIMING
 		loop_start_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 		// time_now = (int) loop_start_t *1000;
+		#endif
 
 		/* get input */
 		input = getch();
@@ -258,8 +267,12 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			/* in case clients are out of sync, look out for game over code */
 			case 'q':
 				/* other user quit, so print a message and end game (fall through to gameover) */
-				mvprintw(1, 1, "                   ");
-				mvprintw(1, 1, "player %d quit game", (playerNum == 1 ? 2 : 1) );
+				y = maxWinXY.y/2 - 2;
+				x = maxWinXY.x/2 - strlen(QUIT_MSG1)/2;
+				mvprintw(y++, x, QUIT_MSG1);
+				mvprintw(y++, x, QUIT_MSG2);
+				mvprintw(y++, x, QUIT_MSG3, (playerNum == 1 ? 2 : 1) );
+				mvprintw(y++, x, QUIT_MSG4);
 
 			case GM_GAMEOVER:
 				gameover = true;
@@ -445,12 +458,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		}
 		#endif
 
-	} while (input != 'q' && !gameover);
-
-	/* send game over */
-	NM->sendCoord(GM_GAMEOVER, playerNum);
-	if(playerNum == 1)
-		NM->gameOver(score);
+	} while (input != 'q' && !gameover); // game is over if you get past here; _gameOver will be called next
 
 	/* timing stuff */
 	#ifdef TIMING
@@ -504,10 +512,6 @@ void GameManager::initColors() {
 }
 
 void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
-	// o.draw();
-	// std::unordered_map<unsigned long,Obstacle>::iterator cntr;
-	// cntr = 
-	// o.setEnemy(SHIP);
 	Obstacles.insert(Obstacles.end(), std::pair<unsigned long,Obstacle>(id,o));
 }
 
@@ -516,20 +520,13 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 											&gameboard, 
 											start - Coord{0,1}, 
 											maxWinXY, EXPLOSION, SPACE, id)));
-	// obst_it->second.draw();
-	// obst_it->second.setTrajectory(Coord{1,0});
 }
 
 void GameManager::placeBullet(unsigned long &id) {
-	// std::cout << "shipx=" << theShip.getFront().x << "shipy" << theShip.getFront().y << std::endl;
-	// std::map<unsigned long,Bullet>::iterator obst_it = 
 	Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
 											maxWinXY, BULLET, curr_theme, id)));
-	
-	// obst_it->second.draw();
-	// obst_it->second.setTrajectory(Coord{1,0});
 }
 
 void GameManager::placeShip() {
@@ -542,17 +539,17 @@ void GameManager::moveObstacles() {}
 void GameManager::doExplosions() {}
 void GameManager::fireBullet() {}
 void GameManager::moveBullets() {}
-void GameManager::gameOver() {}
 
 void GameManager::setScreenSize() {
-	struct winsize w;
-    ioctl(0, TIOCGWINSZ, &w);
+    /* flexible screen size; doesn't play well with 2-player games */
+	// struct winsize w;
+	// ioctl(0, TIOCGWINSZ, &w);
     // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
     // maxWinXY.x = w.ws_col;
+
+    /* fixed screen width (78x40) */
     maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
     maxWinXY.x = MAX_X;
-    // std::cout << "maxWinXY.y=" << maxWinXY.y << std::endl;
-    // std::cout << "maxWinXY.x=" << maxWinXY.x << std::endl;
 }
 
 
