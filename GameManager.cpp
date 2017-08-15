@@ -33,7 +33,7 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 
 GameManager::~GameManager() {}
 
-short GameManager::run(int * final_score, vector<double> * timing_info) {
+short GameManager::run(vector<double> * timing_info) {
 	// unsigned short still_animating;
 	// Particle obstStatus;
 	move_ship = false;
@@ -60,10 +60,14 @@ short GameManager::run(int * final_score, vector<double> * timing_info) {
 	_gameLoop(timing_info);
 
 	/* handle game over scenario, storing the final score in the pointer  */
-	return _gameOver(final_score); // 0 if quit, 1 if died, or -1 if some strange error occurred
+	return _gameOver(); // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
-short GameManager::_gameOver(int * final_score) {
+int GameManager::getFinalScore() {
+	return this->score;
+}
+
+short GameManager::_gameOver() {
 	/* handle game over scenario */
 	if(input == 'q') // if user quit
 		gameStatus = 0;
@@ -92,7 +96,6 @@ short GameManager::_gameOver(int * final_score) {
 		} while (input != 'q');
 	}
 
-	*final_score = score;
 	return gameStatus; // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 

@@ -111,15 +111,16 @@ protected:
 	void gameOver();
 	void setScreenSize();
 	void _gameLoop(vector<double> * timing_info);
-	short _gameOver(int * final_score);
+	short _gameOver();
 	void _serverComm();
 
 public:
 	friend class MenuManager;
 	GameManager(WINDOW * win, NetworkManager * NM);
 	~GameManager();
-	short run(int * final_score, vector<double> * timing_info);
+	short run(vector<double> * timing_info);
 	void updateSettings(MenuManager &MM);
+	int getFinalScore();
 };
 
 #endif

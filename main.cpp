@@ -11,27 +11,34 @@
 
 void initScreen();
 void exitCurses(WINDOW * win);
-int runGame(WINDOW *);
+int runGame(WINDOW *win, vector<double> * timing_info);
 
 int main()
 {
 	WINDOW *win;
 	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
-	cj_srand(300);
 	createAllBlueprints();
         initScreen();
 	int play = 1;
+	vector<double> timing_info;
 	while (play == 1){
-		play = runGame(win);
+		play = runGame(win, &timing_info);
 	}	
 	exitCurses(win);
+
+	if(timing_info.size() == 3) {
+		std::cout << "avg,max,min" << std::endl;
+		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
+	}
+	// std::cout << "final score is " << score << std::endl;
+
 	return 0;
 }
-int runGame(WINDOW *win){
+int runGame(WINDOW *win, vector<double> * timing_info){
+	cj_srand(300);
 	short playerdied = -1;
 	NetworkManager NM = NetworkManager();
 	MenuManager MM = MenuManager(&NM); 
-	vector<double> timing_info;
 	int play = MM.mainMenu(), score = 0;
 	if (play == 1){
 		NM.setPlayer();
@@ -41,8 +48,8 @@ int runGame(WINDOW *win){
 		int repeat = 0;
 		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(MM);	
+		playerdied = GM.run(timing_info); // runs until user presses q
 		MM.updateSettings(GM);
-		playerdied = GM.run(&score, &timing_info); // runs until user presses q
 		play = MM.gameOver();
 
 	}
