@@ -28,7 +28,7 @@ public:
 	Coord getPosition();
 	int getScore();
 	void setScore(int);
-	void gameOver(int);
+	void gameOver();
 };
 
 #endif

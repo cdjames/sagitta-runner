@@ -137,7 +137,7 @@ void NetworkManager::setScore(int score) {
 }
 
 //gameOver
-void NetworkManager::gameOver(int score) {
+void NetworkManager::gameOver() {
 	// char msg[16] = "gameOver";
 	// memset(&commStruct, '\0', sizeof(commStruct));
 	struct CommStruct commStruct;

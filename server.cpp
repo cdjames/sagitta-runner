@@ -9,6 +9,8 @@
 #include <sys/time.h> 
 #include <iostream>
 #include "SagittaTypes.hpp"
+#include <fstream>
+
 
     
 #define TRUE   1 
@@ -32,11 +34,32 @@ struct gameState {
 void initGameState(struct gameState &state) {
     state.shipCoord.x = 0;
     state.shipCoord.y = 0;
-    state.score = 0;
+    state.score = 10;
     state.bullets = 5;
     state.difficulty = 1;
     state.player1command = 0;
     state.player2command = 0;
+}
+
+void addScoreToFile(int currentScore) {
+    char filecurrentHS[10];
+    int currentHS;
+    std::ifstream infile; 
+    infile.open("highscore.txt"); 
+    infile >> currentHS;
+    currentHS = atoi(filecurrentHS);
+    //If this (state.score) is a new high score.
+    if(currentHS < currentScore) {
+        infile.close();
+        std::ofstream outfile;
+        outfile.open("highscore.txt");
+        outfile << currentScore;
+        outfile.close();
+    }
+    //If this (state.score) isn't a new high score
+    else {
+        infile.close();
+    }
 }
 
 // void acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[], struct gameState &state) {
@@ -112,6 +135,8 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         if(strcmp(commStruct.cmd, "GO") == 0) {
             printf("The game is over.\n");
             printf("Disconnecting both clients.\n");
+            
+            addScoreToFile(state.score);
             close(client_socket[0]);
             close(client_socket[1]);
             return 1;
