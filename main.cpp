@@ -16,7 +16,7 @@ int runGame(WINDOW *win, vector<double> * timing_info);
 int main()
 {
 	WINDOW *win;
-	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
+	readFromRandFile("vals.cjr", &rand_num_list);
 	createAllBlueprints();
         initScreen();
 	int play = 1;

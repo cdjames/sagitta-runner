@@ -13,11 +13,12 @@ vector< 			// x object types
 			vector<ParticleCore> // a single blueprint
 			> > > OBJ_BLPRNTS;
 
-vector<int> RAND_NUM_LIST;
+vector<int> rand_num_list;
 int cj_rand_seed;
-int cj_rand_max = 0;
+int cj_rand_max;
 
 void readFromRandFile(const char * fname, std::vector<int> * v) { // help here https://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c#14517130
+	cj_rand_max = 0;
 	std::fstream f(fname, std::ios_base::in);
 	int val;
 	while(f >> val) {
@@ -37,7 +38,7 @@ int cj_rand() {
 		cj_rand_seed++;
 	else
 		cj_rand_seed = 0;
-	return RAND_NUM_LIST[cj_rand_seed];
+	return rand_num_list[cj_rand_seed];
 }
 
 void createShipBlueprints() {

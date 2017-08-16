@@ -20,7 +20,6 @@ extern vector<ParticleCore> DEF_SHIP_BP;
 extern vector<ParticleCore> DEF_BULLET_BP;
 extern vector<ParticleCore> DEF_EXP_BP;
 extern vector<ParticleCore> DEF_OBST_BP;
-// extern vector<ParticleCore> OBJECT;
 
 extern vector< 			// x object types
 		vector<			// y types
@@ -29,8 +28,8 @@ extern vector< 			// x object types
 
 void cj_srand(int seed);
 int cj_rand();
-extern vector<int> RAND_NUM_LIST;
-extern int CJ_RAND_SEED;
-#define CJ_RAND_MAX 999
+extern vector<int> rand_num_list;
+extern int cj_rand_seed;
+extern int cj_rand_max;
 
 #endif
