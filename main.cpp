@@ -42,17 +42,17 @@ int main()
 	return 0;
 }
 int runGame(WINDOW *win, vector<double> * timing_info){
-	cj_srand(300);
 	short playerdied = -1;
 	NetworkManager NM = NetworkManager();
 	MenuManager MM = MenuManager(&NM); 
-	int play = MM.mainMenu(), score = 0;
+	int play = MM.mainMenu(), score = 0, seed = -1;
 	if (play == 1){
 		NM.setPlayer();
 		NM.setDifficulty(MM.getDifficulty());
-		while(NM.getNumberOfPlayers() < 2) {
+		while((seed = NM.getSeed()) == -1) {
 			continue; // wait
 		}
+		cj_srand(seed%1000); // called once per game
 		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(NM.getDifficulty() / 2);	
 		playerdied = GM.run(timing_info); // runs until user presses q

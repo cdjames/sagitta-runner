@@ -32,6 +32,7 @@ public:
 	int getScore();
 	void setScore(int);
 	void gameOver();
+	int getSeed();
 };
 
 #endif

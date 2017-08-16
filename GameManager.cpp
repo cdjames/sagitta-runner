@@ -63,9 +63,9 @@ int GameManager::getFinalScore() {
 short GameManager::_gameOver() {
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	/* stop the server connection (only one call please)*/
+	NM->setScore(score);
+	/* stop the server connection (only one call please) */
 	if(playerNum == 1) {
-		NM->setScore(score);
 		NM->gameOver();
 	}
 

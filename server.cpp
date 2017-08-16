@@ -68,6 +68,9 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     int valread, sd;
     int buffer;
     int i;
+    int seed = -1;
+    int seed_sz = sizeof(seed);
+    bool reset_seed = false;
     fd_set readfds;
     char command[512] = {0};
     struct Coord recvCoord;
@@ -78,23 +81,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
         printf("%s\n", commStruct.cmd);
 	
-	//receive the difficulty
-	if (strcmp(commStruct.cmd, "UD") == 0){
-		state.difficulty += commStruct.difficulty;		
-	}
-
-	//get the difficulty
-	if (strcmp(commStruct.cmd, "GD") == 0){
-		commStruct.difficulty = state.difficulty;
-		send(client_socket[i], &commStruct, sizeof(commStruct), 0);
-	}
-
-        if(strcmp(commStruct.cmd, "GNP") == 0){
-            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
-            commStruct.numPlayers  = state.numPlayers;
-            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
-        }
-        // if(strcmp(command, "sendCoord") == 0) {
+    	//receive the difficulty
         if(strcmp(commStruct.cmd, "SC") == 0) {
             int playernum;
             int move;
@@ -112,7 +99,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             
         }
         // if(strcmp(command, "getCoord") == 0) {
-        if(strcmp(commStruct.cmd, "GC") == 0) {
+        else if(strcmp(commStruct.cmd, "GC") == 0) {
             int p, move;
             p = commStruct.player;
             if(p == 1) {
@@ -126,34 +113,61 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
             }
         }
+        else if(strcmp(commStruct.cmd, "SE") == 0) {
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            if(state.numPlayers == 2) {
+                if(seed == -1) // only create seed once per game
+                    seed = time(0) + 2;
+            }
+
+            send(client_socket[i], &seed, seed_sz, 0); // send -1 unless you have 2 players
+        }
+        else if (strcmp(commStruct.cmd, "UD") == 0){
+            state.difficulty += commStruct.difficulty;      
+        }
+
+        //get the difficulty
+        else if (strcmp(commStruct.cmd, "GD") == 0){
+            commStruct.difficulty = state.difficulty;
+            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        }
+
+        else if(strcmp(commStruct.cmd, "GNP") == 0){
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            commStruct.numPlayers  = state.numPlayers;
+            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        }
+        // if(strcmp(command, "sendCoord") == 0) {
         //getPosition
-        if(strcmp(commStruct.cmd, "GP") == 0) {
+        else if(strcmp(commStruct.cmd, "GP") == 0) {
             struct Coord c = state.shipCoord;
             commStruct.shipCoord = c;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
         //getScore
-        if(strcmp(commStruct.cmd, "GS") == 0) {
+        else if(strcmp(commStruct.cmd, "GS") == 0) {
             commStruct.score = state.score;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
         //ss
-        if(strcmp(commStruct.cmd, "SS") == 0) {
+        else if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
+            printf("score = %d\n", state.score);
         }
         //gameOver
-        if(strcmp(commStruct.cmd, "GO") == 0) {
+        else if(strcmp(commStruct.cmd, "GO") == 0) {
             printf("The game is over.\n");
             printf("Disconnecting both clients.\n");
             
             addScoreToFile(state.score);
             close(client_socket[0]);
             close(client_socket[1]);
+            seed = -1; // reset the seed
             return 1;
         }
-        memset(&command, '0', sizeof(command));
+        // memset(&command, '0', sizeof(command));
     }
     return 0;
 }

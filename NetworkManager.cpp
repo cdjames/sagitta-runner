@@ -166,3 +166,12 @@ void NetworkManager::gameOver() {
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
 }
 
+int NetworkManager::getSeed() {
+	int readval, seed;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "SE");
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &seed, sizeof(seed), 0);
+	return seed;
+}
+
