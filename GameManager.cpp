@@ -96,7 +96,7 @@ short GameManager::_gameOver() {
 		{
 			if(exp_fr_counter == exp_fr_factor) {
 				/* animate high score */
-				if(hs == score) {
+				if(hs == score and hs > 0) {
 					cc = cc == ALT_COLOR ? HS_COLOR : ALT_COLOR;
 					wattron(stdscr, COLOR_PAIR(cc));
 					mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
@@ -532,10 +532,7 @@ void GameManager::initColors() {
     // printw("This terminal supports %d colors\n", COLORS);
     for (int i = 0; i < COLORS; i++)
     {
-        /* code */
         init_pair(i, i, COLOR_BLACK);
-        // attron(COLOR_PAIR(i));
-        // printw("%d ", i);
     }
 }
 
@@ -560,13 +557,6 @@ void GameManager::placeBullet(unsigned long &id) {
 void GameManager::placeShip() {
 	theShip.draw();
 }
-
-void GameManager::moveShip() {}
-void GameManager::createObstacles() {}
-void GameManager::moveObstacles() {}
-void GameManager::doExplosions() {}
-void GameManager::fireBullet() {}
-void GameManager::moveBullets() {}
 
 void GameManager::setScreenSize() {
     /* flexible screen size; doesn't play well with 2-player games */

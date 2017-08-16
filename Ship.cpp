@@ -14,26 +14,10 @@ Ship::Ship(WINDOW * win,
 				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
 {
 	info = {type, 1};
-	// std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
-
 }
 
 Ship::Ship() : Object() {}
 Ship::~Ship() {}
-
-// virtual bool Ship::detectCollision(Particle &p, ParticleInfo &pi) {
-// 	// mvprintw(0, 70, "type=%d", pi.type);
-// 	if(pi.type == enemy) {
-// 		p.info = pi; // send object info back
-// 		p.collided = GAMEOVER; // set collision info and send back
-// 		// std::cout << "detected collision" << std::cout;
-// 		// mvprintw(0, 70, "type=%d", p.info.type);
-// 		return true;
-// 	} else {
-// 		return false;
-// 	}
-		
-// }
 
 Particle Ship::move(Coord tr) {
 	/* make sure you have info for your object */

@@ -108,12 +108,6 @@ protected:
 	void placeObstacle(Obstacle &o, unsigned long &id);
 	void placeBullet(unsigned long &id);
 	void placeExplosion(unsigned long &id, Coord start);
-	void moveShip();
-	void createObstacles();
-	void moveObstacles();
-	void doExplosions();
-	void fireBullet();
-	void moveBullets();
 	void setScreenSize();
 	void _gameLoop(vector<double> * timing_info);
 	short _gameOver();

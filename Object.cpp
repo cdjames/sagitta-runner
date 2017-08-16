@@ -81,8 +81,7 @@ void Object::initParticles() {
 		particles[i-1].core.coords += start; // adjust by the starting coordinates
 	}
 	front = blueprint[0].color;
-	// std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
-} // may be virtual in the end
+} 
 
 void Object::draw() {
 	
@@ -117,8 +116,6 @@ void Object::_eraseParticle(Particle &p) {
 Particle Object::move(Coord tr) {
 	unsigned short onScreen = 0; // incremented if any particle in object is drawn
 	/* make sure you have info for your object */
-	// mvprintw(2, 90, "gbMax=%d,%d", gbMax.x,  gbMax.y);
-	// mvprintw(3, 90, "gb_info coords=%d,%d", particles[0].core.coords.x+DEF_BUFFER,  particles[0].core.coords.y+DEF_BUFFER);
 	Particle r_particle = DUMMY_PARTICLE;
 
 	if(!particles.size())
@@ -147,12 +144,8 @@ Particle Object::move(Coord tr) {
 	/* loop, erasing previous particle and drawing new one in one pass */
 	while(!done)
 	{	
-		// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
 		new_coords = particles[i].core.coords + trajectory;
-		// if(info.type == BULLET)
-		// mvprintw(0, 100, " ");
-		// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
-		
+
 		/* check to see if we're still on the screen */
 		if (_inBounds(new_coords)) {
 			/* we're still on the screen, so increment onScreen and handle movement */

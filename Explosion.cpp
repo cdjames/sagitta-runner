@@ -33,11 +33,8 @@ unsigned short Explosion::animate() {
 
 	for (int i = 0; i < numParticles; i++)
 	{
-		// if(i < numParticles-1)
-			particles[i].core.color = particles[cj_rand()%(numParticles-1)].core.color;
-		// else
-		// 	particles[i].core.color = particles[0].core.color;
-				
+		particles[i].core.color = particles[cj_rand()%(numParticles-1)].core.color;
+	
 		_eraseParticle(prevParticles[i]);
 		_drawParticle(particles[i], info);
 	}
