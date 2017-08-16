@@ -18,6 +18,7 @@
 #define FALSE  0 
 #define PORT 30123 
 #define MAX_CLIENTS 2
+// #define DEBUG 1 // comment out to turn off debug statements
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
 // int connectPlayers(int*, int[], int*, int*, struct sockaddr_in *);
@@ -70,6 +71,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     int i;
     int seed = -1;
     int seed_sz = sizeof(seed);
+    int p, playernum, move;
     bool reset_seed = false;
     fd_set readfds;
     char command[512] = {0};
@@ -79,16 +81,19 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     for(int i = 0; i < 2; i++) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
         valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        #ifdef DEBUG
         printf("%s\n", commStruct.cmd);
+        #endif
 	
     	//receive the difficulty
         if(strcmp(commStruct.cmd, "SC") == 0) {
-            int playernum;
-            int move;
+            // int move;
             // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             playernum = commStruct.player;
             move = commStruct.move;
-            printf("move recived from client: %d from player: %d\n", move, playernum);
+            #ifdef DEBUG
+            printf("move received from client: %d from player: %d\n", move, playernum);
+            #endif
 
             if(playernum == 1) {
                 state.player1command = move;
@@ -100,7 +105,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         }
         // if(strcmp(command, "getCoord") == 0) {
         else if(strcmp(commStruct.cmd, "GC") == 0) {
-            int p, move;
+            // int move;
             p = commStruct.player;
             if(p == 1) {
                 move = state.player2command;
@@ -154,7 +159,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             int score, readval;
             // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
-            printf("score = %d\n", state.score);
+            // printf("score = %d\n", state.score);
         }
         //gameOver
         else if(strcmp(commStruct.cmd, "GO") == 0) {

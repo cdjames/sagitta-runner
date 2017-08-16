@@ -14,27 +14,30 @@ vector< 			// x object types
 			> > > OBJ_BLPRNTS;
 
 vector<int> RAND_NUM_LIST;
-int CJ_RAND_SEED;
+int cj_rand_seed;
+int cj_rand_max = 0;
 
 void readFromRandFile(const char * fname, std::vector<int> * v) { // help here https://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c#14517130
 	std::fstream f(fname, std::ios_base::in);
 	int val;
-	while(f >> val)
+	while(f >> val) {
 		v->push_back(val);
+		cj_rand_max++;
+	}
+	cj_rand_max--; // use as an index (0 start)
 	// std::cout << (*v)[v->size()-1] << std::endl;
 }
 
 void cj_srand(int seed) {
-	CJ_RAND_SEED = seed;
+	cj_rand_seed = seed%(cj_rand_max+1);
 }
 
 int cj_rand() {
-	int num = RAND_NUM_LIST[CJ_RAND_SEED];
-	if(CJ_RAND_SEED < CJ_RAND_MAX)
-		CJ_RAND_SEED++;
+	if(cj_rand_seed < cj_rand_max)
+		cj_rand_seed++;
 	else
-		CJ_RAND_SEED = 0;
-	return num;
+		cj_rand_seed = 0;
+	return RAND_NUM_LIST[cj_rand_seed];
 }
 
 void createShipBlueprints() {

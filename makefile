@@ -47,6 +47,9 @@ NetworkManager.o:
 server: cleanServer 
 	g++ server.cpp -o server ${OPS}
 
+rand: 
+	g++ cj_rand.cpp -o cj_rand ${OPS}
+
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
 

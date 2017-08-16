@@ -52,7 +52,7 @@ int runGame(WINDOW *win, vector<double> * timing_info){
 		while((seed = NM.getSeed()) == -1) {
 			continue; // wait
 		}
-		cj_srand(seed%1000); // called once per game
+		cj_srand(seed); // called once per game
 		GameManager GM = GameManager(win, &NM);
 		GM.updateSettings(NM.getDifficulty() / 2);	
 		playerdied = GM.run(timing_info); // runs until user presses q
