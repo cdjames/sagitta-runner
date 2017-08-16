@@ -8,6 +8,7 @@ Author: Collin James
 #define SAGITTATYPES_HPP
 
 #include <mutex>
+#include <string>
 
 #define DEF_TIMEOUT 10
 #define DEF_BUFFER 10
@@ -75,6 +76,11 @@ typedef struct Coord {
 		return res;
 	}
 } Coord;
+
+typedef struct IPParams {
+	std::string ip;
+	int port;
+} IPParams;
 
 typedef struct CommStruct {
 	char cmd[5];

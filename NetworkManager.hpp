@@ -36,7 +36,7 @@ public:
 	void gameOver();
 	int getSeed();
 	int p2done();
-	void setConnParams(string ip, int port);
+	void setConnParams(IPParams ip_info);
 };
 
 #endif

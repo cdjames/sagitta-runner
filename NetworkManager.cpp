@@ -40,9 +40,9 @@ int NetworkManager::getDifficulty(){
 	return commStruct.difficulty;
 }
 
-void NetworkManager::setConnParams(string ip, int port) {
-	this->ip = ip;
-	this->port = port;
+void NetworkManager::setConnParams(IPParams ip_info) {
+	this->ip = ip_info.ip;
+	this->port = ip_info.port;
 }
 
 int NetworkManager::connectPlayer() {
