@@ -12,7 +12,6 @@ void createBulletBlueprints();
 void createExplosionBlueprints();
 void createObstacleBlueprints();
 void createAllBlueprints();
-void readFromRandFile(const char * fname, std::vector<int> * v);
 
 
 /* global object templates */
@@ -25,11 +24,5 @@ extern vector< 			// x object types
 		vector<			// y types
 			vector<		// z blueprints
 				vector<ParticleCore> > > > OBJ_BLPRNTS; // actual blueprints are vectors
-
-void cj_srand(int seed);
-int cj_rand();
-extern vector<int> rand_num_list;
-extern int cj_rand_seed;
-extern int cj_rand_max;
 
 #endif

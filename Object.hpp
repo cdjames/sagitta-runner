@@ -9,6 +9,7 @@
 
 #include <curses.h>
 #include "ObjectBlueprints.hpp"
+#include "cj_random.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 #include <algorithm>
