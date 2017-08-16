@@ -3,7 +3,7 @@
 ** Date: 7/9/17
 ** Description: Main routines Team Sagitta's infinite runner game
 *********************************************************************/
-
+#include <unistd.h>
 #include <iostream>
 #include "GameManager.hpp"
 #include "MenuManager.hpp"
@@ -11,38 +11,57 @@
 
 void initScreen();
 void exitCurses(WINDOW * win);
+int runGame(WINDOW *win, vector<double> * timing_info);
 
 int main()
 {
-	srand(std::time(0));
-	/* create the blueprints for the objects (might take a second, should only be run once) */
+	WINDOW *win;
+	readFromRandFile("vals.cjr", &RAND_NUM_LIST);
 	createAllBlueprints();
-	WINDOW * win;
-	initScreen();
-	short playerdied = -1;
-	MenuManager MM = MenuManager();
-	NetworkManager NM = NetworkManager();
-	NM.sendCoord();
-	NM.getCoord();
-	int play = MM.mainMenu();
+        initScreen();
+	int play = 1;
+	vector<double> timing_info;
 	while (play == 1){
-		GameManager GM = GameManager(win);
-		// mvprintw(0,0,"Press 'q' to quit.");	// instructions at top of screen
-		GM.updateSettings(MM);	
-		playerdied = GM.run(); // runs until user presses q
-		play = MM.gameOver();
-		MM.clearScreen();
-	}
-	
+		#ifdef TIMING
+		timing_info.clear();
+		play = runGame(win, &timing_info);
+		#else
+		play = runGame(win, NULL);
+		#endif
+	}	
 	exitCurses(win);
 
-	if(playerdied == 1)
-		std::cout << "player hit an obstacle" << std::endl;
-	else if (!playerdied) // i.e. 0
-		std::cout << "player pressed q to quit" << std::endl;
-	else // i.e. -1
-		std::cout << "something strange happened in run()" << std::endl;
+	#ifdef TIMING
+	if(timing_info.size() == 3) {
+		std::cout << "avg,max,min" << std::endl;
+		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
+	}
+	#endif
+	// std::cout << "final score is " << score << std::endl;
+
 	return 0;
+}
+int runGame(WINDOW *win, vector<double> * timing_info){
+	cj_srand(300);
+	short playerdied = -1;
+	NetworkManager NM = NetworkManager();
+	MenuManager MM = MenuManager(&NM); 
+	int play = MM.mainMenu(), score = 0;
+	if (play == 1){
+		NM.setPlayer();
+		NM.setDifficulty(MM.getDifficulty());
+		while(NM.getNumberOfPlayers() < 2) {
+			continue; // wait
+		}
+		GameManager GM = GameManager(win, &NM);
+		GM.updateSettings(NM.getDifficulty() / 2);	
+		playerdied = GM.run(timing_info); // runs until user presses q
+		MM.updateSettings(GM);
+		play = MM.gameOver();
+
+	}
+
+	return play;
 }
 
 void initScreen() {

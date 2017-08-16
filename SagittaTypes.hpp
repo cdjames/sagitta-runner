@@ -1,5 +1,5 @@
-/*********************************************************************
-** Author: Collin James
+/*
+Author: Collin James
 ** Date: 7/9/17
 ** Description: Supporting data structures used for infinite runner 
 *********************************************************************/
@@ -7,19 +7,38 @@
 #ifndef SAGITTATYPES_HPP
 #define SAGITTATYPES_HPP
 
-#define DEF_TIMEOUT 30
+#include <mutex>
+
+#define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
+#define KEY_SPACE 32
 #define STATUS_SIZE 2
-#define MAX_BULLETS 5
-#define STAT_ENEMIES 24
-#define STAT_BULLETS 17
+#define STAT_ENEMIES 18
+#define STAT_BULLETS 16
+#define STAT_SCORE 17
+#define STAT_PLAYER 6
 #define QUAD_PARTS 3
+#define MAX_BULLETS 5
+#define MIN_BULLETS 1
+#define MAX_OBSTACLES 100
+#define MAX_EXPLOSIONS 25
+#define DEF_THM_COUNTER 20
+#define DIFF_TIMEOUT 5 // seconds
+#define DIFF_TIME_ADD 2 // seconds
+#define OBS_CREATE_FACTOR 5
+#define MAX_OBS_POINTS 20
+#define MAX_Y 24
+#define MAX_X 80
+#define GM_GAMEOVER -2
+// #define DEBUG 1 // comment out to turn off debug comments
+// #define TIMING 1 // comment out to turn off timing comments
+
 
 /* some enumerations of types that will be used throughout the game */
 enum ObjectType { SHIP = 0, BULLET, EXPLOSION, OBSTACLE, NONE };
 enum CollisionType { FRIENDLY = NONE + 1, GAMEOVER, HIT, NOHIT, EDGE, DESTROY, ALIVE };
-enum ThemeType { SPACE = 0, FOOD, SPORTS };
+enum ThemeType { SPACE = 0, FOOD, SPORTS, COMPUTERS};
 
 /* simple coordinate structure */
 typedef struct Coord {
@@ -59,8 +78,10 @@ typedef struct CommStruct {
 	int player;
 	struct Coord shipCoord;
 	int score;
+	int difficulty;
 	int numPlayers;
 } CommStruct;
+
 // Coord operator+(const Coord& right, const Coord& left) {
 // 	Coord res = right;
 // 	res += left;

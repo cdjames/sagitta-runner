@@ -12,12 +12,33 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 8888
+#define PORT 30123
 
 NetworkManager::NetworkManager() {
 	client_socket = 0;
 
-	player = connectPlayer(); // Connects player to the server. Assigns player #.
+//	player = connectPlayer(); // Connects player to the server. Assigns player #.
+}
+
+void NetworkManager::setPlayer(){
+	player = connectPlayer();
+}
+
+void NetworkManager::setDifficulty(int diff){
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "UD");
+	commStruct.difficulty = diff;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+}
+		
+int NetworkManager::getDifficulty(){
+	int readval;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "GD");
+	commStruct.player = player;
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
+	return commStruct.difficulty;
 }
 
 int NetworkManager::connectPlayer() {

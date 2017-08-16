@@ -34,8 +34,12 @@ protected:
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
 	ObjectType enemy;
+	int y_and_buffer,
+		x_and_buffer,
+		color;
+	bool no_color;
 
-	bool detectCollision(Particle &p, ParticleInfo &pi);
+	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 
 	/*********************************************************************
 	** Description: initParticles()
@@ -61,6 +65,9 @@ protected:
 	bool _inBounds(Coord nc);
 	
 public:
+	int points, // points earned for destroying
+		penalty; // points lost for letting pass
+
 	/*********************************************************************
 	** Description: Object constructor
 	** Inherit win and gameboard from creating class. Passed a start coord 

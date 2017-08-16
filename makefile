@@ -1,4 +1,3 @@
-
 # on unix-y systems, type 'make'.
 # if that doesn't work, 'make -f makefile' might be useful.
 
@@ -8,6 +7,7 @@ OPS += -ggdb
 OPS += -Wall 
 
 OPS_NC = -lncurses
+# OPS_NC += -lpthread
 OPS_NC += ${OPS}
 
 CXX = main.cpp
@@ -44,6 +44,9 @@ MenuManager.o:
 NetworkManager.o:
 	g++ -c NetworkManager.cpp ${OPS_NC}
 
+server: cleanServer 
+	g++ server.cpp -o server ${OPS}
+
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
 
@@ -51,3 +54,6 @@ testing: clean runner
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}
+
+cleanServer:
+	rm -f server

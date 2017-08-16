@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h> 
 #include <sys/socket.h> 
+#include <sys/select.h> 
 #include <netinet/in.h> 
 #include <sys/time.h> 
 #include <iostream>
@@ -15,7 +16,7 @@
     
 #define TRUE   1 
 #define FALSE  0 
-#define PORT 8888 
+#define PORT 30123 
 #define MAX_CLIENTS 2
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
@@ -36,7 +37,7 @@ void initGameState(struct gameState &state) {
     state.shipCoord.y = 0;
     state.score = 10;
     state.bullets = 5;
-    state.difficulty = 1;
+    state.difficulty = 0;
     state.player1command = 0;
     state.player2command = 0;
 }
@@ -47,7 +48,7 @@ void addScoreToFile(int currentScore) {
     std::ifstream infile; 
     infile.open("highscore.txt"); 
     infile >> currentHS;
-    currentHS = atoi(filecurrentHS);
+    // currentHS = atoi(filecurrentHS);
     //If this (state.score) is a new high score.
     if(currentHS < currentScore) {
         infile.close();
@@ -76,9 +77,20 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
         valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
         printf("%s\n", commStruct.cmd);
+	
+	//receive the difficulty
+	if (strcmp(commStruct.cmd, "UD") == 0){
+		state.difficulty += commStruct.difficulty;		
+	}
+
+	//get the difficulty
+	if (strcmp(commStruct.cmd, "GD") == 0){
+		commStruct.difficulty = state.difficulty;
+		send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+	}
 
         if(strcmp(commStruct.cmd, "GNP") == 0){
-            valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             commStruct.numPlayers  = state.numPlayers;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
@@ -86,7 +98,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         if(strcmp(commStruct.cmd, "SC") == 0) {
             int playernum;
             int move;
-            valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             playernum = commStruct.player;
             move = commStruct.move;
             printf("move recived from client: %d from player: %d\n", move, playernum);
@@ -128,7 +140,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         //ss
         if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
         }
         //gameOver
@@ -147,7 +159,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
 }
 
 void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
-	int opt = TRUE;
+    int opt = TRUE;
 
     //master socket 
     if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)  
@@ -196,13 +208,13 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
     // Game state variables
     struct gameState state;
 
-	//set of socket descriptors 
+    //set of socket descriptors 
     fd_set readfds;  
 
-	while(TRUE)  
-	{  
+    while(TRUE)  
+    {  
         //clear the socket set 
-		FD_ZERO(&readfds);  
+        FD_ZERO(&readfds);  
         //add master socket to set 
         FD_SET(master_socket, &readfds);  
         max_sd = master_socket;  
@@ -228,8 +240,8 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
             clientReady = recv(new_socket, &clientReady, sizeof(clientReady), 0);
             numPlayers++; 
             state.numPlayers = numPlayers;
-        	int converted_number = htonl(numPlayers);
-        	send(new_socket, &converted_number, sizeof(int), 0);
+            int converted_number = htonl(numPlayers);
+            send(new_socket, &converted_number, sizeof(int), 0);
 
             if(numPlayers == 2) {
                 break;
@@ -245,17 +257,17 @@ int connectPlayers(int &master_socket, int &addrlen, struct sockaddr_in &address
 }
 
 int main(int argc , char *argv[]) {  
-	int master_socket;
-	struct sockaddr_in address; 
+    int master_socket;
+    struct sockaddr_in address; 
     int addrlen; 
     int client_socket[2];
 
     // Sets up socket/server connections.
-	setUpServer(master_socket, addrlen, address);
-	//Connects 2 players. Once two players connected, exits function.
-	while(1) {
+    setUpServer(master_socket, addrlen, address);
+    //Connects 2 players. Once two players connected, exits function.
+    while(1) {
         connectPlayers(master_socket, addrlen, address, client_socket);
     }
 
     return 0;
-}  
+} 
