@@ -65,9 +65,7 @@ short GameManager::_gameOver() {
 	NM->sendCoord(GM_GAMEOVER, playerNum);
 	NM->setScore(score);
 	int hs = NM->getScore();
-	if(hs == score) {
-		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
-	}
+	
 	/* stop the server connection (only one call please) */
 	if(playerNum == 1) {
 		NM->gameOver();
@@ -87,9 +85,18 @@ short GameManager::_gameOver() {
 								&gameboard, 
 								ship_coord - Coord{1,1}, 
 								maxWinXY, EXPLOSION, FOOD, 1);
+		int cc = HS_COLOR; // for animating 
 		do 
 		{
 			if(exp_fr_counter == exp_fr_factor) {
+				/* animate high score */
+				if(hs == score) {
+					cc = cc == ALT_COLOR ? HS_COLOR : ALT_COLOR;
+					wattron(stdscr, COLOR_PAIR(cc));
+					mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
+					wattroff(stdscr, COLOR_PAIR(cc));
+				}
+				/* animate explosion */
 				shipExplosion.animate();
 				exp_fr_counter = 0; 
 			} else {

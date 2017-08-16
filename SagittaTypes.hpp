@@ -31,6 +31,8 @@ Author: Collin James
 #define MAX_Y 24
 #define MAX_X 80
 #define GM_GAMEOVER -2
+#define HS_COLOR 2
+#define ALT_COLOR 7
 // #define DEBUG 1 // comment out to turn off debug comments
 // #define TIMING 1 // comment out to turn off timing comments
 
