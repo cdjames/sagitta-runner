@@ -55,7 +55,7 @@ short GameManager::run(vector<double> * timing_info) {
 	/* main loop */
 	_gameLoop(timing_info);
 
-	/* handle game over scenario, storing the final score in the pointer  */
+	/* handle game over scenario  */
 	return _gameOver(); // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
