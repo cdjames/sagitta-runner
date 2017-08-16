@@ -44,8 +44,11 @@ short GameManager::run(vector<double> * timing_info) {
 	num_theme_loops = 0;
 	num_time_loops = 0;
 
+	/* turn on quit message color and put message */
+	wattron(stdscr, COLOR_PAIR(QUIT_COLOR));
 	mvprintw(0,0,"Press 'q' to quit.  ");	// instructions at top of screen
-	
+	wattroff(stdscr, COLOR_PAIR(QUIT_COLOR));
+
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
 
@@ -61,6 +64,7 @@ int GameManager::getFinalScore() {
 }
 
 short GameManager::_gameOver() {
+	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
 	NM->setScore(score);
@@ -75,7 +79,9 @@ short GameManager::_gameOver() {
 	if(input == 'q') // if user quit
 		gameStatus = 0;
 	else if (gameover) { // if user died
+		wattron(stdscr, COLOR_PAIR(GO_COLOR));
 		mvprintw(0, 0, "GAMEOVER - press 'q'");
+		wattroff(stdscr, COLOR_PAIR(GO_COLOR));
 		gameStatus = 1;
 		/* erase the ship */
 		theShip.erase();
@@ -139,7 +145,15 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loop_t = 0;
 	#endif
 	// std::thread server_comm_thread;
-	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
+	/* turn on player number color and print player */
+	wattron(stdscr, COLOR_PAIR(PN_COLOR));
+	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d ", playerNum); // display player number	
+	wattroff(stdscr, COLOR_PAIR(PN_COLOR));
+	
+	/* turn on status colors*/
+	wattron(stdscr, COLOR_PAIR(STAT_COLOR));
+	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER+STAT_PL_MSG_OFFSET, "| "); // display player number	divider "| "
+
 	/* main loop */
 	do 
 	{

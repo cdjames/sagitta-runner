@@ -18,6 +18,7 @@ Author: Collin James
 #define STAT_BULLETS 16
 #define STAT_SCORE 17
 #define STAT_PLAYER 6
+#define STAT_PL_MSG_OFFSET 4
 #define QUAD_PARTS 3
 #define MAX_BULLETS 5
 #define MIN_BULLETS 1
@@ -33,6 +34,10 @@ Author: Collin James
 #define GM_GAMEOVER -2
 #define HS_COLOR 2
 #define ALT_COLOR 7
+#define QUIT_COLOR 7
+#define STAT_COLOR 3
+#define GO_COLOR 1
+#define PN_COLOR 5
 // #define DEBUG 1 // comment out to turn off debug comments
 // #define TIMING 1 // comment out to turn off timing comments
 
