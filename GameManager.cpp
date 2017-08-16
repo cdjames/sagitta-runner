@@ -67,8 +67,9 @@ short GameManager::_gameOver() {
 	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	NM->setScore(score);
-	int hs = NM->getScore();
+	int prev_hs = NM->getScore();
+	if(score > prev_hs)
+		NM->setScore(score);
 	
 	/* stop the server connection (only one call please) */
 	if(playerNum == 1) {
@@ -96,7 +97,7 @@ short GameManager::_gameOver() {
 		{
 			if(exp_fr_counter == exp_fr_factor) {
 				/* animate high score */
-				if(hs == score and hs > 0) {
+				if(score > prev_hs) {
 					cc = cc == ALT_COLOR ? HS_COLOR : ALT_COLOR;
 					wattron(stdscr, COLOR_PAIR(cc));
 					mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
