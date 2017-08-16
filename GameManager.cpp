@@ -63,6 +63,19 @@ int GameManager::getFinalScore() {
 	return this->score;
 }
 
+void GameManager::updateSettings(int diff){
+	//Our scales were backwards. This mostly fixes it. 
+	if (diff == 1)
+		diff == 10;
+	else
+		diff = 10 - diff;
+
+	difficulty = diff;
+	fr_factor = difficulty;
+	max_bullets += difficulty;
+}
+
+/* protected */
 short GameManager::_gameOver() {
 	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
 	/* send game over */
@@ -469,7 +482,8 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			wnoutrefresh(win);    // for window
 			doupdate();
 
-		}
+		} // end !gameover
+
 		#ifdef TIMING
 		if(timing_info != NULL){
 			loop_end_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
@@ -496,19 +510,6 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 	#endif
 }
 
-void GameManager::updateSettings(int diff){
-	//Our scales were backwards. This mostly fixes it. 
-	if (diff == 1)
-		diff == 10;
-	else
-		diff = 10 - diff;
-
-	difficulty = diff;
-	fr_factor = difficulty;
-	max_bullets += difficulty;
-}
-
-/* protected */
 void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
