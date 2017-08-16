@@ -107,25 +107,30 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             if(playernum == 1) {
                 state.player1command = move;
             }
-            if(playernum == 2) {
+            else if(playernum == 2) {
                 state.player2command = move;
             }
             
         }
         // if(strcmp(command, "getCoord") == 0) {
         else if(strcmp(commStruct.cmd, "GC") == 0) {
-            // int move;
+            int done = 1;
             p = commStruct.player;
             if(p == 1) {
                 move = state.player2command;
                 commStruct.move = move;
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
             }
-            if(p == 2) {
+            else if(p == 2) {
                 move = state.player1command;
                 commStruct.move = move;
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+                for (int j = 0; j < 2; j++) {
+                    send(client_socket[j], &done, sizeof(done), 0);
+                }
             }
+            
+
         }
         else if(strcmp(commStruct.cmd, "SE") == 0) {
             // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);

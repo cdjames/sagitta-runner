@@ -12,12 +12,10 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 30123
-#define IP "192.168.1.14"
-
 NetworkManager::NetworkManager() {
 	client_socket = 0;
-
+	ip = DEF_IP;
+	port = DEF_PORT;
 //	player = connectPlayer(); // Connects player to the server. Assigns player #.
 }
 
@@ -42,6 +40,11 @@ int NetworkManager::getDifficulty(){
 	return commStruct.difficulty;
 }
 
+void NetworkManager::setConnParams(string ip, int port) {
+	this->ip = ip;
+	this->port = port;
+}
+
 int NetworkManager::connectPlayer() {
 	// Creates clientside socket to connect to game server.
 	// Returns 1 if first player to connect. Returns 2 if second player to connect.
@@ -59,10 +62,10 @@ int NetworkManager::connectPlayer() {
 	memset(&serv_addr, '0', sizeof(serv_addr));
   
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(PORT);
+	serv_addr.sin_port = htons(port);
       
     // Convert IPv4 and IPv6 addresses from text to binary form
-	if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) 
+	if(inet_pton(AF_INET, ip.c_str(), &serv_addr.sin_addr)<=0) 
 	{
 		printf("\nInvalid address/ Address not supported \n");
 		return -1;
@@ -176,3 +179,8 @@ int NetworkManager::getSeed() {
 	return seed;
 }
 
+int NetworkManager::p2done() {
+	int readval, done = 0;
+	readval = recv(client_socket, &done, sizeof(done), 0);
+	return done;
+}

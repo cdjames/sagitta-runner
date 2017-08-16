@@ -9,7 +9,7 @@ Author: Collin James
 
 #include <mutex>
 
-#define DEF_TIMEOUT 20
+#define DEF_TIMEOUT 10
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define KEY_SPACE 32
@@ -40,6 +40,9 @@ Author: Collin James
 #define PN_COLOR 5
 // #define DEBUG 1 // comment out to turn off debug comments
 // #define TIMING 1 // comment out to turn off timing comments
+
+#define DEF_PORT 30123
+#define DEF_IP "127.0.0.1"
 
 
 /* some enumerations of types that will be used throughout the game */

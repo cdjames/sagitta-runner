@@ -482,6 +482,8 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			wnoutrefresh(win);    // for window
 			doupdate();
 
+			if(NM->p2done()) // blocking network call
+				continue; // wait for p2 to be done
 		} // end !gameover
 
 		#ifdef TIMING
