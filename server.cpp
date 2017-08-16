@@ -18,6 +18,7 @@
 #define FALSE  0 
 #define PORT 30123 
 #define MAX_CLIENTS 2
+#define HS_FNAME "server_highscore.txt"
 // #define DEBUG 1 // comment out to turn off debug statements
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
@@ -45,7 +46,7 @@ void initGameState(struct gameState &state) {
 
 void readScore(int * highscore) {
     std::ifstream infile; 
-    infile.open("highscore.txt"); 
+    infile.open(HS_FNAME); 
     infile >> (*highscore);
     infile.close();
 }
@@ -56,13 +57,13 @@ void addScoreToFile(int currentScore) {
     std::ifstream infile; 
     // infile >> currentHS;
     readScore(&currentHS);
-    infile.open("highscore.txt"); 
+    infile.open(HS_FNAME); 
     // currentHS = atoi(filecurrentHS);
     //If this (state.score) is a new high score.
     if(currentHS < currentScore) {
         infile.close();
         std::ofstream outfile;
-        outfile.open("highscore.txt");
+        outfile.open(HS_FNAME);
         outfile << currentScore;
         outfile.close();
     }
