@@ -43,12 +43,20 @@ void initGameState(struct gameState &state) {
     state.player2command = 0;
 }
 
+void readScore(int * highscore) {
+    std::ifstream infile; 
+    infile.open("highscore.txt"); 
+    infile >> (*highscore);
+    infile.close();
+}
+
 void addScoreToFile(int currentScore) {
     char filecurrentHS[10];
     int currentHS;
     std::ifstream infile; 
+    // infile >> currentHS;
+    readScore(&currentHS);
     infile.open("highscore.txt"); 
-    infile >> currentHS;
     // currentHS = atoi(filecurrentHS);
     //If this (state.score) is a new high score.
     if(currentHS < currentScore) {
@@ -149,16 +157,20 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             commStruct.shipCoord = c;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
-        //getScore
+        //getScore == get high score
         else if(strcmp(commStruct.cmd, "GS") == 0) {
-            commStruct.score = state.score;
-            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            int hs;
+            readScore(&hs);
+            struct CommStruct cs;
+            cs.score = hs;
+            send(client_socket[i], &cs, sizeof(cs), 0);
         }
         //ss
         else if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
             // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
+            addScoreToFile(state.score);
             // printf("score = %d\n", state.score);
         }
         //gameOver
@@ -166,10 +178,9 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             printf("The game is over.\n");
             printf("Disconnecting both clients.\n");
             
-            addScoreToFile(state.score);
             close(client_socket[0]);
             close(client_socket[1]);
-            seed = -1; // reset the seed
+            seed = -1; // reset the seed for the next game
             return 1;
         }
         // memset(&command, '0', sizeof(command));

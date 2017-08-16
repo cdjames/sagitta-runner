@@ -64,6 +64,10 @@ short GameManager::_gameOver() {
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
 	NM->setScore(score);
+	int hs = NM->getScore();
+	if(hs == score) {
+		mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
+	}
 	/* stop the server connection (only one call please) */
 	if(playerNum == 1) {
 		NM->gameOver();
