@@ -16,11 +16,15 @@ int runGame(WINDOW *win, vector<double> * timing_info);
 int main()
 {
 	WINDOW *win;
-	readFromRandFile("vals.cjr", &rand_num_list);
-	createAllBlueprints();
-        initScreen();
+	/* some setup */
+	readFromRandFile("vals.cjr", &rand_num_list); // set up random functions
+	createAllBlueprints();						  // set up blueprints that objects use
+    initScreen();
+
 	int play = 1;
-	vector<double> timing_info;
+	vector<double> timing_info; // to store and display timing info if enabled
+	
+	/* play until user chooses to quit */
 	while (play == 1){
 		#ifdef TIMING
 		timing_info.clear();
@@ -37,10 +41,10 @@ int main()
 		std::cout << timing_info[0] << "," << timing_info[1] << "," << timing_info[2] << std::endl;
 	}
 	#endif
-	// std::cout << "final score is " << score << std::endl;
 
 	return 0;
 }
+
 int runGame(WINDOW *win, vector<double> * timing_info){
 	short playerdied = -1;
 	NetworkManager NM = NetworkManager();
@@ -49,6 +53,7 @@ int runGame(WINDOW *win, vector<double> * timing_info){
 	if (play == 1){
 		NM.setPlayer();
 		NM.setDifficulty(MM.getDifficulty());
+		/* get the seed; time now + 2 seconds */
 		while((seed = NM.getSeed()) == -1) {
 			continue; // wait
 		}
@@ -58,7 +63,6 @@ int runGame(WINDOW *win, vector<double> * timing_info){
 		playerdied = GM.run(timing_info); // runs until user presses q
 		MM.updateSettings(GM);
 		play = MM.gameOver();
-
 	}
 
 	return play;
