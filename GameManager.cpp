@@ -65,7 +65,7 @@ short GameManager::_gameOver() {
 	NM->sendCoord(GM_GAMEOVER, playerNum);
 	/* stop the server connection (only one call please)*/
 	if(playerNum == 1)
-		NM->gameOver(score);
+		NM->gameOver();
 
 	/* handle game over scenario */
 	if(input == 'q') // if user quit
