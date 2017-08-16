@@ -140,7 +140,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         //ss
         if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             state.score = commStruct.score;
         }
         //gameOver
