@@ -29,7 +29,7 @@ Author: Collin James
 #define DIFF_TIMEOUT 5 // seconds
 #define DIFF_TIME_ADD 2 // seconds
 #define OBS_CREATE_FACTOR 5
-#define MAX_OBS_POINTS 20
+#define MAX_OBS_POINTS 30
 #define MAX_Y 24
 #define MAX_X 80
 #define GM_GAMEOVER -2
