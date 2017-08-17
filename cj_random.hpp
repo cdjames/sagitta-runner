@@ -3,9 +3,14 @@
 
 #include <vector>
 #include <fstream>
+#include <cstdlib> // rand
 
 using std::vector;
 
+#define NUM_RAND_ITEMS 5000
+#define SRAND_SEED 48334
+
+void generateRandFile(int num);
 void readFromRandFile(const char * fname, std::vector<int> * v);
 void cj_srand(int seed);
 int cj_rand();
