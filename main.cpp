@@ -11,10 +11,17 @@
 
 void initScreen();
 void exitCurses(WINDOW * win);
-int runGame(WINDOW *win, vector<double> * timing_info);
+int runGame(WINDOW *win, vector<double> * timing_info, IPParams * ip_info);
 
-int main()
+int main(int argc, char const *argv[])
 {
+	/* determine input */
+	IPParams ip_info = {"", -1};
+	if(argc == 3) {
+		ip_info.ip = argv[1];
+		ip_info.port = atoi(argv[2]);
+	}
+
 	WINDOW *win;
 	/* some setup */
 	readFromRandFile("vals.cjr", &rand_num_list); // set up random functions
@@ -28,9 +35,9 @@ int main()
 	while (play == 1){
 		#ifdef TIMING
 		timing_info.clear();
-		play = runGame(win, &timing_info);
+		play = runGame(win, &timing_info, &ip_info);
 		#else
-		play = runGame(win, NULL);
+		play = runGame(win, NULL, &ip_info);
 		#endif
 	}	
 	exitCurses(win);
@@ -45,9 +52,13 @@ int main()
 	return 0;
 }
 
-int runGame(WINDOW *win, vector<double> * timing_info){
+int runGame(WINDOW *win, vector<double> * timing_info, IPParams * ip_info){
+	std::string ip;
+	int port;
 	short playerdied = -1;
 	NetworkManager NM = NetworkManager();
+	if(ip_info->port > 0 && ip_info->ip.compare("") != 0)
+		NM.setConnParams(*ip_info);
 	MenuManager MM = MenuManager(&NM); 
 	int play = MM.mainMenu(), score = 0, seed = -1;
 	if (play == 1){

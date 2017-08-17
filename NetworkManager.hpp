@@ -17,6 +17,8 @@ private:
 	int gameReadyBool; // gameReadyBool = 1 when two players connect to server.
 	int player; //1 = player1, 2 = player2.
 	int client_socket;
+	string ip;
+	int port;
 
 public:
 	void setDifficulty(int);
@@ -33,6 +35,7 @@ public:
 	void setScore(int);
 	void gameOver();
 	int getSeed();
+	void setConnParams(IPParams ip_info);
 };
 
 #endif

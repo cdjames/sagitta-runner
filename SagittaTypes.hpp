@@ -8,6 +8,7 @@ Author: Collin James
 #define SAGITTATYPES_HPP
 
 #include <mutex>
+#include <string>
 
 #define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
@@ -39,7 +40,10 @@ Author: Collin James
 #define GO_COLOR 1
 #define PN_COLOR 5
 // #define DEBUG 1 // comment out to turn off debug comments
-// #define TIMING 1 // comment out to turn off timing comments
+#define TIMING 1 // comment out to turn off timing comments
+
+#define DEF_PORT 30123
+#define DEF_IP "127.0.0.1"
 
 
 /* some enumerations of types that will be used throughout the game */
@@ -72,6 +76,11 @@ typedef struct Coord {
 		return res;
 	}
 } Coord;
+
+typedef struct IPParams {
+	std::string ip;
+	int port;
+} IPParams;
 
 typedef struct CommStruct {
 	char cmd[5];
