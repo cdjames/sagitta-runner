@@ -10,7 +10,7 @@ Author: Collin James
 #include <mutex>
 #include <string>
 
-#define DEF_TIMEOUT 30
+#define DEF_TIMEOUT 20
 #define DEF_BUFFER 10
 #define BLANK ' '
 #define KEY_SPACE 32
