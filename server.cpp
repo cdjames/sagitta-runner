@@ -19,7 +19,7 @@
 #define PORT 30123 
 #define MAX_CLIENTS 2
 #define HS_FNAME "server_highscore.txt"
-// #define DEBUG 1 // comment out to turn off debug statements
+#define DEBUG 1 // comment out to turn off debug statements
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
 // int connectPlayers(int*, int[], int*, int*, struct sockaddr_in *);
@@ -88,6 +88,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     struct CommStruct commStruct;
     int reqs_recvd = 0;
     int done = 1;
+    int game_over = 0;
 
     for(int i = 0; i < 2; i++) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
@@ -183,12 +184,12 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         //gameOver
         else if(strcmp(commStruct.cmd, "GO") == 0) {
             printf("The game is over.\n");
-            printf("Disconnecting both clients.\n");
+            printf("Disconnecting client %d.\n", i+1);
             
-            close(client_socket[0]);
-            close(client_socket[1]);
+            close(client_socket[i]);
+            // close(client_socket[1]);
             seed = -1; // reset the seed for the next game
-            return 1;
+            game_over++;
         }
         // memset(&command, '0', sizeof(command));
         if(reqs_recvd == 2) {
@@ -197,6 +198,9 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             }
             reqs_recvd = 0;
         }
+        
+        if(game_over == 2)
+            return 1;
     }
     return 0;
 }

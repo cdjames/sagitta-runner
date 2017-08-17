@@ -84,10 +84,10 @@ short GameManager::_gameOver() {
 	if(score > prev_hs)
 		NM->setScore(score);
 	
-	/* stop the server connection (only one call please) */
-	if(playerNum == 1) {
+	/* stop the server connection */
+	// if(playerNum == 1) {
 		NM->gameOver();
-	}
+	// }
 
 	/* handle game over scenario */
 	if(input == 'q') // if user quit
@@ -494,7 +494,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			loops++;
 		}
 		#endif
-		
+
 		while(!NM->p2done()) // blocking network call
 			continue; // wait for p2 to be done
 
