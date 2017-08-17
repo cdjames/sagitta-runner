@@ -52,7 +52,7 @@ short GameManager::run(vector<double> * timing_info) {
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
 
-	prev_hs = NM->getScore();
+	prev_hs = NM->getScore(false);
 
 	/* main loop */
 	_gameLoop(timing_info);
@@ -83,14 +83,14 @@ short GameManager::_gameOver() {
 	bool print_hs = false;
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	if(score > prev_hs) {
+	if(score > prev_hs)
 		print_hs = true;
-		do{
-			NM->setScore(score);
-			prev_hs = score;
-			score = NM->getScore();
-		} while(score > prev_hs);
-	}
+	/* attempt to synchronize scores with other player in case games get off */
+	do{
+		NM->setScore(score, print_hs);
+		prev_hs = score;
+		score = NM->getScore(print_hs);
+	} while(score > prev_hs);
 	
 	/* stop the server connection */
 	NM->gameOver();

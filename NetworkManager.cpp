@@ -141,9 +141,12 @@ Coord NetworkManager::getPosition() {
 	return commStruct.shipCoord;
 }
 //GS
-int NetworkManager::getScore() {
+int NetworkManager::getScore(bool high) {
 	int readval, score;
 	struct CommStruct commStruct;
+	commStruct.move = 0;
+	if (high)
+		commStruct.move = 1;
 	strcpy(commStruct.cmd, "GS");
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
 	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
@@ -151,11 +154,14 @@ int NetworkManager::getScore() {
 }
 
 //SS
-void NetworkManager::setScore(int score) {
+void NetworkManager::setScore(int score, bool high) {
 	// char msg[16] = "setScore";
 	// char msg[4] = "SS";
 	// int valread, converted_number;
 	struct CommStruct commStruct;
+	commStruct.move = 0;
+	if (high)
+		commStruct.move = 1;
 	strcpy(commStruct.cmd, "SS");
 	
 	commStruct.score = score;

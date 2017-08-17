@@ -31,8 +31,8 @@ public:
 	void sendCoord(int, int);
 	int getCoord(int);
 	Coord getPosition();
-	int getScore();
-	void setScore(int);
+	int getScore(bool);
+	void setScore(int, bool);
 	void gameOver();
 	int getSeed();
 	void setConnParams(IPParams ip_info);

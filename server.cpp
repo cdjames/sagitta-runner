@@ -164,17 +164,23 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         //getScore == get high score
         else if(strcmp(commStruct.cmd, "GS") == 0) {
             int hs;
-            readScore(&hs);
+            hs = state.score;
+            /* only attempt to retrieve score from file if known to be higher by client */
+            if(commStruct.move == 1) // repurposing move to be a high score flag here
+                readScore(&hs);
             struct CommStruct cs;
-            cs.score = hs;
+            cs.score = hs; // may be sending a high score or this state's score depending on the above
             send(client_socket[i], &cs, sizeof(cs), 0);
         }
         //ss
         else if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
-            state.score = commStruct.score;
-            addScoreToFile(state.score);
+            /* attempt to save only the higher score if there was a difference */
+            if(commStruct.score > state.score)
+                state.score = commStruct.score;
+            /* only attempt to add score to file if known to be higher by client */
+            if(commStruct.move == 1) // repurposing move to be a high score flag here
+                addScoreToFile(state.score);
             // printf("score = %d\n", state.score);
         }
          //gameOver
