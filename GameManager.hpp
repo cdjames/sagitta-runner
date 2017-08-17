@@ -99,7 +99,8 @@ protected:
 		   time_now;
 	// int max_obs_points;
 	int score,
-		playerNum;
+		playerNum,
+		prev_hs;
 
 	void initWindow();
 	void initGameboard();

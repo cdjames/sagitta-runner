@@ -52,6 +52,8 @@ short GameManager::run(vector<double> * timing_info) {
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
 
+	prev_hs = NM->getScore();
+
 	/* main loop */
 	_gameLoop(timing_info);
 
@@ -80,14 +82,11 @@ short GameManager::_gameOver() {
 	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	int prev_hs = NM->getScore();
 	if(score > prev_hs)
 		NM->setScore(score);
 	
-	/* stop the server connection (only one call please) */
-	// if(playerNum == 1) {
-		NM->gameOver();
-	// }
+	/* stop the server connection */
+	NM->gameOver();
 
 	/* handle game over scenario */
 	if(input == 'q') // if user quit

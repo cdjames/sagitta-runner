@@ -40,7 +40,7 @@ Author: Collin James
 #define GO_COLOR 1
 #define PN_COLOR 5
 // #define DEBUG 1 // comment out to turn off debug comments
-#define TIMING 1 // comment out to turn off timing comments
+// #define TIMING 1 // comment out to turn off timing comments
 
 #define DEF_PORT 30123
 #define DEF_IP "127.0.0.1"
