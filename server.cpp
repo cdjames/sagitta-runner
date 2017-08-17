@@ -201,7 +201,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     return 0;
 }
 
-void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
+void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address, int port) {
     int opt = TRUE;
 
     //master socket 
@@ -221,7 +221,7 @@ void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) 
     //type of socket created 
     address.sin_family = AF_INET;  
     address.sin_addr.s_addr = INADDR_ANY;  
-    address.sin_port = htons( PORT );  
+    address.sin_port = htons( port );  
         
     //bind the socket to localhost port 8888 
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)  
@@ -229,7 +229,7 @@ void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) 
         perror("bind failed");  
         exit(EXIT_FAILURE);  
     }  
-    printf("Listener on port %d \n", PORT);  
+    printf("Listener on port %d \n", port);  
         
     //try to specify maximum of 3 pending connections for the master socket 
     if (listen(master_socket, 2) < 0)  
@@ -304,9 +304,19 @@ int main(int argc , char *argv[]) {
     struct sockaddr_in address; 
     int addrlen; 
     int client_socket[2];
+    int port = PORT;
+
+    /* look for custom port */
+    if(argc == 2) {
+        port = atoi(argv[1]);
+        if(port < 1) {
+            printf("Please use a valid port number. Yours was '%d'\n", port);
+            exit(1);
+        }
+    }
 
     // Sets up socket/server connections.
-    setUpServer(master_socket, addrlen, address);
+    setUpServer(master_socket, addrlen, address, port);
     //Connects 2 players. Once two players connected, exits function.
     while(1) {
         connectPlayers(master_socket, addrlen, address, client_socket);
