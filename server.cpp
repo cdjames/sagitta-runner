@@ -86,6 +86,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     char command[512] = {0};
     struct Coord recvCoord;
     struct CommStruct commStruct;
+    int cmds_sent = 0;
 
     for(int i = 0; i < 2; i++) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
@@ -101,7 +102,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             playernum = commStruct.player;
             move = commStruct.move;
             #ifdef DEBUG
-            printf("move received from client: %d from player: %d\n", move, playernum);
+            // printf("move received from client: %d from player: %d\n", move, playernum);
             #endif
 
             if(playernum == 1) {
@@ -114,20 +115,28 @@ int acceptRequests(int client_socket[], struct gameState &state) {
         }
         // if(strcmp(command, "getCoord") == 0) {
         else if(strcmp(commStruct.cmd, "GC") == 0) {
+            #ifdef DEBUG
+            printf("get request received from from player: %d\n", playernum);
+            #endif
             int done = 1;
             p = commStruct.player;
             if(p == 1) {
+                cmds_sent++;
                 move = state.player2command;
                 commStruct.move = move;
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
             }
             else if(p == 2) {
+                cmds_sent++;
                 move = state.player1command;
                 commStruct.move = move;
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
-                for (int j = 0; j < 2; j++) {
+            }
+            if(cmds_sent == 2) {
+                for (int j = 1; j >= 0; j--) {
                     send(client_socket[j], &done, sizeof(done), 0);
                 }
+                cmds_sent = 0;
             }
             
 
