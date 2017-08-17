@@ -145,7 +145,7 @@ void GameManager::_serverComm() {
 
 void GameManager::_gameLoop(vector<double> * timing_info) {
 	int y, x; // used for quit message
-
+	int numbps, rand_pos, rand_obj_seed;
 	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
 	*/
 	#ifdef TIMING
@@ -219,9 +219,13 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
-			int numbps = OBJ_BLPRNTS[OBSTACLE][curr_theme].size();
+			numbps = OBJ_BLPRNTS[OBSTACLE][curr_theme].size();
+			rand_pos = (cj_rand()%(quadsize-prevquadsize)) + prevquadsize;
+			rand_obj_seed = cj_rand()%numbps;
+			mvprintw(1, 0, "pos=%d", rand_pos);
+			mvprintw(2, 0, "seed=%d", rand_obj_seed);
 			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
-				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId, cj_rand()%numbps);
+				rand_pos}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId, rand_obj_seed);
 			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
