@@ -80,9 +80,11 @@ void GameManager::updateSettings(int diff){
 /* protected */
 short GameManager::_gameOver() {
 	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
+	bool print_hs = false;
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
 	if(score > prev_hs) {
+		print_hs = true;
 		do{
 			NM->setScore(score);
 			prev_hs = score;
@@ -114,7 +116,7 @@ short GameManager::_gameOver() {
 		{
 			if(exp_fr_counter == exp_fr_factor) {
 				/* animate high score */
-				if(score > prev_hs) {
+				if(print_hs) {
 					cc = cc == ALT_COLOR ? HS_COLOR : ALT_COLOR;
 					wattron(stdscr, COLOR_PAIR(cc));
 					mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
