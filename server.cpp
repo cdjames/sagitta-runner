@@ -86,6 +86,7 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     char command[512] = {0};
     struct Coord recvCoord;
     struct CommStruct commStruct;
+    int game_over = 0;
 
     for(int i = 0; i < 2; i++) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
@@ -174,16 +175,19 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             addScoreToFile(state.score);
             // printf("score = %d\n", state.score);
         }
-        //gameOver
+         //gameOver
         else if(strcmp(commStruct.cmd, "GO") == 0) {
             printf("The game is over.\n");
-            printf("Disconnecting both clients.\n");
+            printf("Disconnecting client %d.\n", i+1);
             
-            close(client_socket[0]);
-            close(client_socket[1]);
+            close(client_socket[i]);
+            // close(client_socket[1]);
             seed = -1; // reset the seed for the next game
-            return 1;
+            game_over++;
         }
+
+        if(game_over == 2)
+            return 1;
         // memset(&command, '0', sizeof(command));
     }
     return 0;
