@@ -52,7 +52,7 @@ short GameManager::run(vector<double> * timing_info) {
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
 
-	prev_hs = NM->getScore(false);
+	prev_hs = NM->getScore(true);
 
 	/* main loop */
 	_gameLoop(timing_info);
@@ -574,7 +574,7 @@ void GameManager::placeObstacle(Obstacle &o, unsigned long &id) {
 }
 
 void GameManager::placeExplosion(unsigned long &id, Coord start) {
-	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
+	Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
 											&gameboard, 
 											start - Coord{0,1}, 
 											maxWinXY, EXPLOSION, SPACE, id, 0)));
