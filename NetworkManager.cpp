@@ -128,7 +128,6 @@ int NetworkManager::getCoord(int playerNum) {
 //GP
 Coord NetworkManager::getPosition() {
 	// Returns the "master" coordinates for type ship or bullet.
-	// char msg[16] = "getPosition";
 	int readval;
 	struct Coord shipCoord;
 	struct CommStruct commStruct;
@@ -146,7 +145,7 @@ int NetworkManager::getScore(bool high) {
 	struct CommStruct commStruct;
 	commStruct.move = 0;
 	if (high)
-		commStruct.move = 1;
+		commStruct.move = 1; // use as a flag in server
 	strcpy(commStruct.cmd, "GS");
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
 	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
@@ -155,13 +154,10 @@ int NetworkManager::getScore(bool high) {
 
 //SS
 void NetworkManager::setScore(int score, bool high) {
-	// char msg[16] = "setScore";
-	// char msg[4] = "SS";
-	// int valread, converted_number;
 	struct CommStruct commStruct;
 	commStruct.move = 0;
 	if (high)
-		commStruct.move = 1;
+		commStruct.move = 1; // use as a flag in server
 	strcpy(commStruct.cmd, "SS");
 	
 	commStruct.score = score;
@@ -170,8 +166,6 @@ void NetworkManager::setScore(int score, bool high) {
 
 //gameOver
 void NetworkManager::gameOver() {
-	// char msg[16] = "gameOver";
-	// memset(&commStruct, '\0', sizeof(commStruct));
 	struct CommStruct commStruct;
 	strcpy(commStruct.cmd, "GO");
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
