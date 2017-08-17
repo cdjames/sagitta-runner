@@ -27,7 +27,7 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	initWindow();
 	initColors();
 
-	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1);
+	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1, 0);
 	placeShip();
 }
 
@@ -104,7 +104,7 @@ short GameManager::_gameOver() {
 		Explosion shipExplosion(this->win, 
 								&gameboard, 
 								ship_coord - Coord{1,1}, 
-								maxWinXY, EXPLOSION, FOOD, 1);
+								maxWinXY, EXPLOSION, FOOD, 1, 0);
 		int cc = HS_COLOR; // for animating 
 		do 
 		{
@@ -219,8 +219,9 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
+			int numbps = OBJ_BLPRNTS[OBSTACLE][curr_theme].size();
 			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
-				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
+				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId, cj_rand()%numbps);
 			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
@@ -546,14 +547,14 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
 											&gameboard, 
 											start - Coord{0,1}, 
-											maxWinXY, EXPLOSION, SPACE, id)));
+											maxWinXY, EXPLOSION, SPACE, id, 0)));
 }
 
 void GameManager::placeBullet(unsigned long &id) {
 	Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
-											maxWinXY, BULLET, curr_theme, id)));
+											maxWinXY, BULLET, curr_theme, id, 0)));
 }
 
 void GameManager::placeShip() {

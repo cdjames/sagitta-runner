@@ -76,7 +76,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Object(); // unused
 	~Object(); // unused currently
 

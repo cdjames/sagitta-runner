@@ -11,7 +11,7 @@ Bullet::Bullet(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
+				ThemeType theme, unsigned long id, int seed) : Object(win, gameboard, start, max, type, theme, id, seed)
 {
 	setTrajectory(Coord{1,0}); // default trajectory (i.e. move forward)
 }

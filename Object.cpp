@@ -11,7 +11,7 @@ Object::Object(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) 
+				ThemeType theme, unsigned long id, int seed) 
 {
 	this->win = win;
 	this->gameboard = gameboard;
@@ -21,8 +21,9 @@ Object::Object(WINDOW * win,
 	trajectory = {0, 0};
 	this->theme = theme;
 	info = {type, id};
-	int numbps = OBJ_BLPRNTS[type][theme].size();
-	blueprint = OBJ_BLPRNTS[type][theme][cj_rand()%numbps];
+	// int numbps = OBJ_BLPRNTS[type][theme].size();
+	blueprint = OBJ_BLPRNTS[type][theme][seed];
+	// blueprint = OBJ_BLPRNTS[type][theme][cj_rand()%numbps];
 	enemy = OBSTACLE;
 	initParticles();
 	setTrajectory(Coord {-1, 0}); // by default move left (for obstacles)
