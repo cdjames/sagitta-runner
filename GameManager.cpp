@@ -24,8 +24,8 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	playerNum = this->NM->getPlayerNumber();
 	setScreenSize();
 	initGameboard();
-	initWindow();
 	initColors();
+	initWindow();
 
 	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1, 0);
 	placeShip();
@@ -527,6 +527,24 @@ void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
 	keypad(win, TRUE);
+
+	/* clear screen */
+	for (int y = 0; y < maxWinXY.y; ++y)
+	{
+		for (int x = 0; x < maxWinXY.x; ++x)
+		{
+			wattron(win, COLOR_PAIR(0)); // black on black
+			wattron(stdscr, COLOR_PAIR(0)); // black on black
+			if(y < 3)
+				mvwaddch(stdscr, y, x, BLANK); // stdscr is only 2x24
+			mvwaddch(win, y, x, BLANK);
+			wattroff(win, COLOR_PAIR(0));
+			wattroff(stdscr, COLOR_PAIR(0));
+		}
+	}
+	wnoutrefresh(stdscr); // for status screen
+	wnoutrefresh(win);    // for window
+	doupdate();
 }
 
 void GameManager::initGameboard() {
@@ -580,8 +598,8 @@ void GameManager::setScreenSize() {
     // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
     // maxWinXY.x = w.ws_col;
 
-    /* fixed screen width (78x24) */
-    maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
+    /* fixed screen size (78x24) */
+    maxWinXY.y = MAX_Y-STATUS_SIZE; // save top two lines for user feedback
     maxWinXY.x = MAX_X;
 }
 
