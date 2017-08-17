@@ -82,8 +82,13 @@ short GameManager::_gameOver() {
 	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	if(score > prev_hs)
-		NM->setScore(score);
+	if(score > prev_hs) {
+		do{
+			NM->setScore(score);
+			prev_hs = score;
+			score = NM->getScore();
+		} while(score > prev_hs);
+	}
 	
 	/* stop the server connection */
 	NM->gameOver();
