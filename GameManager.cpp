@@ -222,8 +222,10 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			numbps = OBJ_BLPRNTS[OBSTACLE][curr_theme].size();
 			rand_pos = (cj_rand()%(quadsize-prevquadsize)) + prevquadsize;
 			rand_obj_seed = cj_rand()%numbps;
+			#ifdef DEBUG
 			mvprintw(1, 0, "pos=%d", rand_pos);
 			mvprintw(2, 0, "seed=%d", rand_obj_seed);
+			#endif
 			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
 				rand_pos}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId, rand_obj_seed);
 			placeObstacle(rand_obstacle, obstacleId);
