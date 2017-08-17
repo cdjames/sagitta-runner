@@ -23,7 +23,7 @@ private:
 public:
 	void setDifficulty(int);
 	int getDifficulty();
-	void setPlayer();
+	int setPlayer();
 	NetworkManager(); //
 	int connectPlayer(); //
 	int getPlayerNumber(); //

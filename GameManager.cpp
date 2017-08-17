@@ -67,8 +67,8 @@ int GameManager::getFinalScore() {
 
 void GameManager::updateSettings(int diff){
 	//Our scales were backwards. This mostly fixes it. 
-	if (diff == 1)
-		diff == 10;
+	if (diff < 2)
+		diff = 10;
 	else
 		diff = 10 - diff;
 
