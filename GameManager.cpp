@@ -316,6 +316,7 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			/* in case clients are out of sync, look out for game over code */
 			case 'q':
 				/* other user quit, so print a message and end game (fall through to gameover) */
+				/* roughly in the middle of the screen */
 				y = maxWinXY.y/2 - 2;
 				x = maxWinXY.x/2 - strlen(QUIT_MSG1)/2;
 				mvprintw(y++, x, QUIT_MSG1);
