@@ -2,9 +2,9 @@
 # if that doesn't work, 'make -f makefile' might be useful.
 
 OPS = -std=c++11
-OPS += -g 
-OPS += -ggdb
-OPS += -Wall 
+# OPS += -g 
+# OPS += -ggdb
+# OPS += -Wall 
 
 OPS_NC = -lncurses
 # OPS_NC += -lpthread
@@ -49,9 +49,6 @@ NetworkManager.o:
 
 server: cleanServer 
 	g++ server.cpp -o server ${OPS}
-
-rand: 
-	g++ cj_rand.cpp -o cj_rand ${OPS}
 
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o cj_random.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o cj_random.o -o ${PROG1} ${OPS_NC}
