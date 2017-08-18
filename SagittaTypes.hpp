@@ -7,7 +7,6 @@ Author: Collin James
 #ifndef SAGITTATYPES_HPP
 #define SAGITTATYPES_HPP
 
-#include <mutex>
 #include <string>
 
 #define DEF_TIMEOUT 20
@@ -36,7 +35,7 @@ Author: Collin James
 #define HS_COLOR 2
 #define ALT_COLOR 7
 #define QUIT_COLOR 7
-#define STAT_COLOR 3
+#define STAT_COLOR 6
 #define GO_COLOR 1
 #define PN_COLOR 5
 // #define DEBUG 1 // comment out to turn off debug comments
