@@ -17,11 +17,13 @@ private:
 	int gameReadyBool; // gameReadyBool = 1 when two players connect to server.
 	int player; //1 = player1, 2 = player2.
 	int client_socket;
+	string ip;
+	int port;
 
 public:
 	void setDifficulty(int);
 	int getDifficulty();
-	void setPlayer();
+	int setPlayer();
 	NetworkManager(); //
 	int connectPlayer(); //
 	int getPlayerNumber(); //
@@ -29,9 +31,11 @@ public:
 	void sendCoord(int, int);
 	int getCoord(int);
 	Coord getPosition();
-	int getScore();
-	void setScore(int);
-	void gameOver(int);
+	int getScore(bool);
+	void setScore(int, bool);
+	void gameOver();
+	int getSeed();
+	void setConnParams(IPParams ip_info);
 };
 
 #endif

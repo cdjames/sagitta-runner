@@ -20,7 +20,7 @@ int main()
 	NM.sendCoord(35, NM.getPlayerNumber());
 	
 
-	NM.gameOver(5);
+	NM.gameOver();
 	// printf("number of players after disconnect: %d\n", NM.getNumberOfPlayers());
 	while(NM.getNumberOfPlayers() < 3) {
 		//

@@ -24,10 +24,10 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	playerNum = this->NM->getPlayerNumber();
 	setScreenSize();
 	initGameboard();
-	initWindow();
 	initColors();
+	initWindow();
 
-	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1);
+	theShip = Ship(this->win, &gameboard, Coord {DEF_BUFFER+3, (maxWinXY.y / 2)}, maxWinXY, SHIP, SPACE, 1, 0);
 	placeShip();
 }
 
@@ -44,15 +44,20 @@ short GameManager::run(vector<double> * timing_info) {
 	num_theme_loops = 0;
 	num_time_loops = 0;
 
+	/* turn on quit message color and put message */
+	wattron(stdscr, COLOR_PAIR(QUIT_COLOR));
 	mvprintw(0,0,"Press 'q' to quit.  ");	// instructions at top of screen
-	
+	wattroff(stdscr, COLOR_PAIR(QUIT_COLOR));
+
 	start_time = time_now = time(0);
 	target_time = start_time + DIFF_TIMEOUT;
+
+	prev_hs = NM->getScore(false);
 
 	/* main loop */
 	_gameLoop(timing_info);
 
-	/* handle game over scenario, storing the final score in the pointer  */
+	/* handle game over scenario  */
 	return _gameOver(); // 0 if quit, 1 if died, or -1 if some strange error occurred
 }
 
@@ -60,18 +65,43 @@ int GameManager::getFinalScore() {
 	return this->score;
 }
 
+void GameManager::updateSettings(int diff){
+	//Our scales were backwards. This mostly fixes it. 
+	if (diff < 2)
+		diff = 10;
+	else
+		diff = 10 - diff;
+
+	difficulty = diff;
+	fr_factor = difficulty;
+	max_bullets += difficulty;
+}
+
+/* protected */
 short GameManager::_gameOver() {
+	wattroff(stdscr, COLOR_PAIR(STAT_COLOR));
+	bool print_hs = false;
 	/* send game over */
 	NM->sendCoord(GM_GAMEOVER, playerNum);
-	/* stop the server connection (only one call please)*/
-	if(playerNum == 1)
-		NM->gameOver(score);
+	if(score > prev_hs)
+		print_hs = true;
+	/* attempt to synchronize scores with other player in case games get off */
+	do{
+		NM->setScore(score, print_hs);
+		prev_hs = score;
+		score = NM->getScore(print_hs);
+	} while(score > prev_hs);
+	
+	/* stop the server connection */
+	NM->gameOver();
 
 	/* handle game over scenario */
 	if(input == 'q') // if user quit
 		gameStatus = 0;
 	else if (gameover) { // if user died
+		wattron(stdscr, COLOR_PAIR(GO_COLOR));
 		mvprintw(0, 0, "GAMEOVER - press 'q'");
+		wattroff(stdscr, COLOR_PAIR(GO_COLOR));
 		gameStatus = 1;
 		/* erase the ship */
 		theShip.erase();
@@ -80,10 +110,19 @@ short GameManager::_gameOver() {
 		Explosion shipExplosion(this->win, 
 								&gameboard, 
 								ship_coord - Coord{1,1}, 
-								maxWinXY, EXPLOSION, FOOD, 1);
+								maxWinXY, EXPLOSION, FOOD, 1, 0);
+		int cc = HS_COLOR; // for animating 
 		do 
 		{
 			if(exp_fr_counter == exp_fr_factor) {
+				/* animate high score */
+				if(print_hs) {
+					cc = cc == ALT_COLOR ? HS_COLOR : ALT_COLOR;
+					wattron(stdscr, COLOR_PAIR(cc));
+					mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE, " new high!: %d ", score);
+					wattroff(stdscr, COLOR_PAIR(cc));
+				}
+				/* animate explosion */
 				shipExplosion.animate();
 				exp_fr_counter = 0; 
 			} else {
@@ -112,7 +151,7 @@ void GameManager::_serverComm() {
 
 void GameManager::_gameLoop(vector<double> * timing_info) {
 	int y, x; // used for quit message
-
+	int numbps, rand_pos, rand_obj_seed;
 	/* https://stackoverflow.com/questions/1120478/capturing-a-time-in-milliseconds
 	*/
 	#ifdef TIMING
@@ -126,7 +165,15 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 		loop_t = 0;
 	#endif
 	// std::thread server_comm_thread;
-	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d | ", playerNum); // display player number	
+	/* turn on player number color and print player */
+	wattron(stdscr, COLOR_PAIR(PN_COLOR));
+	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER, "P%d ", playerNum); // display player number	
+	wattroff(stdscr, COLOR_PAIR(PN_COLOR));
+	
+	/* turn on status colors*/
+	wattron(stdscr, COLOR_PAIR(STAT_COLOR));
+	mvprintw(0, maxWinXY.x-STAT_ENEMIES-STAT_BULLETS-STAT_SCORE-STAT_PLAYER+STAT_PL_MSG_OFFSET, "| "); // display player number	divider "| "
+
 	/* main loop */
 	do 
 	{
@@ -178,8 +225,15 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 
 		/* create random obstacles */
 		if(create_counter >= create_factor && Obstacles.size() < MAX_OBSTACLES) {
+			numbps = OBJ_BLPRNTS[OBSTACLE][curr_theme].size();
+			rand_pos = (cj_rand()%(quadsize-prevquadsize)) + prevquadsize;
+			rand_obj_seed = cj_rand()%numbps;
+			#ifdef DEBUG
+			mvprintw(1, 0, "pos=%d", rand_pos);
+			mvprintw(2, 0, "seed=%d", rand_obj_seed);
+			#endif
 			rand_obstacle = Obstacle(this->win, &gameboard, Coord {(maxWinXY.x), 
-				cj_rand()%(quadsize-prevquadsize) + prevquadsize}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId);
+				rand_pos}, maxWinXY, OBSTACLE, curr_theme, ++obstacleId, rand_obj_seed);
 			placeObstacle(rand_obstacle, obstacleId);
 			create_counter = 0;
 			prevquadsize = quadsize;
@@ -441,7 +495,8 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 			wnoutrefresh(win);    // for window
 			doupdate();
 
-		}
+		} // end !gameover
+
 		#ifdef TIMING
 		if(timing_info != NULL){
 			loop_end_t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
@@ -468,23 +523,28 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 	#endif
 }
 
-void GameManager::updateSettings(int diff){
-	//Our scales were backwards. This mostly fixes it. 
-	if (diff == 1)
-		diff == 10;
-	else
-		diff = 10 - diff;
-
-	difficulty = diff;
-	fr_factor = difficulty;
-	max_bullets += difficulty;
-}
-
-/* protected */
 void GameManager::initWindow() {
 	// scrollok(win, FALSE);
 	win = newwin(maxWinXY.y, maxWinXY.x, 2, 0); // make a new window
 	keypad(win, TRUE);
+
+	/* clear screen */
+	for (int y = 0; y < maxWinXY.y; ++y)
+	{
+		for (int x = 0; x < maxWinXY.x; ++x)
+		{
+			wattron(win, COLOR_PAIR(0)); // black on black
+			wattron(stdscr, COLOR_PAIR(0)); // black on black
+			if(y < 3)
+				mvwaddch(stdscr, y, x, BLANK); // stdscr is only 2x24
+			mvwaddch(win, y, x, BLANK);
+			wattroff(win, COLOR_PAIR(0));
+			wattroff(stdscr, COLOR_PAIR(0));
+		}
+	}
+	wnoutrefresh(stdscr); // for status screen
+	wnoutrefresh(win);    // for window
+	doupdate();
 }
 
 void GameManager::initGameboard() {
@@ -505,10 +565,7 @@ void GameManager::initColors() {
     // printw("This terminal supports %d colors\n", COLORS);
     for (int i = 0; i < COLORS; i++)
     {
-        /* code */
         init_pair(i, i, COLOR_BLACK);
-        // attron(COLOR_PAIR(i));
-        // printw("%d ", i);
     }
 }
 
@@ -520,26 +577,19 @@ void GameManager::placeExplosion(unsigned long &id, Coord start) {
 	std::map<unsigned long,Explosion>::iterator obst_it = Explosions.insert(Explosions.end(), std::pair<unsigned long,Explosion>(id,Explosion(this->win, 
 											&gameboard, 
 											start - Coord{0,1}, 
-											maxWinXY, EXPLOSION, SPACE, id)));
+											maxWinXY, EXPLOSION, SPACE, id, 0)));
 }
 
 void GameManager::placeBullet(unsigned long &id) {
 	Bullets.insert(Bullets.end(), std::pair<unsigned long,Bullet>(id,Bullet(this->win, 
 											&gameboard, 
 											theShip.getFront()+Coord{1, 0}, 
-											maxWinXY, BULLET, curr_theme, id)));
+											maxWinXY, BULLET, curr_theme, id, 0)));
 }
 
 void GameManager::placeShip() {
 	theShip.draw();
 }
-
-void GameManager::moveShip() {}
-void GameManager::createObstacles() {}
-void GameManager::moveObstacles() {}
-void GameManager::doExplosions() {}
-void GameManager::fireBullet() {}
-void GameManager::moveBullets() {}
 
 void GameManager::setScreenSize() {
     /* flexible screen size; doesn't play well with 2-player games */
@@ -548,8 +598,8 @@ void GameManager::setScreenSize() {
     // maxWinXY.y = w.ws_row-2; // save top two lines for user feedback
     // maxWinXY.x = w.ws_col;
 
-    /* fixed screen width (78x24) */
-    maxWinXY.y = MAX_Y-2; // save top two lines for user feedback
+    /* fixed screen size (78x24) */
+    maxWinXY.y = MAX_Y-STATUS_SIZE; // save top two lines for user feedback
     maxWinXY.x = MAX_X;
 }
 

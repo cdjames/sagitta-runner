@@ -10,12 +10,16 @@
 #include <sys/time.h> 
 #include <iostream>
 #include "SagittaTypes.hpp"
+#include <fstream>
+
 
     
 #define TRUE   1 
 #define FALSE  0 
 #define PORT 30123 
 #define MAX_CLIENTS 2
+#define HS_FNAME "server_highscore.txt"
+// #define DEBUG 1 // comment out to turn off debug statements
 
 // void setUpServer(int*, int[], int*, int*, struct sockaddr_in *);
 // int connectPlayers(int*, int[], int*, int*, struct sockaddr_in *);
@@ -33,11 +37,40 @@ struct gameState {
 void initGameState(struct gameState &state) {
     state.shipCoord.x = 0;
     state.shipCoord.y = 0;
-    state.score = 0;
+    state.score = 10;
     state.bullets = 5;
     state.difficulty = 0;
     state.player1command = 0;
     state.player2command = 0;
+}
+
+void readScore(int * highscore) {
+    std::ifstream infile; 
+    infile.open(HS_FNAME); 
+    infile >> (*highscore);
+    infile.close();
+}
+
+void addScoreToFile(int currentScore) {
+    char filecurrentHS[10];
+    int currentHS;
+    std::ifstream infile; 
+    // infile >> currentHS;
+    readScore(&currentHS);
+    infile.open(HS_FNAME); 
+    // currentHS = atoi(filecurrentHS);
+    //If this (state.score) is a new high score.
+    if(currentHS < currentScore) {
+        infile.close();
+        std::ofstream outfile;
+        outfile.open(HS_FNAME);
+        outfile << currentScore;
+        outfile.close();
+    }
+    //If this (state.score) isn't a new high score
+    else {
+        infile.close();
+    }
 }
 
 // void acceptRequests(int &master_socket, int &addrlen, struct sockaddr_in &address, int client_socket[], struct gameState &state) {
@@ -45,40 +78,34 @@ int acceptRequests(int client_socket[], struct gameState &state) {
     int valread, sd;
     int buffer;
     int i;
+    int seed = -1;
+    int seed_sz = sizeof(seed);
+    int p, playernum, move;
+    bool reset_seed = false;
     fd_set readfds;
     char command[512] = {0};
     struct Coord recvCoord;
     struct CommStruct commStruct;
+    int game_over = 0;
+    bool done[2] = {false, false};
 
     for(int i = 0; i < 2; i++) {
         // valread = recv(client_socket[i], &command, sizeof(command), 0);
-        valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        if(!done[i])
+            valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        #ifdef DEBUG
         printf("%s\n", commStruct.cmd);
+        #endif
 	
-	//receive the difficulty
-	if (strcmp(commStruct.cmd, "UD") == 0){
-		state.difficulty += commStruct.difficulty;		
-	}
-
-	//get the difficulty
-	if (strcmp(commStruct.cmd, "GD") == 0){
-		commStruct.difficulty = state.difficulty;
-		send(client_socket[i], &commStruct, sizeof(commStruct), 0);
-	}
-
-        if(strcmp(commStruct.cmd, "GNP") == 0){
-            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
-            commStruct.numPlayers  = state.numPlayers;
-            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
-        }
-        // if(strcmp(command, "sendCoord") == 0) {
+    	//receive the difficulty
         if(strcmp(commStruct.cmd, "SC") == 0) {
-            int playernum;
-            int move;
+            // int move;
             // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
             playernum = commStruct.player;
             move = commStruct.move;
-            printf("move recived from client: %d from player: %d\n", move, playernum);
+            #ifdef DEBUG
+            printf("move received from client: %d from player: %d\n", move, playernum);
+            #endif
 
             if(playernum == 1) {
                 state.player1command = move;
@@ -89,8 +116,8 @@ int acceptRequests(int client_socket[], struct gameState &state) {
             
         }
         // if(strcmp(command, "getCoord") == 0) {
-        if(strcmp(commStruct.cmd, "GC") == 0) {
-            int p, move;
+        else if(strcmp(commStruct.cmd, "GC") == 0) {
+            // int move;
             p = commStruct.player;
             if(p == 1) {
                 move = state.player2command;
@@ -103,37 +130,78 @@ int acceptRequests(int client_socket[], struct gameState &state) {
                 send(client_socket[i], &commStruct, sizeof(commStruct), 0);
             }
         }
+        else if(strcmp(commStruct.cmd, "SE") == 0) {
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            if(state.numPlayers == 2) {
+                if(seed == -1) // only create seed once per game
+                    seed = time(0) + 2;
+            }
+
+            send(client_socket[i], &seed, seed_sz, 0); // send -1 unless you have 2 players
+        }
+        else if (strcmp(commStruct.cmd, "UD") == 0){
+            state.difficulty += commStruct.difficulty;      
+        }
+
+        //get the difficulty
+        else if (strcmp(commStruct.cmd, "GD") == 0){
+            commStruct.difficulty = state.difficulty;
+            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        }
+
+        else if(strcmp(commStruct.cmd, "GNP") == 0){
+            // valread = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
+            commStruct.numPlayers  = state.numPlayers;
+            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        }
+        // if(strcmp(command, "sendCoord") == 0) {
         //getPosition
-        if(strcmp(commStruct.cmd, "GP") == 0) {
+        else if(strcmp(commStruct.cmd, "GP") == 0) {
             struct Coord c = state.shipCoord;
             commStruct.shipCoord = c;
             send(client_socket[i], &commStruct, sizeof(commStruct), 0);
         }
-        //getScore
-        if(strcmp(commStruct.cmd, "GS") == 0) {
-            commStruct.score = state.score;
-            send(client_socket[i], &commStruct, sizeof(commStruct), 0);
+        //getScore == get high score
+        else if(strcmp(commStruct.cmd, "GS") == 0) {
+            int hs;
+            hs = state.score;
+            /* only attempt to retrieve score from file if known to be higher by client */
+            if(commStruct.move == 1) // repurposing move to be a high score flag here
+                readScore(&hs);
+            struct CommStruct cs;
+            cs.score = hs; // may be sending a high score or this state's score depending on the above
+            send(client_socket[i], &cs, sizeof(cs), 0);
         }
         //ss
-        if(strcmp(commStruct.cmd, "SS") == 0) {
+        else if(strcmp(commStruct.cmd, "SS") == 0) {
             int score, readval;
-            // readval = recv(client_socket[i], &commStruct, sizeof(commStruct), 0);
-            state.score = commStruct.score;
+            /* attempt to save only the higher score if there was a difference */
+            if(commStruct.score > state.score)
+                state.score = commStruct.score;
+            /* only attempt to add score to file if known to be higher by client */
+            if(commStruct.move == 1) // repurposing move to be a high score flag here
+                addScoreToFile(state.score);
+            // printf("score = %d\n", state.score);
         }
-        //gameOver
-        if(strcmp(commStruct.cmd, "GO") == 0) {
+         //gameOver
+        else if(strcmp(commStruct.cmd, "GO") == 0) {
             printf("The game is over.\n");
-            printf("Disconnecting both clients.\n");
-            close(client_socket[0]);
-            close(client_socket[1]);
-            return 1;
+            printf("Disconnecting client %d.\n", i+1);
+            done[i] = true;
+            close(client_socket[i]);
+            // close(client_socket[1]);
+            seed = -1; // reset the seed for the next game
+            game_over++;
         }
-        memset(&command, '0', sizeof(command));
+
+        if(game_over == 2)
+            return 1;
+        // memset(&command, '0', sizeof(command));
     }
     return 0;
 }
 
-void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) {
+void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address, int port) {
     int opt = TRUE;
 
     //master socket 
@@ -153,7 +221,7 @@ void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) 
     //type of socket created 
     address.sin_family = AF_INET;  
     address.sin_addr.s_addr = INADDR_ANY;  
-    address.sin_port = htons( PORT );  
+    address.sin_port = htons( port );  
         
     //bind the socket to localhost port 8888 
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)  
@@ -161,7 +229,7 @@ void setUpServer(int &master_socket, int &addrlen, struct sockaddr_in &address) 
         perror("bind failed");  
         exit(EXIT_FAILURE);  
     }  
-    printf("Listener on port %d \n", PORT);  
+    printf("Listener on port %d \n", port);  
         
     //try to specify maximum of 3 pending connections for the master socket 
     if (listen(master_socket, 2) < 0)  
@@ -236,9 +304,19 @@ int main(int argc , char *argv[]) {
     struct sockaddr_in address; 
     int addrlen; 
     int client_socket[2];
+    int port = PORT;
+
+    /* look for custom port */
+    if(argc == 2) {
+        port = atoi(argv[1]);
+        if(port < 1) {
+            printf("Please use a valid port number. Yours was '%d'\n", port);
+            exit(1);
+        }
+    }
 
     // Sets up socket/server connections.
-    setUpServer(master_socket, addrlen, address);
+    setUpServer(master_socket, addrlen, address, port);
     //Connects 2 players. Once two players connected, exits function.
     while(1) {
         connectPlayers(master_socket, addrlen, address, client_socket);

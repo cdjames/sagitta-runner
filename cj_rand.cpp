@@ -3,12 +3,12 @@
 #include <fstream>
 #include <vector>
 
-void generateFile() {
+void generateFile(int num) {
 	srand(48334);
 	std::ofstream f;
 	f.open ("vals.cjr");
 	if(f.is_open()) {
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < num; ++i)
 		{
 			// std::cout << rand() << std::endl;
 			f << rand() << std::endl;
@@ -28,7 +28,10 @@ void readFromRandFile(const char * fname, std::vector<int> * v) { // help here h
 int main(int argc, char const *argv[])
 {
 	std::vector<int> v;
-	generateFile();
+	int num = 1000;
+	if(argc == 2)
+		num = atoi(argv[1]);
+	generateFile(num);
 	// readFromRandFile("vals.cjr", &v);
 	return 0;
 }

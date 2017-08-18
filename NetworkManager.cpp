@@ -12,16 +12,17 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 30123
 
 NetworkManager::NetworkManager() {
 	client_socket = 0;
-
+	ip = DEF_IP;
+	port = DEF_PORT;
 //	player = connectPlayer(); // Connects player to the server. Assigns player #.
 }
 
-void NetworkManager::setPlayer(){
+int NetworkManager::setPlayer(){
 	player = connectPlayer();
+	return player;
 }
 
 void NetworkManager::setDifficulty(int diff){
@@ -41,6 +42,11 @@ int NetworkManager::getDifficulty(){
 	return commStruct.difficulty;
 }
 
+void NetworkManager::setConnParams(IPParams ip_info) {
+	this->ip = ip_info.ip;
+	this->port = ip_info.port;
+}
+
 int NetworkManager::connectPlayer() {
 	// Creates clientside socket to connect to game server.
 	// Returns 1 if first player to connect. Returns 2 if second player to connect.
@@ -58,10 +64,10 @@ int NetworkManager::connectPlayer() {
 	memset(&serv_addr, '0', sizeof(serv_addr));
   
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(PORT);
+	serv_addr.sin_port = htons(port);
       
     // Convert IPv4 and IPv6 addresses from text to binary form
-	if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) 
+	if(inet_pton(AF_INET, ip.c_str(), &serv_addr.sin_addr)<=0) 
 	{
 		printf("\nInvalid address/ Address not supported \n");
 		return -1;
@@ -69,7 +75,7 @@ int NetworkManager::connectPlayer() {
 
 	if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-		printf("\nConnection Failed \n");
+//		printf("\nConnection Failed \n");
 		return -1;
 	}
 	send(client_socket, &clientReady, sizeof(clientReady), 0);
@@ -123,7 +129,6 @@ int NetworkManager::getCoord(int playerNum) {
 //GP
 Coord NetworkManager::getPosition() {
 	// Returns the "master" coordinates for type ship or bullet.
-	// char msg[16] = "getPosition";
 	int readval;
 	struct Coord shipCoord;
 	struct CommStruct commStruct;
@@ -136,9 +141,12 @@ Coord NetworkManager::getPosition() {
 	return commStruct.shipCoord;
 }
 //GS
-int NetworkManager::getScore() {
+int NetworkManager::getScore(bool high) {
 	int readval, score;
 	struct CommStruct commStruct;
+	commStruct.move = 0;
+	if (high)
+		commStruct.move = 1; // use as a flag in server
 	strcpy(commStruct.cmd, "GS");
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
 	readval = recv(client_socket, &commStruct, sizeof(commStruct), 0);
@@ -146,11 +154,11 @@ int NetworkManager::getScore() {
 }
 
 //SS
-void NetworkManager::setScore(int score) {
-	// char msg[16] = "setScore";
-	// char msg[4] = "SS";
-	// int valread, converted_number;
+void NetworkManager::setScore(int score, bool high) {
 	struct CommStruct commStruct;
+	commStruct.move = 0;
+	if (high)
+		commStruct.move = 1; // use as a flag in server
 	strcpy(commStruct.cmd, "SS");
 	
 	commStruct.score = score;
@@ -158,11 +166,18 @@ void NetworkManager::setScore(int score) {
 }
 
 //gameOver
-void NetworkManager::gameOver(int score) {
-	// char msg[16] = "gameOver";
-	// memset(&commStruct, '\0', sizeof(commStruct));
+void NetworkManager::gameOver() {
 	struct CommStruct commStruct;
 	strcpy(commStruct.cmd, "GO");
 	send(client_socket, &commStruct, sizeof(commStruct), 0);
+}
+
+int NetworkManager::getSeed() {
+	int readval, seed;
+	struct CommStruct commStruct;
+	strcpy(commStruct.cmd, "SE");
+	send(client_socket, &commStruct, sizeof(commStruct), 0);
+	readval = recv(client_socket, &seed, sizeof(seed), 0);
+	return seed;
 }
 

@@ -9,6 +9,7 @@
 
 #include <curses.h>
 #include "ObjectBlueprints.hpp"
+#include "cj_random.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 #include <algorithm>
@@ -75,7 +76,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Object(); // unused
 	~Object(); // unused currently
 

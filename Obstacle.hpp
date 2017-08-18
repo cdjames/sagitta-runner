@@ -24,10 +24,21 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Obstacle(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Obstacle(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Obstacle(); // unused
 	~Obstacle(); // unused currently
+
+	/*********************************************************************
+	** Description: setEnemy2
+	** allow a second enemy to be set; default is bullet set in constructor
+	*********************************************************************/
 	void setEnemy2(ObjectType enemy2); 
+
+	/*********************************************************************
+	** Description: detectCollision
+	** Obstacles can have 2 enemies (bullets and ships), so allow for this
+	** in a custom version of detectCollision
+	*********************************************************************/
 	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 };
 

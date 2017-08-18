@@ -11,7 +11,7 @@ MenuManager::MenuManager(NetworkManager *NM) {
 	strcpy(playerName, "Default Player ");
 	xCoord = 13;
 	yCoord = 10;
-	titleXCoord = 8;
+	titleXCoord = 6;
 	titleYCoord = 6;
 	difficultyLevel = 5;
 	score = 0;
@@ -80,24 +80,64 @@ void MenuManager::quitScreen() {
 	//else return 0 
 }
 
+int MenuManager::errorScreen(){
+	clearScreen();
+	mvprintw(titleYCoord, titleXCoord, "Could not establish connection to server");
+	mvprintw(titleYCoord + 2, titleXCoord, "Press enter to return to the main manu");
+	int i;
+	while (1){
+	i = getch();
+		if (i == 10)
+			return 1;
+	}
+}
+
+int MenuManager::controlsMenu(){
+	clearScreen();
+	mvprintw(titleYCoord, titleXCoord, "Controls:");
+	mvprintw(titleYCoord + 3, xCoord - 5, "Player 1: Use the left and right arrow keys to move and spacebar");
+	mvprintw(titleYCoord + 4, xCoord + 5, "to shoot.");
+	mvprintw(titleYCoord + 5, xCoord - 5 , "Player 2: Use the up and down arrow keys to move");
+	mvprintw(titleYCoord + 7, xCoord - 5, "Either player can press 'q' to quit the game");
+	mvprintw(titleYCoord + 9, xCoord - 7, "> Return to main menu");
+
+	int i;
+	do {i = getch();
+	if (i == 10)
+		return mainMenu();
+	} while (i != 10);
+}
+
+
 /* The main function of this class; called in main. Manages the user's options and allows them to access
 ** submenus. Returns -1 if the user wants to quit the game and 1 if the user wants to play. */
 int MenuManager::mainMenu() {
 	clearScreen();
-	mvprintw(titleYCoord, titleXCoord, "Use up and down to move the cursor and enter to select an option.");
-	mvprintw(yCoord, xCoord, ">");
-	mvprintw(yCoord, xCoord + 2, "Start Game");
+	start_color();
+	init_pair(1, COLOR_CYAN, COLOR_BLACK);
+	attron(COLOR_PAIR(1));
+	mvprintw(titleYCoord, titleXCoord, "S A G I T T A: ");
+	attroff(COLOR_PAIR(1));
+	init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
+	attron(COLOR_PAIR(2));
+	mvprintw(titleYCoord, titleXCoord + 16, " E N D L E S S  R U N N E R");
+	attroff(COLOR_PAIR(2));	
+	
+//	mvprintw(yCoord + 4, titleXCoord, "Use up and down to move the cursor and enter to select an option.");
+	mvprintw(yCoord - 1, xCoord, ">");
+	mvprintw(yCoord - 1, xCoord + 2, "Start Game");
+	mvprintw(yCoord, xCoord + 2, "Controls");
 	mvprintw(yCoord + 1, xCoord + 2, "Settings");
 	mvprintw(yCoord + 2, xCoord + 2, "View High Scores");
 	mvprintw(yCoord + 3, xCoord + 2, "Quit");
-	int yMovement = yCoord;
+	int yMovement = yCoord - 1;
 	int i;
 	do
 	{
 		i = getch();
 		switch (i) {
 		case KEY_UP:
-			if (yMovement > 10) {
+			if (yMovement > 9) {
 				mvprintw(yMovement, xCoord, " ");
 				yMovement--;
 				mvprintw(yMovement, xCoord, ">");
@@ -113,10 +153,13 @@ int MenuManager::mainMenu() {
 			break;
 
 		case 10:	// Enter key: "KEY_ENTER" doesn't work. 
-			if (yMovement == 10) {
+			if (yMovement == 9) {
 				findGame(); //play the game
 				return 1;	// temp until we are able to connect players 
 			}
+
+			else if (yMovement == 10)
+				return controlsMenu();
 
 			else if (yMovement == 11) {
 				return settingsMenu(); // settings screen
@@ -420,11 +463,11 @@ int MenuManager::gameOver(){
 		case(10):
 			if (yMovement == yCoord){
 				clearScreen();
-				return 1;
+				return 2;
 				}
 			else if (yMovement == yCoord + 1){
 				clearScreen();
-				return mainMenu();
+				return 1;
 				}
 			else if (yMovement == yCoord + 2){
 				clearScreen();

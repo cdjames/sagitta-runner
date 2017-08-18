@@ -20,6 +20,9 @@ default: testing
 ObjectBlueprints.o:
 	g++ -c ObjectBlueprints.cpp ${OPS}
 
+cj_random.o:
+	g++ -c cj_random.cpp ${OPS}
+
 Object.o:
 	g++ -c Object.cpp ${OPS_NC}
 
@@ -47,8 +50,11 @@ NetworkManager.o:
 server: cleanServer 
 	g++ server.cpp -o server ${OPS}
 
-runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o
-	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+rand: 
+	g++ cj_rand.cpp -o cj_rand ${OPS}
+
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o cj_random.o
+	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o cj_random.o -o ${PROG1} ${OPS_NC}
 
 testing: clean runner
 
