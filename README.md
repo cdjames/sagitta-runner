@@ -16,13 +16,13 @@ The workflow goes like this: each coder works in his/her own main branch outside
 - after your pull request is accepted, delete your feature branch (git branch -d your-feature-name)
 
 ## Build the client
-On unix-like systems, call `make` from a terminal. You will need the ncurses library and C++11 support on your system.
+On unix-like systems, call `make` from the source directory. You will need the ncurses library and C++11 support on your system.
 
 ## Build the server
 On unix-like systems, call `make server` from the source directory.
 
 ## Client Usage
-Call `./runner [ <ip> <port> ]` from the build directory.
+Call `./runner [ <ip> <port> ]` from the binaries/runner directory.
 
 ## Server Usage
-Call `./server [ <port> ]` from the build directory.
+Call `./server [ <port> ]` from the binaries/server directory.
