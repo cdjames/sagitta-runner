@@ -61,8 +61,10 @@ int runGame(WINDOW *win, vector<double> * timing_info, IPParams * ip_info){
 		NM.setConnParams(*ip_info);
 	MenuManager MM = MenuManager(&NM); 
 	int play = MM.mainMenu(), score = 0, seed = -1;
-	if (play == 1){
-		NM.setPlayer();
+	while (play == 1 || play == 2){
+		int connectSuccess = NM.setPlayer();
+		if (connectSuccess == -1)
+			return MM.errorScreen();	
 		NM.setDifficulty(MM.getDifficulty());
 		/* get the seed; time now + 2 seconds */
 		while((seed = NM.getSeed()) == -1) {
@@ -74,8 +76,12 @@ int runGame(WINDOW *win, vector<double> * timing_info, IPParams * ip_info){
 		playerdied = GM.run(timing_info); // runs until user presses q
 		MM.updateSettings(GM);
 		play = MM.gameOver();
+		if (play == 1)
+			play = MM.mainMenu();	
+		if (play == 2)
+			MM.findGame();	
 	}
-
+	
 	return play;
 }
 

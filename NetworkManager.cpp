@@ -20,8 +20,9 @@ NetworkManager::NetworkManager() {
 //	player = connectPlayer(); // Connects player to the server. Assigns player #.
 }
 
-void NetworkManager::setPlayer(){
+int NetworkManager::setPlayer(){
 	player = connectPlayer();
+	return player;
 }
 
 void NetworkManager::setDifficulty(int diff){
@@ -74,7 +75,7 @@ int NetworkManager::connectPlayer() {
 
 	if (connect(client_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-		printf("\nConnection Failed \n");
+//		printf("\nConnection Failed \n");
 		return -1;
 	}
 	send(client_socket, &clientReady, sizeof(clientReady), 0);

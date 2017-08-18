@@ -37,7 +37,9 @@ public:
 	int hsScreen();	
 	int play;
 	void updateSettings(GameManager);	
-	int getDifficulty();	
+	int getDifficulty();
+	int controlsMenu();
+	int errorScreen();	
 };
 
 #endif

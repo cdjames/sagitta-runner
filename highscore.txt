@@ -1,2 +1,3 @@
 PLAYER NAME						SCORE
-Default Player 						0
+Default Player 						17
+
