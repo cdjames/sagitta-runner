@@ -49,7 +49,7 @@ NetworkManager.o:
 
 server: cleanServer
 	g++ server.cpp -o server ${OPS}
-	cp server ../binaries/server
+	cp -i server ../binaries/server
 
 runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o cj_random.o
 	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o cj_random.o -o ${PROG1} ${OPS_NC}
@@ -63,5 +63,5 @@ cleanServer:
 	rm -f server
 
 moveBin:
-	cp ${PROG1} ../binaries/${PROG1}
+	cp -i ${PROG1} ../binaries/${PROG1}
 	
