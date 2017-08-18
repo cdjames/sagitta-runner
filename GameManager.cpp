@@ -514,8 +514,6 @@ void GameManager::_gameLoop(vector<double> * timing_info) {
 	#ifdef TIMING
 	loop_avg_t = loop_total_t/loops;
 	if(timing_info != NULL){
-		// timing_info->push_back(loop_total_t);
-		// timing_info->push_back(loops);
 		timing_info->push_back(loop_avg_t);
 		timing_info->push_back(loop_max_t);
 		timing_info->push_back(loop_min_t);
