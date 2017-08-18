@@ -17,7 +17,7 @@ GameManager::GameManager(WINDOW * win, NetworkManager * NM) {
 	exp_fr_factor = 4;
 	create_factor = 15;
 	max_bullets = MAX_BULLETS;
-	curr_theme = COMPUTERS;
+	curr_theme = SPACE;
 	theme_counter = DEF_THM_COUNTER;
 	score = 0;
 	this->NM = NM;
