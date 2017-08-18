@@ -1,12 +1,9 @@
 main
-runner
 *.png
 *.jpg
 *.jpeg
 runnerdemo
 *.o
-*.exe
-server
 runner.dSYM/ 
 server.dSYM/
 runner.dSYM/
