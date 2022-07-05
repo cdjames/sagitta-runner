@@ -11,7 +11,7 @@ Object::Object(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) 
+				ThemeType theme, unsigned long id, int seed) 
 {
 	this->win = win;
 	this->gameboard = gameboard;
@@ -21,11 +21,16 @@ Object::Object(WINDOW * win,
 	trajectory = {0, 0};
 	this->theme = theme;
 	info = {type, id};
-	int numbps = OBJ_BLPRNTS[type][theme].size();
-	blueprint = OBJ_BLPRNTS[type][theme][rand()%numbps];
+	// int numbps = OBJ_BLPRNTS[type][theme].size();
+	blueprint = OBJ_BLPRNTS[type][theme][seed];
+	// blueprint = OBJ_BLPRNTS[type][theme][cj_rand()%numbps];
 	enemy = OBSTACLE;
 	initParticles();
 	setTrajectory(Coord {-1, 0}); // by default move left (for obstacles)
+	/* figure out if we have a supported color mode */
+	if(COLORS < 256)
+		no_color = true;
+	color = 0;
 }
 
 Object::Object() {}
@@ -40,7 +45,7 @@ unsigned long Object::getId() {
 }
 
 bool Object::detectCollision(Particle &p, ParticleInfo &pi) {
-	// mvprintw(0, 70, "type=%d", pi.type);
+	// mvprintw(2, 1, "obj dC");
 	if(pi.type == enemy) {
 		p.info = pi; // send object info back
 		p.collided = GAMEOVER; // set collision info and send back
@@ -58,6 +63,8 @@ void Object::initParticles() {
 	numParticles = blueprint.size()-1;
 	height = blueprint[0].coords.x;
 	width = blueprint[0].coords.y;
+	points = MAX_OBS_POINTS - (width+height);
+	penalty = height/2;
 	topy = start.y;
 	bottomy = start.y + height;
 	leftx = start.x;
@@ -75,8 +82,7 @@ void Object::initParticles() {
 		particles[i-1].core.coords += start; // adjust by the starting coordinates
 	}
 	front = blueprint[0].color;
-	// std::cout << "object is type " << (int)info.type << " and id " << (int)info.id << std::endl;
-} // may be virtual in the end
+} 
 
 void Object::draw() {
 	
@@ -111,8 +117,6 @@ void Object::_eraseParticle(Particle &p) {
 Particle Object::move(Coord tr) {
 	unsigned short onScreen = 0; // incremented if any particle in object is drawn
 	/* make sure you have info for your object */
-	// mvprintw(2, 90, "gbMax=%d,%d", gbMax.x,  gbMax.y);
-	// mvprintw(3, 90, "gb_info coords=%d,%d", particles[0].core.coords.x+DEF_BUFFER,  particles[0].core.coords.y+DEF_BUFFER);
 	Particle r_particle = DUMMY_PARTICLE;
 
 	if(!particles.size())
@@ -141,12 +145,8 @@ Particle Object::move(Coord tr) {
 	/* loop, erasing previous particle and drawing new one in one pass */
 	while(!done)
 	{	
-		// printw("particles[i].core.coords=%d,%d", particles[i].core.coords.x,  particles[i].core.coords.y);
 		new_coords = particles[i].core.coords + trajectory;
-		if(info.type == BULLET)
-		mvprintw(0, 100, " ");
-		// printw("new_coords.coords=%d,%d", new_coords.x,  new_coords.y);
-		
+
 		/* check to see if we're still on the screen */
 		if (_inBounds(new_coords)) {
 			/* we're still on the screen, so increment onScreen and handle movement */
@@ -167,7 +167,7 @@ Particle Object::move(Coord tr) {
 
 				/* draw new one 
 					If none are drawn during the whole loop, onScreen flag will be zero */
-				particles[i].core.coords += trajectory;
+				particles[i].core.coords = new_coords;
 				_drawParticle(particles[i], info);
 
 				// set collided type
@@ -210,31 +210,33 @@ Particle Object::dftMove() {
 }
 
 void Object::_drawParticle(Particle &p, ParticleInfo pi) {
-	int x, y, c;
-	// p->coords += this->trajectory;
-	x = p.core.coords.x;
-	y = p.core.coords.y;
-	c = p.core.color;
+	y_and_buffer = p.core.coords.y+DEF_BUFFER; 
+	x_and_buffer = p.core.coords.x+DEF_BUFFER;
+	if (!no_color) 
+		color = p.core.color;
+	
 	// change color
-	wattron(win, COLOR_PAIR(c));
+	wattron(win, COLOR_PAIR(color));
 	// add character
-	mvwaddch(win, y, x, p.core.symbol);
+	mvwaddch(win, p.core.coords.y, p.core.coords.x, p.core.symbol);
 	// turn color off
-	wattroff(win, COLOR_PAIR(c));
-	// update gameboard
-	(*gameboard)[y+DEF_BUFFER][x+DEF_BUFFER] = pi;
+	wattroff(win, COLOR_PAIR(color));
+	// update gameboard, checking for valid indexes first (was getting segfaults)
+	if(y_and_buffer >= 0 && y_and_buffer < gbMax.y && x_and_buffer >= 0 && x_and_buffer < gbMax.x)
+		(*gameboard)[y_and_buffer][x_and_buffer] = pi;
 }
 
 /*********************************************************************
-** Description: _checkBounds()
-** Look at 
+** Description: _inBounds()
+** Is the particle still on the screen?
 *********************************************************************/
 bool Object::_inBounds(Coord nc) {
 	if(nc.y >= 0 &&
 		nc.y < max.y &&
 		nc.x >= 0 &&
-		nc.x < max.x)
-		return true;
+		nc.x < max.x) {
+			return true;
+	}
 	else
 		return false;
 }

@@ -1,4 +1,3 @@
-
 # on unix-y systems, type 'make'.
 # if that doesn't work, 'make -f makefile' might be useful.
 
@@ -8,6 +7,7 @@ OPS += -ggdb
 OPS += -Wall 
 
 OPS_NC = -lncurses
+# OPS_NC += -lpthread
 OPS_NC += ${OPS}
 
 CXX = main.cpp
@@ -19,6 +19,9 @@ default: testing
 
 ObjectBlueprints.o:
 	g++ -c ObjectBlueprints.cpp ${OPS}
+
+cj_random.o:
+	g++ -c cj_random.cpp ${OPS}
 
 Object.o:
 	g++ -c Object.cpp ${OPS_NC}
@@ -41,10 +44,22 @@ GameManager.o:
 MenuManager.o:
 	g++ -c MenuManager.cpp ${OPS_NC}
 
-runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o
-	g++ main.cpp GameManager.o MenuManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o -o ${PROG1} ${OPS_NC}
+NetworkManager.o:
+	g++ -c NetworkManager.cpp ${OPS_NC}
+
+server: cleanServer 
+	g++ server.cpp -o server ${OPS}
+
+rand: 
+	g++ cj_rand.cpp -o cj_rand ${OPS}
+
+runner: Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o GameManager.o MenuManager.o NetworkManager.o cj_random.o
+	g++ main.cpp GameManager.o MenuManager.o NetworkManager.o Object.o Ship.o Obstacle.o Bullet.o Explosion.o ObjectBlueprints.o cj_random.o -o ${PROG1} ${OPS_NC}
 
 testing: clean runner
 
 clean:
 	rm -f a.out *.o *~ ${PROG1}
+
+cleanServer:
+	rm -f server

@@ -24,7 +24,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Explosion(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Explosion(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Explosion(); // unused
 	~Explosion(); // unused currently
 

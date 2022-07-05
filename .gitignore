@@ -5,5 +5,8 @@ runner
 *.jpeg
 runnerdemo
 *.o
-runner.dSYM
 *.exe
+server
+runner.dSYM/ 
+server.dSYM/
+runner.dSYM/

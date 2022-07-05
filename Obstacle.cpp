@@ -11,11 +11,28 @@ Obstacle::Obstacle(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
+				ThemeType theme, unsigned long id, int seed) : Object(win, gameboard, start, max, type, theme, id, seed)
 {
-	// info = {type, id};
-
+	enemy = SHIP;
+	enemy2 = BULLET;
 }
 
 Obstacle::Obstacle() {}
 Obstacle::~Obstacle() {}
+void Obstacle::setEnemy2(ObjectType enemy2) {
+	this->enemy2 = enemy2;
+}
+
+bool Obstacle::detectCollision(Particle &p, ParticleInfo &pi) {
+	if(pi.type == enemy) {
+		p.info = pi; // send object info back
+		p.collided = GAMEOVER; // set collision info and send back
+
+		return true;
+	} else if (pi.type == enemy2) { 
+		p.info = pi;
+		p.collided = HIT; // hit by a bullet
+	} else {
+		return false;
+	}	
+}

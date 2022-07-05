@@ -24,7 +24,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Bullet(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Bullet(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Bullet(); // unused
 	~Bullet(); // unused currently
 

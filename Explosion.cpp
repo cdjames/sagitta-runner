@@ -11,7 +11,7 @@ Explosion::Explosion(WINDOW * win,
 				vector< vector<ParticleInfo> > * gameboard, 
 				Coord start, Coord max, 
 				ObjectType type, 
-				ThemeType theme, unsigned long id) : Object(win, gameboard, start, max, type, theme, id)
+				ThemeType theme, unsigned long id, int seed) : Object(win, gameboard, start, max, type, theme, id, seed)
 {
 	info = {type, id};
 	animations_left = 6;
@@ -33,11 +33,9 @@ unsigned short Explosion::animate() {
 
 	for (int i = 0; i < numParticles; i++)
 	{
-		if(i < numParticles-1)
-			particles[i].core.color = particles[i+1].core.color;
-		else
-			particles[i].core.color = particles[0].core.color;
-				
+		// particles[i].core.color = particles[cj_rand()%(numParticles-1)].core.color;
+		// particles[i].core.color = particles[i].core.color;
+	
 		_eraseParticle(prevParticles[i]);
 		_drawParticle(particles[i], info);
 	}

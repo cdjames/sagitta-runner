@@ -9,6 +9,7 @@
 
 #include <curses.h>
 #include "ObjectBlueprints.hpp"
+#include "cj_random.hpp"
 #include <sys/ioctl.h> // for winsize
 #include <iostream>
 #include <algorithm>
@@ -34,8 +35,12 @@ protected:
 	vector<Particle> prevParticles; // place for storing particles
 	vector<ParticleCore> blueprint;
 	ObjectType enemy;
+	int y_and_buffer,
+		x_and_buffer,
+		color;
+	bool no_color;
 
-	bool detectCollision(Particle &p, ParticleInfo &pi);
+	virtual bool detectCollision(Particle &p, ParticleInfo &pi);
 
 	/*********************************************************************
 	** Description: initParticles()
@@ -61,6 +66,9 @@ protected:
 	bool _inBounds(Coord nc);
 	
 public:
+	int points, // points earned for destroying
+		penalty; // points lost for letting pass
+
 	/*********************************************************************
 	** Description: Object constructor
 	** Inherit win and gameboard from creating class. Passed a start coord 
@@ -68,7 +76,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Object(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Object(); // unused
 	~Object(); // unused currently
 

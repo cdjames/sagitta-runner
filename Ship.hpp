@@ -24,7 +24,7 @@ public:
 
 	** calls initParticles()
 	*********************************************************************/
-	Ship(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id);
+	Ship(WINDOW * win, vector< vector<ParticleInfo> > * gameboard, Coord start, Coord max, ObjectType type, ThemeType theme, unsigned long id, int seed);
 	Ship(); // unused
 	~Ship(); // unused currently
 
@@ -43,6 +43,7 @@ public:
 				Particle with collided set to HIT if bullet hits obstacle
 	*********************************************************************/
 	virtual Particle move(Coord tr);
+
 
 };
 
